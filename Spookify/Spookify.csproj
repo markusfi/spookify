@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{6B6C90AF-0DD1-409A-AB94-0E422589D761}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Spookify</RootNamespace>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <AssemblyName>Spookify</AssemblyName>
+    <XamarinInsightsApiKey>70dfe111dfaa7d19d625bad36df471997d71cf01</XamarinInsightsApiKey>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <MtouchArch>i386</MtouchArch>
+    <MtouchLink>None</MtouchLink>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <MtouchFastDev>true</MtouchFastDev>
+    <MtouchDebug>true</MtouchDebug>
+    <CodesignKey>iPhone Developer</CodesignKey>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchFloat32>true</MtouchFloat32>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <MtouchArch>i386</MtouchArch>
+    <MtouchLink>None</MtouchLink>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchUseSGen>true</MtouchUseSGen>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignKey>iPhone Developer: Markus Fischer (7UVCDCRJ4M)</CodesignKey>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <IpaPackageName>
+    </IpaPackageName>
+    <CodesignProvision>7c7d9623-12ad-46dc-a259-aac13092792e</CodesignProvision>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="Xamarin.Insights">
+      <HintPath>..\packages\Xamarin.Insights.1.10.6\lib\Xamarin.iOS10\Xamarin.Insights.dll</HintPath>
+    </Reference>
+    <Reference Include="PLCrashReporterUnifiedBinding">
+      <HintPath>..\packages\Xamarin.Insights.1.10.6\lib\Xamarin.iOS10\PLCrashReporterUnifiedBinding.dll</HintPath>
+    </Reference>
+    <Reference Include="Calabash">
+      <HintPath>..\packages\Xamarin.TestCloud.Agent.0.14.1\lib\Xamarin.iOS10\Calabash.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Services" />
+    <Reference Include="MonoTouch.Dialog-1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\First.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\First.imageset\First.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Second.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Second.imageset\Second.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Ich.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Ich.imageset\User Male.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Settings.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Bibliothek.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Bibliothek.imageset\Courses.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Settings.imageset\Settings 3.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Hoerbuecher.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Hoerbuecher.imageset\download_from_cloud.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\books-120.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\books-180.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\books-114.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\books-57.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Suche.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Suche.imageset\search.png" />
+    <ImageAsset Include="CurrentState.xcassets\AppIcons.appiconset\Contents.json" />
+    <ImageAsset Include="CurrentState.xcassets\LaunchImages.launchimage\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Play.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Play.imageset\Play.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Next.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Prev.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Prev.imageset\skip_to_start.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Next.imageset\end.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Pause.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Pause.imageset\pause.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Forward.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Backward.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Forward.imageset\forward.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Backward.imageset\backward.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Zuletzt.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Zuletzt.imageset\todo_list.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Anmelden.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Image.imageset\internal.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Image.imageset\ratings.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Anmelden.imageset\internal.png" />
+    <ImageAsset Include="Resources\Images.xcassets\NotLoggedIn.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\NotLoggedIn.imageset\spotify_copyrighted.png" />
+    <ImageAsset Include="Resources\Images.xcassets\NoConnection.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\NoConnection.imageset\offline.png" />
+    <ImageAsset Include="Resources\Images.xcassets\NoConnectionTitle.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\NoConnectionTitle.imageset\NoConnectionTitle.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Spotify.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Spotify.imageset\spotify.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Books.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Books.imageset\books-180.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Sleep.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Sleep.imageset\sleeping_in_bed.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Sleep.imageset\sleep.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Sleep.imageset\sleeping_bag.png" />
+    <ImageAsset Include="Resources\Images.xcassets\PlaySettings.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\PlaySettings.imageset\more.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Bookmark.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Bookmark.imageset\mark_as_favourite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
+    <InterfaceDefinition Include="Main.storyboard" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+    <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AppDelegate.cs" />
+    <Compile Include="FirstViewController.cs" />
+    <Compile Include="FirstViewController.designer.cs">
+      <DependentUpon>FirstViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigSpotify.cs" />
+    <Compile Include="GenreViewController.cs" />
+    <Compile Include="GenreViewController.designer.cs">
+      <DependentUpon>GenreViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GenreTableViewCell.cs" />
+    <Compile Include="GenreTableViewCell.designer.cs">
+      <DependentUpon>GenreTableViewCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HoerbuchListeViewController.cs" />
+    <Compile Include="HoerbuchListeViewController.designer.cs">
+      <DependentUpon>HoerbuchListeViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HoerbuchTableViewCell.cs" />
+    <Compile Include="HoerbuchTableViewCell.designer.cs">
+      <DependentUpon>HoerbuchTableViewCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HoerbuchViewController.cs" />
+    <Compile Include="HoerbuchViewController.designer.cs">
+      <DependentUpon>HoerbuchViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RechercheViewController.cs" />
+    <Compile Include="RechercheViewController.designer.cs">
+      <DependentUpon>RechercheViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CurrentState.cs" />
+    <Compile Include="PlayerViewController.cs" />
+    <Compile Include="PlayerViewController.designer.cs">
+      <DependentUpon>PlayerViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SecondViewController.cs" />
+    <Compile Include="SecondViewController.designer.cs">
+      <DependentUpon>SecondViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ZuletztViewController.cs" />
+    <Compile Include="ZuletztViewController.designer.cs">
+      <DependentUpon>ZuletztViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reachability.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+  <Import Project="..\packages\Xamarin.Insights.1.10.6\build\Xamarin.iOS10\Xamarin.Insights.targets" Condition="Exists('..\packages\Xamarin.Insights.1.10.6\build\Xamarin.iOS10\Xamarin.Insights.targets')" />
+  <ItemGroup>
+    <BundleResource Include="Resources\Images\Air Play.png" />
+    <BundleResource Include="Resources\Images\Circled User Female .png" />
+    <BundleResource Include="Resources\Images\Circled User Male.png" />
+    <BundleResource Include="Resources\Images\Courses.png" />
+    <BundleResource Include="Resources\Images\End Filled.png" />
+    <BundleResource Include="Resources\Images\Gender Neutral User.png" />
+    <BundleResource Include="Resources\Images\Headphones.png" />
+    <BundleResource Include="Resources\Images\Literature.png" />
+    <BundleResource Include="Resources\Images\Settings 3.png" />
+    <BundleResource Include="Resources\Images\Spotify.png" />
+    <BundleResource Include="Resources\Images\User Male.png" />
+    <BundleResource Include="Resources\Images\user_male_circle.png" />
+    <BundleResource Include="Resources\Images\literature_filled.png" />
+    <BundleResource Include="Resources\Images\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SpotifySDK\SpotifySDK.csproj">
+      <Project>{357BA94C-A517-44EF-AC2D-39BE162901CE}</Project>
+      <Name>SpotifySDK</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\Images.xcassets\Anmelden.imageset\" />
+  </ItemGroup>
+</Project>
