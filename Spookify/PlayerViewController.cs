@@ -242,36 +242,34 @@ namespace Spookify
 			SavePosition (false);
 			var ab = CurrentState.Current.CurrentAudioBook;
 			if (ab != null &&
-			    ab.CurrentPosition != null) {
-				var direction = Math.Sign (seconds);
-				var trackIndex = ab.CurrentPosition.TrackIndex;
-
+			    ab.CurrentPosition != null) 
+			{
 				if (seconds > 0) {
 					while (seconds > 0) {
-						var track = ab.Tracks [trackIndex];
+						var track = ab.Tracks [ab.CurrentPosition.TrackIndex];
 						if (track.Duration > ab.CurrentPosition.PlaybackPosition + seconds) {
 							ab.CurrentPosition.PlaybackPosition += seconds;
 							seconds = 0;
 						} else {
 							seconds = (seconds - (track.Duration - ab.CurrentPosition.PlaybackPosition));
 							ab.CurrentPosition.PlaybackPosition = 0;
-							if (trackIndex < ab.Tracks.Count)
-								trackIndex += 1;
+							if (ab.CurrentPosition.TrackIndex < ab.Tracks.Count)
+								ab.CurrentPosition.TrackIndex += 1;
 							else
 								seconds = 0;
 						}
 					}
 				} else {
 					while (seconds < 0) {
-						var track = ab.Tracks [trackIndex];
+						var track = ab.Tracks [ab.CurrentPosition.TrackIndex];
 						if (ab.CurrentPosition.PlaybackPosition >= Math.Abs(seconds)) {
 							ab.CurrentPosition.PlaybackPosition += seconds;
 							seconds = 0;
-						} else {
+						} else { 
 							seconds = (seconds + ab.CurrentPosition.PlaybackPosition);
-							if (trackIndex > 0) {
-								trackIndex -= 1;
-								ab.CurrentPosition.PlaybackPosition = ab.Tracks [trackIndex].Duration;
+							if (ab.CurrentPosition.TrackIndex > 0) {
+								ab.CurrentPosition.TrackIndex -= 1;
+								ab.CurrentPosition.PlaybackPosition = ab.Tracks [ab.CurrentPosition.TrackIndex].Duration;
 							} else
 								seconds = 0;
 						}
@@ -524,7 +522,7 @@ namespace Spookify
 			commandCenter.PreviousTrackCommand.AddTarget( (remoteCommand) => 
 			{ 
 				if (this.Player != null) {
-					this.OnNextTrack(null);
+					this.OnPrevTrack(null);
 					return MPRemoteCommandHandlerStatus.Success;
 				} else 
 					return MPRemoteCommandHandlerStatus.CommandFailed;
@@ -815,7 +813,6 @@ namespace Spookify
 		{
 			SkipTime(-30);
 		}
-
 		partial void OnForwardTime (UIKit.UIButton sender)
 		{
 			SkipTime(30);
