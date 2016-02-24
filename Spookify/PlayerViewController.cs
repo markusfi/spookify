@@ -113,11 +113,15 @@ namespace Spookify
 
 
 			UIBarButtonItem rightButton = new UIBarButtonItem ();
-			rightButton.Image = UIImage.FromBundle ("PlaySettings");
+			rightButton.Image = UIImage.FromBundle ("Kaset");
 			rightButton.Clicked += PlaySettingsClicked;
+
+			this.NavigationController.NavigationBar.TintColor = UIColor.DarkGray;
 
 			this.NavigationItem.SetRightBarButtonItem (rightButton, false);
 		}
+
+		UILabel SleepTimerLabel { get; set; }
 
 		bool timerRunning;
 		async void StartTimer ()
@@ -125,18 +129,56 @@ namespace Spookify
 			timerRunning = true;
 			while (timerRunning) {
 				await Task.Delay (1000);
-				InvokeOnMainThread ( () => {
+				InvokeOnMainThread ( async () => {
 					DisplayAlbum ();
-					if (CurrentSleepTimerOptions == SleepTimerOptions.Off) {
+					if (SleepTimerStartTime == DateTime.MinValue) {
+						if (SleepTimerLabel != null) {
+							SleepTimerLabel.RemoveFromSuperview();
+							SleepTimerLabel.Dispose();
+							SleepTimerLabel = null;
+						}
 						
-					} else if (CurrentSleepTimerOptions == SleepTimerOptions.End_of_Capter) {
+					} else if (SleepTimerStartTime == DateTime.MaxValue) {
 						
 					} else {
-						if (SleepTimerStartTime > DateTime.Now) {
-							SleepTimerStartTime = DateTime.MinValue;
-							CurrentSleepTimerOptions = SleepTimerOptions.Off;
-							if (this.Player != null)
-								this.Player.SetIsPlaying(false, (error) => { });
+						if (SleepTimerStartTime > DateTime.MinValue) {
+							if (SleepTimerStartTime > DateTime.Now) {
+								if (SleepTimerLabel == null) {
+									SleepTimerLabel = new UILabel();
+									SleepTimerLabel.TranslatesAutoresizingMaskIntoConstraints = false;
+									SleepTimerLabel.TextAlignment = UITextAlignment.Center;
+									SleepTimerLabel.Layer.CornerRadius = 5;
+									SleepTimerLabel.Layer.MasksToBounds = true;
+									SleepTimerLabel.Layer.BorderColor = UIColor.DarkGray.CGColor;
+									SleepTimerLabel.Alpha = 0.8f;
+									SleepTimerLabel.BackgroundColor = UIColor.Red;
+									SleepTimerLabel.TintColor = UIColor.Black;
+									SleepTimerLabel.TextColor = UIColor.Black;
+
+									this.View.AddSubview (SleepTimerLabel);
+									this.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.Width, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Width, 0.5f, 0));
+									this.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.Height, NSLayoutRelation.Equal, null, NSLayoutAttribute.Height, 0f, 24f));
+									this.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.CenterX, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.CenterX, 1f, 0));
+									this.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.CenterY, 1f, 90f));
+
+								}
+								SleepTimerLabel.Text = string.Format("Sleep Timer {0:mm\\:ss}",SleepTimerStartTime.Subtract(DateTime.Now));
+							}
+							if (SleepTimerStartTime < DateTime.Now) {
+								SleepTimerStartTime = DateTime.MinValue;
+								SavePosition();
+								if (this.Player != null) {
+									var origVol = this.Player.Volume;
+									var vol = origVol;
+									var step = vol/20;
+									while (vol >= 0) {
+										this.Player.SetVolume(vol-=step, (error) => { });
+										await Task.Delay (500);
+									}
+									this.Player.SetIsPlaying(false, (error) => { });
+									this.Player.SetVolume(origVol, (error) => { });
+								}
+							}
 						}
 					}
 				});
@@ -468,10 +510,8 @@ namespace Spookify
 			DisplayAlbum ();
 		}
 
-		public enum SleepTimerOptions { Off, Minutes_8, Minutes_15, Minutes_30, Minutes_45, Minutes_60, End_of_Capter }
-
-		SleepTimerOptions CurrentSleepTimerOptions { get; set; } = SleepTimerOptions.Off;
 		DateTime SleepTimerStartTime { get; set; } = DateTime.MinValue;
+		int SleepTimerOpion = 0;
 
 		partial void OnSleeptimer (UIKit.UIButton sender)
 		{
@@ -482,11 +522,16 @@ namespace Spookify
 			if (this.Player != null) {
 				var ab = CurrentState.Current.CurrentAudioBook;
 				if (ab != null && ab.CurrentPosition != null) {
-					new UIAlertView("Bookmark","Bookmark hinzufügen?",() => { },null, "Ok").Show();
-					if (ab.Bookmarks == null)
-						ab.Bookmarks = new List<AudioBookBookmark>();
-					ab.Bookmarks.Add(new AudioBookBookmark(ab.CurrentPosition));
-					CurrentState.Current.StoreCurrentState();
+					var alertView = new UIAlertView("Bookmark","Bookmark hinzufügen?", null, "Abbrechen", "Ok");
+					alertView.Show();
+					alertView.Clicked += (object sender1, UIButtonEventArgs e) => {
+						if (e.ButtonIndex == 1) {;	
+							if (ab.Bookmarks == null)
+								ab.Bookmarks = new List<AudioBookBookmark>();
+							ab.Bookmarks.Add(new AudioBookBookmark(ab.CurrentPosition));
+							CurrentState.Current.StoreCurrentState();
+						}
+					};
 				}
 			}
 		}
@@ -505,7 +550,7 @@ namespace Spookify
 						if (element.IndexPath.Row < ab.Tracks.Count) {
 							ab.CurrentPosition = new AudioBookBookmark() { PlaybackPosition = 0, TrackIndex = element.IndexPath.Row };
 							PlayCurrentAudioBook();
-							DismissViewController(true, delegate {});
+							this.NavigationController.PopToRootViewController(true);
 						}
 					}; 
 					return element;
@@ -523,7 +568,7 @@ namespace Spookify
 						if (element.IndexPath.Row < ab.Bookmarks.Count) {
 							ab.CurrentPosition = new AudioBookBookmark(ab.Bookmarks[element.IndexPath.Row]);
 							PlayCurrentAudioBook();
-							DismissViewController(true, delegate {});
+							this.NavigationController.PopToRootViewController(true);
 						}
 					}; 
 					return element;
@@ -544,42 +589,54 @@ namespace Spookify
 				};
 			}
 			var sleepTimerSection = new Section("");
-			sleepTimerSection.AddAll( new [] {"Aus", "8 Minuten", "15 Minuten", "30 Minuten", "45 Minuten", "60 Minuten",	"Ende des Kapitels" }.Select(x => new RadioElement(x)));
-
+			sleepTimerSection.Add(new CLickableRadioElement(this, 0, "Aus",TimeSpan.FromSeconds(0)));
+			sleepTimerSection.Add(new CLickableRadioElement(this, 1, "1 Minuten",TimeSpan.FromMinutes(1)));
+			sleepTimerSection.Add(new CLickableRadioElement(this, 2, "15 Minuten",TimeSpan.FromMinutes(15)));
+			sleepTimerSection.Add(new CLickableRadioElement(this, 3, "30 Minuten",TimeSpan.FromMinutes(30)));
+			sleepTimerSection.Add(new CLickableRadioElement(this, 4, "45 Minuten",TimeSpan.FromMinutes(45)));
+			sleepTimerSection.Add(new CLickableRadioElement(this, 5, "60 Minuten",TimeSpan.FromMinutes(60)));
+			sleepTimerSection.Add(new CLickableRadioElement(this, 6, "Ende des Kapitels",TimeSpan.FromDays(1)));
 			var root = new RootElement ("Einstellungen") {
 				new Section () {
-					new RootElement("Kapitel",0,0) {
+					new RootElement("Kapitel",0,ab.CurrentPosition != null ? ab.CurrentPosition.TrackIndex : 0) {
 						kapitelSection	
 					},
-					new RootElement("Lesezeichen",0,0) {
+					new RootElement("Lesezeichen",0,lesezeichenSection.Count-1) {
 						lesezeichenSection
 					},
-					new RootElement("Schlafmodus", new RadioGroup("Schlafmodus", (int)CurrentSleepTimerOptions)) {
+					new RootElement("Schlafmodus", new RadioGroup("Schlafmodus",SleepTimerOpion)) {
 						sleepTimerSection
 					}
 				}
 			};
 			var dvc = new DialogViewController(UITableViewStyle.Plain, root, true);
-			dvc.OnSelection += (NSIndexPath obj) => {
-				CurrentSleepTimerOptions = (SleepTimerOptions)obj.Row;
-				if (CurrentSleepTimerOptions == SleepTimerOptions.End_of_Capter) {
-					SleepTimerStartTime = DateTime.MinValue;
-				}
-				else if (CurrentSleepTimerOptions == SleepTimerOptions.Off) {
-					SleepTimerStartTime = DateTime.MinValue;
-				}
-				else {
-					SleepTimerStartTime = DateTime.Now.AddMinutes(
-						CurrentSleepTimerOptions == SleepTimerOptions.Minutes_8 ? 8 :
-						CurrentSleepTimerOptions == SleepTimerOptions.Minutes_15 ? 15 :
-						CurrentSleepTimerOptions == SleepTimerOptions.Minutes_30 ? 30 :
-						CurrentSleepTimerOptions == SleepTimerOptions.Minutes_45 ? 45 : 
-						CurrentSleepTimerOptions == SleepTimerOptions.Minutes_60 ? 60 : 0);
-				}
-			};
 			this.NavigationController.PushViewController(dvc,true);
 		}
 
+		public class CLickableRadioElement : RadioElement {
+			TimeSpan _time;
+			PlayerViewController _vc;
+			int _option;
+
+			public CLickableRadioElement (PlayerViewController vc, int option, string s, TimeSpan time) : base (s) {
+				_time = time;
+				_vc = vc;
+				_option = option;
+			}
+
+			public override void Selected (DialogViewController dvc, UITableView tableView, NSIndexPath path)
+			{
+				base.Selected (dvc, tableView, path);
+				_vc.SleepTimerOpion = _option;
+				if (_time.TotalSeconds == 0)
+					_vc.SleepTimerStartTime = DateTime.MinValue;
+				else if (_time.TotalDays == 1)
+					_vc.SleepTimerStartTime = DateTime.MaxValue;
+				else 
+					_vc.SleepTimerStartTime = DateTime.Now.Add(_time);
+				dvc.NavigationController.PopToRootViewController(true);
+			}
+		}
 		partial void OnNextTrack (UIKit.UIButton sender)
 		{
 			if (this.Player != null)

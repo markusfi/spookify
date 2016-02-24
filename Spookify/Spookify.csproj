@@ -147,10 +147,11 @@
     <ImageAsset Include="Resources\Images.xcassets\Sleep.imageset\sleeping_in_bed.png" />
     <ImageAsset Include="Resources\Images.xcassets\Sleep.imageset\sleep.png" />
     <ImageAsset Include="Resources\Images.xcassets\Sleep.imageset\sleeping_bag.png" />
-    <ImageAsset Include="Resources\Images.xcassets\PlaySettings.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\PlaySettings.imageset\more.png" />
     <ImageAsset Include="Resources\Images.xcassets\Bookmark.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Bookmark.imageset\mark_as_favourite.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Kaset.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Kaset.imageset\Kaset.png" />
+    <ImageAsset Include="Resources\Images.xcassets\KapitelSettings.imageset\Kaset.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
