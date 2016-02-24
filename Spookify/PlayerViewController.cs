@@ -59,16 +59,19 @@ namespace Spookify
 			}
 		}
 
+		int CurrentStartTrack = 0;
+
 		public void PlayCurrentAudioBook()
 		{			
 			if (this.Player != null) {
 				if (CurrentState.Current.CurrentAudioBook != null) {
 					if (CurrentState.Current.CurrentAudioBook.CurrentPosition != null) {
 
+						CurrentStartTrack = CurrentState.Current.CurrentAudioBook.CurrentPosition.TrackIndex;
 						SPTPlayOptions options = new SPTPlayOptions ();
-						options.TrackIndex = CurrentState.Current.CurrentAudioBook.CurrentPosition.TrackIndex;
+						options.TrackIndex = 0;
 						options.StartTime = CurrentState.Current.CurrentAudioBook.CurrentPosition.PlaybackPosition;
-						this.Player.PlayURIs (CurrentState.Current.CurrentAudioBook.Tracks.Select (t => t.NSUrl).ToArray (), options, 
+						this.Player.PlayURIs (CurrentState.Current.CurrentAudioBook.Tracks.Skip(CurrentStartTrack).Select (t => t.NSUrl).ToArray (), options, 
 							(playURIError) => {
 							});
 					} else {
@@ -195,25 +198,87 @@ namespace Spookify
 			SavePosition ();
 		}
 
-		void SavePosition()
+		void SavePosition(bool store = true)
 		{
 			if (this.Player != null) {
 				if (this.Player.CurrentPlaybackPosition != 0 ||
 				   this.Player.CurrentTrackIndex != 0) {
+					int playerTrack = CurrentStartTrack + this.Player.CurrentTrackIndex;
 					if (CurrentState.Current.CurrentAudioBook != null) {				
 						if (CurrentState.Current.CurrentAudioBook.CurrentPosition == null ||
-						    (CurrentState.Current.CurrentAudioBook.CurrentPosition.TrackIndex < this.Player.CurrentTrackIndex ||
-						    (CurrentState.Current.CurrentAudioBook.CurrentPosition.TrackIndex == this.Player.CurrentTrackIndex &&
-						    CurrentState.Current.CurrentAudioBook.CurrentPosition.PlaybackPosition < this.Player.CurrentPlaybackPosition)))
+							(CurrentState.Current.CurrentAudioBook.CurrentPosition.TrackIndex < playerTrack ||
+							(CurrentState.Current.CurrentAudioBook.CurrentPosition.TrackIndex == playerTrack &&
+						     CurrentState.Current.CurrentAudioBook.CurrentPosition.PlaybackPosition < this.Player.CurrentPlaybackPosition)))
 						{
 							CurrentState.Current.CurrentAudioBook.CurrentPosition = new AudioBookBookmark () {
 								PlaybackPosition = this.Player.CurrentPlaybackPosition,
-								TrackIndex = this.Player.CurrentTrackIndex
+								TrackIndex = playerTrack
 							};
-							CurrentState.Current.StoreCurrentState ();
+							if (store)
+								CurrentState.Current.StoreCurrentState ();
 						}
 					}
 				}
+			}
+		}
+		void SkipTrack(int step)
+		{
+			SavePosition (false);
+			var ab = CurrentState.Current.CurrentAudioBook;
+			if (ab != null &&
+			    ab.CurrentPosition != null) {
+
+				if (ab.CurrentPosition.TrackIndex + step < ab.Tracks.Count &&
+				    ab.CurrentPosition.TrackIndex + step >= 0) {
+					ab.CurrentPosition.TrackIndex += step;
+					ab.CurrentPosition.PlaybackPosition = 0;
+					CurrentState.Current.StoreCurrentState ();
+					PlayCurrentAudioBook ();
+				}
+			}
+		}
+		void SkipTime(double seconds)
+		{
+			SavePosition (false);
+			var ab = CurrentState.Current.CurrentAudioBook;
+			if (ab != null &&
+			    ab.CurrentPosition != null) {
+				var direction = Math.Sign (seconds);
+				var trackIndex = ab.CurrentPosition.TrackIndex;
+
+				if (seconds > 0) {
+					while (seconds > 0) {
+						var track = ab.Tracks [trackIndex];
+						if (track.Duration > ab.CurrentPosition.PlaybackPosition + seconds) {
+							ab.CurrentPosition.PlaybackPosition += seconds;
+							seconds = 0;
+						} else {
+							seconds = (seconds - (track.Duration - ab.CurrentPosition.PlaybackPosition));
+							ab.CurrentPosition.PlaybackPosition = 0;
+							if (trackIndex < ab.Tracks.Count)
+								trackIndex += 1;
+							else
+								seconds = 0;
+						}
+					}
+				} else {
+					while (seconds < 0) {
+						var track = ab.Tracks [trackIndex];
+						if (ab.CurrentPosition.PlaybackPosition >= Math.Abs(seconds)) {
+							ab.CurrentPosition.PlaybackPosition += seconds;
+							seconds = 0;
+						} else {
+							seconds = (seconds + ab.CurrentPosition.PlaybackPosition);
+							if (trackIndex > 0) {
+								trackIndex -= 1;
+								ab.CurrentPosition.PlaybackPosition = ab.Tracks [trackIndex].Duration;
+							} else
+								seconds = 0;
+						}
+					}
+				}
+				CurrentState.Current.StoreCurrentState ();
+				PlayCurrentAudioBook ();
 			}
 		}
 
@@ -637,11 +702,6 @@ namespace Spookify
 				dvc.NavigationController.PopToRootViewController(true);
 			}
 		}
-		partial void OnNextTrack (UIKit.UIButton sender)
-		{
-			if (this.Player != null)
-				this.Player.SkipNext((error) => {});
-		}
 
 		partial void OnPlay (UIKit.UIButton sender)
 		{
@@ -745,20 +805,20 @@ namespace Spookify
 
 		partial void OnPrevTrack (UIKit.UIButton sender)
 		{
-			if (this.Player != null)
-				this.Player.SkipPrevious((error) => {});
+			SkipTrack(-1);
 		}
-
+		partial void OnNextTrack (UIKit.UIButton sender)
+		{
+			SkipTrack(1);
+		}
 		partial void OnBackTime (UIKit.UIButton sender)
 		{
-			if (this.Player != null)
-				this.Player.SeekToOffset(Math.Max(0,this.Player.CurrentPlaybackPosition - 30.0), (error) => { });
+			SkipTime(-30);
 		}
 
 		partial void OnForwardTime (UIKit.UIButton sender)
 		{
-			if (this.Player != null)
-				this.Player.SeekToOffset(Math.Min(this.Player.CurrentTrackDuration,this.Player.CurrentPlaybackPosition + 30.0), (error) => { });
+			SkipTime(30);
 		}
 
 		public class MySPTAudioStreamingDelegate : SPTAudioStreamingPlaybackDelegate {
