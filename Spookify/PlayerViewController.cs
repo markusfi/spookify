@@ -15,74 +15,13 @@ namespace Spookify
 {
 	public partial class PlayerViewController : UIViewController
 	{
-		SPTAuthViewController authViewController = null;
-		MySPTAuthViewDelegate mySPTAuthViewDelegate = null;
+		PlayerViewSleepTimer _playerViewSleepTimer;
+		public bool IsSessionValid { get { return CurrentPlayer.Current.IsSessionValid; } }
+		public bool IsPlayerCreated { get {	return CurrentPlayer.Current.IsPlayerCreated; } }
+		public SPTAudioStreamingController Player { get { return CurrentPlayer.Current.Player; } }
+		public void PlayCurrentAudioBook() { CurrentPlayer.Current.PlayCurrentAudioBook (); }
+		bool SavePosition(bool store = true) { return CurrentPlayer.Current.SavePosition(store); }
 
-		public bool IsSessionValid {
-			get {
-				SPTAuth auth = SPTAuth.DefaultInstance;
-				return !(auth.Session == null || !auth.Session.IsValid);
-			}
-		}
-
-		public bool IsPlayerCreated { 
-			get { 
-				return this._player != null && this._player.LoggedIn; 
-			}
-		}
-		SPTAudioStreamingController _player;
-		public SPTAudioStreamingController Player
-		{
-			get 
-			{ 
-				if (this.IsSessionValid) {
-					if (_player == null) {
-						SPTAuth auth = SPTAuth.DefaultInstance;
-						var ca = new SPTCoreAudioController ();
-						_player = new SPTAudioStreamingController (auth.ClientID, ca);
-						_player.PlaybackDelegate = new MySPTAudioStreamingDelegate (this);
-
-						// this.player.DiskCache = new SPTDiskCache(1024 * 1024 * 64).;
-					} 
-					if (!_player.LoggedIn) {
-						SPTAuth auth = SPTAuth.DefaultInstance;
-						_player.LoginWithSession (auth.Session, error => {
-
-							// login failed.
-							Console.WriteLine(error);
-						});
-					}
-				} else {
-					_player = null;
-				}
-				return _player;
-			}
-		}
-
-		int CurrentStartTrack = 0;
-
-		public void PlayCurrentAudioBook()
-		{			
-			if (this.Player != null) {
-				if (CurrentState.Current.CurrentAudioBook != null) {
-					if (CurrentState.Current.CurrentAudioBook.CurrentPosition != null) {
-
-						CurrentStartTrack = CurrentState.Current.CurrentAudioBook.CurrentPosition.TrackIndex;
-						SPTPlayOptions options = new SPTPlayOptions ();
-						options.TrackIndex = 0;
-						options.StartTime = CurrentState.Current.CurrentAudioBook.CurrentPosition.PlaybackPosition;
-						this.Player.PlayURIs (CurrentState.Current.CurrentAudioBook.Tracks.Skip(CurrentStartTrack).Select (t => t.NSUrl).ToArray (), options, 
-							(playURIError) => {
-							});
-					} else {
-						this.Player.PlayURIs (CurrentState.Current.CurrentAudioBook.Tracks.Select (t => t.NSUrl).ToArray (), 
-							0, 
-							(playURIError) => {
-							});
-					}
-				}
-			}
-		}
 		public PlayerViewController (IntPtr handle) : base (handle)
 		{
 		}
@@ -122,116 +61,37 @@ namespace Spookify
 			this.NavigationController.NavigationBar.TintColor = UIColor.DarkGray;
 
 			this.NavigationItem.SetRightBarButtonItem (rightButton, false);
+
+			CurrentPlayer.Current.CreateSPTAudioStreamingDelegate (this);
+
+
+			UITapGestureRecognizer tapRecognizer = new UITapGestureRecognizer (HandleTouchInImage);
+			tapRecognizer.NumberOfTapsRequired = 1;
+			this.AlbumImage.UserInteractionEnabled = true;
+			this.AlbumImage.AddGestureRecognizer (tapRecognizer);
+
+
+			if (_playerViewSleepTimer == null)
+				_playerViewSleepTimer = new PlayerViewSleepTimer (this);
+			_playerViewSleepTimer.StartTimer ();
 		}
-
-		UILabel SleepTimerLabel { get; set; }
-
-		bool timerRunning;
-		async void StartTimer ()
+	
+		void HandleTouchInImage()
 		{
-			timerRunning = true;
-			while (timerRunning) {
-				await Task.Delay (1000);
-				InvokeOnMainThread ( async () => {
-					DisplayAlbum ();
-					if (SleepTimerStartTime == DateTime.MinValue) {
-						if (SleepTimerLabel != null) {
-							SleepTimerLabel.RemoveFromSuperview();
-							SleepTimerLabel.Dispose();
-							SleepTimerLabel = null;
-						}
-						
-					} else if (SleepTimerStartTime == DateTime.MaxValue) {
-						
-					} else {
-						if (SleepTimerStartTime > DateTime.MinValue) {
-							if (SleepTimerStartTime > DateTime.Now) {
-								if (SleepTimerLabel == null) {
-									SleepTimerLabel = new UILabel();
-									SleepTimerLabel.TranslatesAutoresizingMaskIntoConstraints = false;
-									SleepTimerLabel.TextAlignment = UITextAlignment.Center;
-									SleepTimerLabel.Layer.CornerRadius = 5;
-									SleepTimerLabel.Layer.MasksToBounds = true;
-									SleepTimerLabel.Layer.BorderColor = UIColor.DarkGray.CGColor;
-									SleepTimerLabel.Alpha = 0.8f;
-									SleepTimerLabel.BackgroundColor = UIColor.Red;
-									SleepTimerLabel.TintColor = UIColor.Black;
-									SleepTimerLabel.TextColor = UIColor.Black;
-
-									this.View.AddSubview (SleepTimerLabel);
-									this.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.Width, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Width, 0.5f, 0));
-									this.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.Height, NSLayoutRelation.Equal, null, NSLayoutAttribute.Height, 0f, 24f));
-									this.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.CenterX, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.CenterX, 1f, 0));
-									this.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.CenterY, 1f, 90f));
-
-								}
-								SleepTimerLabel.Text = string.Format("Sleep Timer {0:mm\\:ss}",SleepTimerStartTime.Subtract(DateTime.Now));
-							}
-							if (SleepTimerStartTime < DateTime.Now) {
-								SleepTimerStartTime = DateTime.MinValue;
-								SavePosition();
-								if (this.Player != null) {
-									var origVol = this.Player.Volume;
-									var vol = origVol;
-									var step = vol/20;
-									while (vol >= 0) {
-										this.Player.SetVolume(vol-=step, (error) => { });
-										await Task.Delay (500);
-									}
-									this.Player.SetIsPlaying(false, (error) => { });
-									this.Player.SetVolume(origVol, (error) => { });
-								}
-							}
-						}
-					}
-				});
-			}
-		}
-		void StopTimer()
-		{
-			timerRunning = false;
+			this.OnPlay(null);
 		}
 
 		public override void ViewDidUnload ()
 		{
 			base.ViewDidUnload ();
 			SavePosition ();
+			_playerViewSleepTimer.StopTimer ();
 		}
-
-		void SavePosition(bool store = true)
-		{
-			if (this.Player != null) {
-				if (this.Player.CurrentPlaybackPosition != 0 ||
-				   this.Player.CurrentTrackIndex != 0) {
-					int playerTrack = CurrentStartTrack + this.Player.CurrentTrackIndex;
-					if (CurrentState.Current.CurrentAudioBook != null) {				
-						if (CurrentState.Current.CurrentAudioBook.CurrentPosition == null ||
-							(CurrentState.Current.CurrentAudioBook.CurrentPosition.TrackIndex < playerTrack ||
-							(CurrentState.Current.CurrentAudioBook.CurrentPosition.TrackIndex == playerTrack &&
-						     CurrentState.Current.CurrentAudioBook.CurrentPosition.PlaybackPosition < this.Player.CurrentPlaybackPosition)))
-						{
-							CurrentState.Current.CurrentAudioBook.CurrentPosition = new AudioBookBookmark () {
-								PlaybackPosition = this.Player.CurrentPlaybackPosition,
-								TrackIndex = playerTrack
-							};
-							if (store)
-								CurrentState.Current.StoreCurrentState ();
-						}
-					}
-				}
-			}
-		}
+			
 		void SkipTrack(int step)
 		{
-			SavePosition (false);
-			var ab = CurrentState.Current.CurrentAudioBook;
-			if (ab != null &&
-			    ab.CurrentPosition != null) {
-
-				if (ab.CurrentPosition.TrackIndex + step < ab.Tracks.Count &&
-				    ab.CurrentPosition.TrackIndex + step >= 0) {
-					ab.CurrentPosition.TrackIndex += step;
-					ab.CurrentPosition.PlaybackPosition = 0;
+			if (SavePosition (false)) {
+				if (CurrentState.Current.CurrentAudioBook.SkipTrack (step)) {
 					CurrentState.Current.StoreCurrentState ();
 					PlayCurrentAudioBook ();
 				}
@@ -239,44 +99,11 @@ namespace Spookify
 		}
 		void SkipTime(double seconds)
 		{
-			SavePosition (false);
-			var ab = CurrentState.Current.CurrentAudioBook;
-			if (ab != null &&
-			    ab.CurrentPosition != null) 
-			{
-				if (seconds > 0) {
-					while (seconds > 0) {
-						var track = ab.Tracks [ab.CurrentPosition.TrackIndex];
-						if (track.Duration > ab.CurrentPosition.PlaybackPosition + seconds) {
-							ab.CurrentPosition.PlaybackPosition += seconds;
-							seconds = 0;
-						} else {
-							seconds = (seconds - (track.Duration - ab.CurrentPosition.PlaybackPosition));
-							ab.CurrentPosition.PlaybackPosition = 0;
-							if (ab.CurrentPosition.TrackIndex < ab.Tracks.Count)
-								ab.CurrentPosition.TrackIndex += 1;
-							else
-								seconds = 0;
-						}
-					}
-				} else {
-					while (seconds < 0) {
-						var track = ab.Tracks [ab.CurrentPosition.TrackIndex];
-						if (ab.CurrentPosition.PlaybackPosition >= Math.Abs(seconds)) {
-							ab.CurrentPosition.PlaybackPosition += seconds;
-							seconds = 0;
-						} else { 
-							seconds = (seconds + ab.CurrentPosition.PlaybackPosition);
-							if (ab.CurrentPosition.TrackIndex > 0) {
-								ab.CurrentPosition.TrackIndex -= 1;
-								ab.CurrentPosition.PlaybackPosition = ab.Tracks [ab.CurrentPosition.TrackIndex].Duration;
-							} else
-								seconds = 0;
-						}
-					}
+			if (SavePosition (false)) {
+				if (CurrentState.Current.CurrentAudioBook.AdjustTime (seconds)) {
+					CurrentState.Current.StoreCurrentState ();
+					PlayCurrentAudioBook ();
 				}
-				CurrentState.Current.StoreCurrentState ();
-				PlayCurrentAudioBook ();
 			}
 		}
 
@@ -285,18 +112,16 @@ namespace Spookify
 			base.ViewDidAppear (animated);
 
 			UpdateUI ();
-			StartTimer ();
 		}
 
 		public override void ViewDidDisappear (bool animated)
 		{
 			base.ViewDidDisappear (animated);
-			StopTimer ();
 		}
 
 		AudioBook displayedAudioBook = null; 
 
-		void DisplayAlbum()
+		public void DisplayAlbum()
 		{
 			SavePosition ();
 
@@ -306,12 +131,13 @@ namespace Spookify
 
 			bool hasConnection = Reachability.RemoteHostStatus () != NetworkStatus.NotReachable;
 				
-			bool hideControls = ab == null || !hasConnection;
+			bool hideControls = ab == null || !hasConnection || this.Player == null;
 			this.SkipForward.Hidden = hideControls;
 			this.SkipBackward.Hidden = hideControls;
 			this.PrevTrack.Hidden = hideControls;
 			this.NextTrack.Hidden = hideControls;
 			this.Airplay.Hidden = hideControls;
+			this.LesezeichenButton.Hidden = hideControls;
 
 			if (!hasConnection || this.Player == null || ab == null) {
 				this.AuthorLabel.Text = "";
@@ -379,27 +205,7 @@ namespace Spookify
 				if (reload) { 
 					this.AlbumLabel.Text = ab.Album.Name;
 					this.AuthorLabel.Text = ab.Artists.FirstOrDefault ();
-					var imageView = this.AlbumImage;
-					if (imageView != null && ab.LargestCoverURL != null) {
-						imageView.Image = null;
-						var gloalQueue = DispatchQueue.GetGlobalQueue (DispatchQueuePriority.Default);
-						gloalQueue.DispatchAsync (() => {
-							NSError err = null;
-							UIImage image = null;
-							NSData imageData = NSData.FromUrl (new NSUrl (ab.LargestCoverURL), 0, out err);
-							if (imageData != null)
-								image = UIImage.LoadFromData (imageData);
-
-							DispatchQueue.MainQueue.DispatchAsync (() => {
-								imageView.Image = image;
-								if (image == null) {
-									System.Diagnostics.Debug.WriteLine ("Could not load image with error: {0}", err);
-									return;
-								}
-								SetupNowPlaying();
-							});
-						});
-					}
+					ab.SetLargeImage (this.AlbumImage);
 				} 
 			}
 			SetupNowPlaying ();
@@ -568,24 +374,20 @@ namespace Spookify
 			}
 		}
 
-		void UpdateUI()
+		public void UpdateUI()
 		{
 			DisplayAlbum ();
 		}
 
-		DateTime SleepTimerStartTime { get; set; } = DateTime.MinValue;
-		int SleepTimerOpion = 0;
-
-		partial void OnSleeptimer (UIKit.UIButton sender)
-		{
-		}
+		public DateTime SleepTimerStartTime { get; set; } = DateTime.MinValue;
+		public int SleepTimerOpion = 0;
 
 		partial void OnAddBookmark (UIKit.UIButton sender)
 		{
 			if (this.Player != null) {
 				var ab = CurrentState.Current.CurrentAudioBook;
 				if (ab != null && ab.CurrentPosition != null) {
-					var alertView = new UIAlertView("Bookmark","Bookmark hinzufügen?", null, "Abbrechen", "Ok");
+					var alertView = new UIAlertView("Lesezeichen","Lesezeichen hinzufügen?", null, "Abbrechen", "Ok");
 					alertView.Show();
 					alertView.Clicked += (object sender1, UIButtonEventArgs e) => {
 						if (e.ButtonIndex == 1) {;	
@@ -598,109 +400,10 @@ namespace Spookify
 				}
 			}
 		}
-
 		void PlaySettingsClicked(object sender, EventArgs args) 
 		{
-			var ab = CurrentState.Current.CurrentAudioBook;
-			var kapitelSection = new Section("Kapitel","Springe direkt zu einem Kapitel");
-			if (ab != null && ab.Tracks != null)
-				kapitelSection.AddAll(ab.Tracks.Select(t => { 
-					var kapitelStart = TimeSpan.FromSeconds(ab.Tracks.TakeWhile(tw => tw != t).Sum(ts => ts.Duration));
-					var element = new StringElement(
-						string.Format("Kapitel {0}",t.Index),
-						string.Format((kapitelStart.TotalHours > 1.0 ? "{0:hh\\:mm\\:ss}" : "{0:mm\\:ss}"), kapitelStart));
-					element.Tapped += delegate {
-						if (element.IndexPath.Row < ab.Tracks.Count) {
-							ab.CurrentPosition = new AudioBookBookmark() { PlaybackPosition = 0, TrackIndex = element.IndexPath.Row };
-							PlayCurrentAudioBook();
-							this.NavigationController.PopToRootViewController(true);
-						}
-					}; 
-					return element;
-				}));
-
-			var lesezeichenSection = new Section("Lesezeichen","Du kannst die Wiedergabe direkt an einem Lesezeichen fortsetzen");
-			if (ab != null) {
-				if (ab.Bookmarks != null) {
-				lesezeichenSection.AddAll(
-					ab.Bookmarks.Select(b => { 
-					var element = new StringElement(
-							string.Format("Kapitel {0}",b.TrackIndex+1),
-							string.Format("{0:mm\\:ss}",TimeSpan.FromSeconds(b.PlaybackPosition)));
-					element.Tapped += delegate {
-						if (element.IndexPath.Row < ab.Bookmarks.Count) {
-							ab.CurrentPosition = new AudioBookBookmark(ab.Bookmarks[element.IndexPath.Row]);
-							PlayCurrentAudioBook();
-							this.NavigationController.PopToRootViewController(true);
-						}
-					}; 
-					return element;
-					}));
-				}
-				if (ab.CurrentPosition != null) {
-					var currentPos = new StringElement(
-						"Aktuelle Position",
-						string.Format("Kapitel {0} {1:mm\\:ss}",
-							ab.CurrentPosition.TrackIndex,
-							TimeSpan.FromSeconds(ab.CurrentPosition.PlaybackPosition)));
-					currentPos.Tapped += delegate {
-						ab.CurrentPosition = ab.CurrentPosition;
-						PlayCurrentAudioBook();
-						DismissViewController(true, delegate {});
-					}; 
-					lesezeichenSection.Add(currentPos);
-				};
-			}
-			var sleepTimerSection = new Section("");
-			sleepTimerSection.Add(new CLickableRadioElement(this, 0, "Aus",TimeSpan.FromSeconds(0)));
-			sleepTimerSection.Add(new CLickableRadioElement(this, 1, "1 Minuten",TimeSpan.FromMinutes(1)));
-			sleepTimerSection.Add(new CLickableRadioElement(this, 2, "15 Minuten",TimeSpan.FromMinutes(15)));
-			sleepTimerSection.Add(new CLickableRadioElement(this, 3, "30 Minuten",TimeSpan.FromMinutes(30)));
-			sleepTimerSection.Add(new CLickableRadioElement(this, 4, "45 Minuten",TimeSpan.FromMinutes(45)));
-			sleepTimerSection.Add(new CLickableRadioElement(this, 5, "60 Minuten",TimeSpan.FromMinutes(60)));
-			sleepTimerSection.Add(new CLickableRadioElement(this, 6, "Ende des Kapitels",TimeSpan.FromDays(1)));
-			var root = new RootElement ("Einstellungen") {
-				new Section () {
-					new RootElement("Kapitel",0,ab.CurrentPosition != null ? ab.CurrentPosition.TrackIndex : 0) {
-						kapitelSection	
-					},
-					new RootElement("Lesezeichen",0,lesezeichenSection.Count-1) {
-						lesezeichenSection
-					},
-					new RootElement("Schlafmodus", new RadioGroup("Schlafmodus",SleepTimerOpion)) {
-						sleepTimerSection
-					}
-				}
-			};
-			var dvc = new DialogViewController(UITableViewStyle.Plain, root, true);
-			this.NavigationController.PushViewController(dvc,true);
+			new PlayerViewSettings(this).PlaySettingsClicked(sender, args);
 		}
-
-		public class CLickableRadioElement : RadioElement {
-			TimeSpan _time;
-			PlayerViewController _vc;
-			int _option;
-
-			public CLickableRadioElement (PlayerViewController vc, int option, string s, TimeSpan time) : base (s) {
-				_time = time;
-				_vc = vc;
-				_option = option;
-			}
-
-			public override void Selected (DialogViewController dvc, UITableView tableView, NSIndexPath path)
-			{
-				base.Selected (dvc, tableView, path);
-				_vc.SleepTimerOpion = _option;
-				if (_time.TotalSeconds == 0)
-					_vc.SleepTimerStartTime = DateTime.MinValue;
-				else if (_time.TotalDays == 1)
-					_vc.SleepTimerStartTime = DateTime.MaxValue;
-				else 
-					_vc.SleepTimerStartTime = DateTime.Now.Add(_time);
-				dvc.NavigationController.PopToRootViewController(true);
-			}
-		}
-
 		partial void OnPlay (UIKit.UIButton sender)
 		{
 			bool hasConnection = Reachability.RemoteHostStatus () != NetworkStatus.NotReachable;
@@ -741,39 +444,6 @@ namespace Spookify
 			}
 		}
 
-		public class MySPTAuthViewDelegate : SPTAuthViewDelegate {
-			PlayerViewController viewController = null;
-			public MySPTAuthViewDelegate(PlayerViewController vc)  {
-				this.viewController = vc;
-			}
-
-			#region implemented abstract members of SPTAuthViewDelegate
-
-			public override void AuthenticationViewControllerDidCancelLogin (SPTAuthViewController authenticationViewController)
-			{
-				this.viewController.AlbumLabel.Text = "Login abgebrochen";
-			}
-
-			public override void AuthenticationViewControllerFail (SPTAuthViewController authenticationViewController, NSError error)
-			{
-				this.viewController.AlbumLabel.Text = "Login Fehler";
-			}
-
-			public override void AuthenticationViewControllerLogin (SPTAuthViewController authenticationViewController, SPTSession session)
-			{
-				this.viewController.UpdateUI ();
-
-				if (CurrentState.Current.Audiobooks.Count == 0)
-					viewController.SwitchTab (2); // liste der Bücher in Playlists
-				else if (CurrentState.Current.CurrentAudioBook == null)
-					viewController.SwitchTab (0); // Liste der gewählten Bücher
-				else
-					viewController.SwitchTab (1);
-			}
-
-			#endregion
-		}
-
 		public override void DidReceiveMemoryWarning ()
 		{
 			base.DidReceiveMemoryWarning ();
@@ -783,18 +453,9 @@ namespace Spookify
 		void OpenLoginPage()
 		{
 			this.AlbumLabel.Text = @"Logging in...";
-
-			this.authViewController = SPTAuthViewController.AuthenticationViewController;
-			this.authViewController.HideSignup = false;
-			this.authViewController.Delegate = new MySPTAuthViewDelegate (this);
-			this.authViewController.ModalPresentationStyle = UIModalPresentationStyle.FullScreen;
-			this.authViewController.ModalTransitionStyle = UIModalTransitionStyle.CrossDissolve;
-
-			this.ModalPresentationStyle = UIModalPresentationStyle.CurrentContext;
-			this.DefinesPresentationContext = true;
-
-			this.PresentViewController (this.authViewController, false, null);
+			CurrentPlayer.Current.OpenLoginPage (this);
 		}
+
 		void TogglePlaying()
 		{
 			if (this.Player != null)
@@ -818,40 +479,6 @@ namespace Spookify
 			SkipTime(30);
 		}
 
-		public class MySPTAudioStreamingDelegate : SPTAudioStreamingPlaybackDelegate {
-			PlayerViewController viewController = null;
-			public MySPTAudioStreamingDelegate(PlayerViewController vc) {
-				this.viewController = vc;
-			}
-			public override void AudioStreaming (SPTAudioStreamingController audioStreaming, bool isPlaying)
-			{
-				viewController.UpdateUI();
-			}
-			public override void AudioStreaming (SPTAudioStreamingController audioStreaming, double offset)
-			{
-				viewController.UpdateUI();
-			}
-			public override void AudioStreaming (SPTAudioStreamingController audioStreaming, NSDictionary trackMetadata)
-			{
-				viewController.UpdateUI();
-			}
-			public override void AudioStreamingDidFailToPlayTrack (SPTAudioStreamingController audioStreaming, NSUrl trackUri)
-			{
-				viewController.UpdateUI();
-			}
-			public override void AudioStreamingDidLosePermissionForPlayback (SPTAudioStreamingController audioStreaming)
-			{
-				viewController.UpdateUI();
-			}
-			public override void AudioStreamingDidSkipToNextTrack (SPTAudioStreamingController audioStreaming)
-			{
-				viewController.UpdateUI();
-			}
-			public override void AudioStreamingDidSkipToPreviousTrack (SPTAudioStreamingController audioStreaming)
-			{
-				viewController.UpdateUI();
-			}
-		}
 	}
 }
 

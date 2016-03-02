@@ -140,7 +140,6 @@
     <ImageAsset Include="Resources\Images.xcassets\NoConnectionTitle.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\NoConnectionTitle.imageset\NoConnectionTitle.png" />
     <ImageAsset Include="Resources\Images.xcassets\Spotify.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Spotify.imageset\spotify.png" />
     <ImageAsset Include="Resources\Images.xcassets\Books.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Books.imageset\books-180.png" />
     <ImageAsset Include="Resources\Images.xcassets\Sleep.imageset\Contents.json" />
@@ -152,6 +151,8 @@
     <ImageAsset Include="Resources\Images.xcassets\Kaset.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Kaset.imageset\Kaset.png" />
     <ImageAsset Include="Resources\Images.xcassets\KapitelSettings.imageset\Kaset.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Spotify.imageset\Spotify.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Spotify.imageset\log_in-mobile.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -194,7 +195,6 @@
     <Compile Include="RechercheViewController.designer.cs">
       <DependentUpon>RechercheViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="CurrentState.cs" />
     <Compile Include="PlayerViewController.cs" />
     <Compile Include="PlayerViewController.designer.cs">
       <DependentUpon>PlayerViewController.cs</DependentUpon>
@@ -208,6 +208,12 @@
       <DependentUpon>ZuletztViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="Reachability.cs" />
+    <Compile Include="AudioBook\AudioBook.cs" />
+    <Compile Include="AudioBook\CurrentState.cs" />
+    <Compile Include="AudioBook\AudioBookManipulation.cs" />
+    <Compile Include="AudioBook\CurrentPlayer.cs" />
+    <Compile Include="PlayerViewSettings.cs" />
+    <Compile Include="PlayerViewSleepTimer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Insights.1.10.6\build\Xamarin.iOS10\Xamarin.Insights.targets" Condition="Exists('..\packages\Xamarin.Insights.1.10.6\build\Xamarin.iOS10\Xamarin.Insights.targets')" />
@@ -235,5 +241,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Images.xcassets\Anmelden.imageset\" />
+    <Folder Include="AudioBook\" />
   </ItemGroup>
 </Project>

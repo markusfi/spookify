@@ -45,6 +45,7 @@ namespace Spookify
 				if (selectedBook != null) {
 					CurrentState.Current.CurrentAudioBook = selectedBook;
 					CurrentState.Current.StoreCurrentState ();
+					CurrentPlayer.Current.PlayCurrentAudioBook ();
 
 					var tabBarController = this.zuletztViewController.TabBarController;
 
@@ -118,26 +119,7 @@ namespace Spookify
 						
 						cell.AuthorLabel.Text = currentBook.Artists.FirstOrDefault ();
 
-						var imageView = cell.AlbumImage;
-						if (imageView != null && currentBook.SmallestCoverURL != null) {
-							imageView.Image = null;
-							var gloalQueue = DispatchQueue.GetGlobalQueue (DispatchQueuePriority.Default);
-							gloalQueue.DispatchAsync (() => {
-								NSError err = null;
-								UIImage image = null;
-								NSData imageData = NSData.FromUrl( new NSUrl(currentBook.SmallestCoverURL), 0, out err);
-								if (imageData != null)
-									image = UIImage.LoadFromData (imageData);
-
-								DispatchQueue.MainQueue.DispatchAsync (() => {
-									imageView.Image = image;
-									if (image == null) {
-										System.Diagnostics.Debug.WriteLine ("Could not load image with error: {0}", err);
-										return;
-									}
-								});
-							});
-						}
+						currentBook.SetSmallImage (cell.AlbumImage);
 					}
 				}
 				return cell;

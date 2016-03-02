@@ -1765,7 +1765,7 @@ namespace SpotifySDK
 
 	// @interface SPTDiskCache : NSObject <SPTDiskCaching>
 	[BaseType (typeof(NSObject))]
-	interface SPTDiskCache : ISPTDiskCaching
+	interface SPTDiskCache: ISPTDiskCaching
 	{
 		// -(instancetype)initWithCapacity:(NSUInteger)capacity;
 		[Export ("initWithCapacity:")]
@@ -1878,7 +1878,7 @@ namespace SpotifySDK
 
 		// @property (nonatomic, strong) id<SPTDiskCaching> diskCache;
 		[Export ("diskCache", ArgumentSemantic.Strong)]
-		SPTDiskCaching DiskCache { get; set; }
+		NSObject DiskCache { get; set; }
 
 		// -(void)setVolume:(SPTVolume)volume callback:(SPTErrorableOperationCallback)block;
 		[Export ("setVolume:callback:")]

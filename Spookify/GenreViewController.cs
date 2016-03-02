@@ -45,6 +45,11 @@ namespace Spookify
 		public override void ViewDidAppear (bool animated)
 		{
 			base.ViewDidAppear (animated);
+			if (CurrentPlayer.Current.IsSessionValid) {
+				var ds = this.HoerbuchTableView.DataSource as HoerbuecherDataSource;
+				if (ds == null || ds.ObjectsNeedInitialisation())
+					this.HoerbuchTableView.ReloadData ();
+			}
 		}
 
 		public override void DidReceiveMemoryWarning ()
@@ -97,6 +102,11 @@ namespace Spookify
 					Changed (this, EventArgs.Empty);
 			});
 		}
+		public bool ObjectsNeedInitialisation() {
+			return _playListArray == null;
+		}
+
+
 		SPTPartialPlaylist[] _playListArray = null;
 		SPTPartialPlaylist[] PlayListArray {
 			get {
@@ -115,11 +125,15 @@ namespace Spookify
 		SPTPlaylistList PlaylistLists {
 			get {
 				if (this._playlistLists == null) {
-					SPTAuth auth = SPTAuth.DefaultInstance;
-					SPTPlaylistList.PlaylistsForUser ("hoerbuecher", auth.Session.AccessToken, (nsError, obj) => {
-						this._playlistLists = obj as SPTPlaylistList;
-						this.OnChanged();
-					});
+					if (CurrentPlayer.Current.IsSessionValid) {
+						SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
+						if (auth.Session != null) {
+							SPTPlaylistList.PlaylistsForUser ("hoerbuecher", auth.Session.AccessToken, (nsError, obj) => {
+								this._playlistLists = obj as SPTPlaylistList;
+								this.OnChanged ();
+							});
+						}
+					}
 				}
 				return this._playlistLists;
 			}

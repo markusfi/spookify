@@ -85,7 +85,7 @@ namespace Spookify
 		partial void OnBuchSelektiert (UIKit.UIButton sender)
 		{
 			var url = new NSUrl(Book.Uri);
-			SPTAuth auth = SPTAuth.DefaultInstance;
+			SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
 			var p = SPTRequest.SPTRequestHandlerProtocol;
 			NSError errorOut;
 
@@ -114,6 +114,7 @@ namespace Spookify
 					CurrentState.Current.Audiobooks.Add(newbook);
 					CurrentState.Current.CurrentAudioBook = newbook;
 					CurrentState.Current.StoreCurrentState();
+					CurrentPlayer.Current.PlayCurrentAudioBook();
 
 					var tabBarController = this.TabBarController;
 

@@ -94,18 +94,20 @@ namespace Spookify
 				try {
 					semi = true; 
 					if (this._playlistSnapshot == null) {
-						SPTAuth auth = SPTAuth.DefaultInstance;
-						var p = SPTRequest.SPTRequestHandlerProtocol;
-						NSError errorOut;
-						NSUrlRequest playlistReq = SPTPlaylistSnapshot.CreateRequestForPlaylistWithURI (hoerbuchListeViewController.PlayList.Uri, auth.Session.AccessToken, out errorOut);
-						SPTRequestHandlerProtocol_Extensions.Callback (p, playlistReq, (er, resp, dat) => {
-							semi = false;
-							if (er != null) {
-								return;
-							}
-							this._playlistSnapshot = SPTPlaylistSnapshot.PlaylistSnapshotFromData (dat, resp, out errorOut);
-							AddListPageTracks(this._playlistSnapshot.FirstTrackPage);
-						});
+						if (CurrentPlayer.Current.IsSessionValid) {
+							SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
+							var p = SPTRequest.SPTRequestHandlerProtocol;
+							NSError errorOut;
+							NSUrlRequest playlistReq = SPTPlaylistSnapshot.CreateRequestForPlaylistWithURI (hoerbuchListeViewController.PlayList.Uri, auth.Session.AccessToken, out errorOut);
+							SPTRequestHandlerProtocol_Extensions.Callback (p, playlistReq, (er, resp, dat) => {
+								semi = false;
+								if (er != null) {
+									return;
+								}
+								this._playlistSnapshot = SPTPlaylistSnapshot.PlaylistSnapshotFromData (dat, resp, out errorOut);
+								AddListPageTracks(this._playlistSnapshot.FirstTrackPage);
+							});
+						}
 					}
 				} catch {
 					// dieses hoerbuch hat fehlende Daten...
@@ -144,22 +146,24 @@ namespace Spookify
 		void LoadNextPageAsync(SPTListPage page)
 		{
 			NSError errorOut, nsError;
-			if (page != null && page.HasNextPage) {
-				if (!semi) {
-					semi = true;
-					SPTAuth auth = SPTAuth.DefaultInstance;
-					var p = SPTRequest.SPTRequestHandlerProtocol;
-					var nsUrlRequest = page.CreateRequestForNextPageWithAccessToken (auth.Session.AccessToken, out errorOut);
-					SPTRequestHandlerProtocol_Extensions.Callback (p, nsUrlRequest, (er1, resp1, jsonData1) => {
-						var nextpage = SPTListPage.ListPageFromData (jsonData1, resp1, true, "", out nsError);
-						if (nextpage != null) {
-							AddListPageTracks (nextpage);
-						}
-						semi = false;
-					});
+			if (CurrentPlayer.Current.IsSessionValid) {
+				if (page != null && page.HasNextPage) {
+					if (!semi) {
+						semi = true;
+						SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
+						var p = SPTRequest.SPTRequestHandlerProtocol;
+						var nsUrlRequest = page.CreateRequestForNextPageWithAccessToken (auth.Session.AccessToken, out errorOut);
+						SPTRequestHandlerProtocol_Extensions.Callback (p, nsUrlRequest, (er1, resp1, jsonData1) => {
+							var nextpage = SPTListPage.ListPageFromData (jsonData1, resp1, true, "", out nsError);
+							if (nextpage != null) {
+								AddListPageTracks (nextpage);
+							}
+							semi = false;
+						});
+					}
+				} else {
+					InitPlaylistSnapshot ();
 				}
-			} else {
-				InitPlaylistSnapshot ();
 			}
 		}
 

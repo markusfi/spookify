@@ -2,6 +2,7 @@
 
 using UIKit;
 using Foundation;
+using System.Text.RegularExpressions;
 
 namespace Spookify
 {
@@ -22,7 +23,17 @@ namespace Spookify
 			try {
 				var url = new NSUrl(Url);
 				this.MyWebView.LoadRequest(new NSUrlRequest(url));
+				this.MyWebView.LoadFinished += MyWebView_LoadFinished;
 			} catch {
+			}
+		}
+
+		void MyWebView_LoadFinished (object sender, EventArgs e)
+		{
+			string html = this.MyWebView.EvaluateJavascript(@"document.body.innerHTML");	
+			var match = Regex.Matches(html, "href=\"http://wwww.amazon.de/(.*?)\"", RegexOptions.Singleline); //spelling error
+			foreach (Match m in match) {
+				var url = m.Groups [1].Value;
 			}
 		}
 

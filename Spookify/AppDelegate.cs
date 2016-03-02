@@ -28,7 +28,7 @@ namespace Spookify
 			SPTAuth auth = SPTAuth.GetDefaultInstance();
 
 			auth.ClientID = ConfigSpotify.kClientId;
-			auth.RequestedScopes = new[]{ Constants.SPTAuthUserLibraryReadScope, Constants.SPTAuthStreamingScope };
+			auth.RequestedScopes = new[]{ Constants.SPTAuthUserLibraryReadScope };
 			auth.RedirectURL = new NSUrl(ConfigSpotify.kCallbackURL);
 
 			if (!string.IsNullOrEmpty(ConfigSpotify.kTokenSwapServiceURL))

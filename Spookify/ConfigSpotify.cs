@@ -25,6 +25,9 @@ namespace Spookify
 		public static string kTokenRefreshServiceURL = null; // "http://localhost:1234/refresh"
 
 		public static string kSessionUserDefaultsKey = "SpotifySession";
+
+		public static string kSessionPlayerUserDefaultsKey = "SpotifySessionPlayer";
+
 	}
 }
 
