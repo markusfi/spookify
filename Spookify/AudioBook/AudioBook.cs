@@ -90,7 +90,6 @@ namespace Spookify
 				}	
 			}
 		}
-			
 	}
 
 	[Serializable]

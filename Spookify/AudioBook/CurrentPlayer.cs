@@ -64,7 +64,7 @@ namespace Spookify
 
 		public bool IsPlayerCreated { 
 			get { 
-				return this.IsSessionValid && this._player != null && this._player.LoggedIn; 
+				return this.IsSessionValid && this.Player != null && this.Player.LoggedIn; 
 			}
 		}
 
@@ -101,7 +101,7 @@ namespace Spookify
 
 		public void PlayCurrentAudioBook()
 		{			
-			if (this.Player != null) {
+			if (this.IsPlayerCreated) {
 				if (CurrentState.Current.CurrentAudioBook != null) {
 					if (CurrentState.Current.CurrentAudioBook.CurrentPosition != null) {
 
@@ -150,6 +150,8 @@ namespace Spookify
 
 		public void OpenLoginPage(PlayerViewController vc)
 		{
+			if (this.AuthPlayer.Session == null)
+				this._authPlayer = null;
 			this.authViewController = SPTAuthViewController.AuthenticationViewControllerWithAuth(this.AuthPlayer);
 			this.authViewController.HideSignup = false;
 			this.authViewController.Delegate = new MySPTAuthViewDelegate (vc);
@@ -185,12 +187,14 @@ namespace Spookify
 				if (this.viewController != null) {
 					this.viewController.UpdateUI ();
 
-				if (CurrentState.Current.Audiobooks.Count == 0)
-					viewController.SwitchTab (2); // liste der Bücher in Playlists
-				else if (CurrentState.Current.CurrentAudioBook == null)
-					viewController.SwitchTab (0); // Liste der gewählten Bücher
-				else
-					viewController.SwitchTab (1);
+					if (CurrentState.Current.Audiobooks.Count == 0) {
+						viewController.SwitchTab (2); // liste der Bücher in Playlists
+					} else if (CurrentState.Current.CurrentAudioBook == null) {
+						viewController.SwitchTab (0); // Liste der gewählten Bücher
+					} else {
+						viewController.SwitchTab (1);
+						viewController.PlayCurrentAudioBook ();
+					}
 				}
 			}
 

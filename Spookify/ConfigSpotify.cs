@@ -17,12 +17,12 @@ namespace Spookify
 		// The URL to your token swap endpoint
 		// If you don't provide a token swap service url the login will use implicit grant tokens, which means that your user will need to sign in again every time the token expires.
 
-		public static string kTokenSwapServiceURL = null; // "http://localhost:1234/swap"
+		public static string kTokenSwapServiceURL = ""; // "http://spookify.de/swap"; // "http://localhost:1234/swap"
 
 		// The URL to your token refresh endpoint
 		// If you don't provide a token refresh service url, the user will need to sign in again every time their token expires.
 
-		public static string kTokenRefreshServiceURL = null; // "http://localhost:1234/refresh"
+		public static string kTokenRefreshServiceURL = ""; // "http://spookify.de/refresh"; // "http://localhost:1234/refresh"
 
 		public static string kSessionUserDefaultsKey = "SpotifySession";
 

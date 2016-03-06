@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using MediaPlayer;
 using CoreGraphics;
 using MonoTouch.Dialog;
+using CoreAnimation;
 
 namespace Spookify
 {
@@ -48,7 +49,7 @@ namespace Spookify
 			this.Airplay.AddConstraint (NSLayoutConstraint.Create (volumeView, NSLayoutAttribute.CenterX, NSLayoutRelation.Equal, this.Airplay, NSLayoutAttribute.CenterX, 1f, 0));
 			this.Airplay.AddConstraint (NSLayoutConstraint.Create (volumeView, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, this.Airplay, NSLayoutAttribute.CenterY, 1f, 0));
 
-			// if (this.Player != null) 							
+			// if (this.IsPlayerCreated) 							
 			//	PlayCurrentAudioBook ();
 			
 			SetupRemoteControl ();
@@ -78,6 +79,16 @@ namespace Spookify
 	
 		void HandleTouchInImage()
 		{
+			UIView.BeginAnimations (null);
+			UIView.SetAnimationRepeatCount (1);
+		
+			UIView.SetAnimationDuration (0.5);
+			this.AlbumImage.Layer.Transform = CATransform3D.MakeRotation(3.141f, 1.0f, 0.0f,0.0f);
+			UIView.SetAnimationDuration (0.5);
+			this.AlbumImage.Layer.Transform = CATransform3D.MakeRotation(0f, 0f, 0.0f,0.0f);
+
+			UIView.CommitAnimations ();
+
 			this.OnPlay(null);
 		}
 
@@ -131,7 +142,7 @@ namespace Spookify
 
 			bool hasConnection = Reachability.RemoteHostStatus () != NetworkStatus.NotReachable;
 				
-			bool hideControls = ab == null || !hasConnection || this.Player == null;
+			bool hideControls = ab == null || !hasConnection || !this.IsPlayerCreated;
 			this.SkipForward.Hidden = hideControls;
 			this.SkipBackward.Hidden = hideControls;
 			this.PrevTrack.Hidden = hideControls;
@@ -139,7 +150,7 @@ namespace Spookify
 			this.Airplay.Hidden = hideControls;
 			this.LesezeichenButton.Hidden = hideControls;
 
-			if (!hasConnection || this.Player == null || ab == null) {
+			if (!hasConnection || !this.IsPlayerCreated || ab == null) {
 				this.AuthorLabel.Text = "";
 				this.ProgressBar.Hidden = true;
 				this.bisEndeKapitelLabel.Text = "";
@@ -148,18 +159,18 @@ namespace Spookify
 				this.seitStartKapitelLabel.Text = "";
 				displayedAudioBook = null;
 				if (!hasConnection) {
-					this.AlbumLabel.Text = "Keine Internetverbindung";
-					this.TrackLabel.Text = "Streaming nicht möglich";
+					this.AlbumLabel.Text = "Keine Internetverbindung\nStreaming nicht möglich";
+					// this.TrackLabel.Text = "Streaming nicht möglich";
 					this.PlayButton.SetImage (UIImage.FromBundle ("NoConnection"), UIControlState.Normal);
 					this.AlbumImage.Image = UIImage.FromBundle ("NoConnectionTitle");
-				} else if (this.Player == null) {
-					this.AlbumLabel.Text = "Bitte melde dich mit deinem";
-					this.TrackLabel.Text = "Premium Spotify Account an";
+				} else if (!this.IsPlayerCreated) {
+					this.AlbumLabel.Text = "Bitte melde dich mit deinem\nPremium Spotify Account an";
+					// this.TrackLabel.Text = "Premium Spotify Account an";
 					this.AlbumImage.Image = UIImage.FromBundle ("Spotify");
 					this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn"), UIControlState.Normal);
 				} else {
-					this.AlbumLabel.Text = "Wähle ein Hörbuch aus einer";
-					this.TrackLabel.Text = "der Playlisten oder Suche";
+					this.AlbumLabel.Text = "Wähle ein Hörbuch aus einer\nder Playlisten oder Suche";
+					// this.TrackLabel.Text = "der Playlisten oder Suche";
 					this.AuthorLabel.Text = "nach einem Titel oder Autor";
 					this.AlbumImage.Image = UIImage.FromBundle ("Books");
 					this.PlayButton.SetImage (UIImage.FromBundle ("Suche"), UIControlState.Normal);
@@ -175,7 +186,7 @@ namespace Spookify
 					ab.Tracks.Count () > c.CurrentAudioBook.CurrentPosition.TrackIndex) 
 				{
 					var track = ab.Tracks.ElementAt (c.CurrentAudioBook.CurrentPosition.TrackIndex);
-					this.TrackLabel.Text = track.Name;
+					// this.TrackLabel.Text = track.Name;
 					this.ProgressBar.Hidden = track.Duration == 0.0;
 					if (track.Duration != 0.0)
 						this.ProgressBar.Progress = (float)(c.CurrentAudioBook.CurrentPosition.PlaybackPosition / track.Duration);
@@ -221,11 +232,11 @@ namespace Spookify
 			if (rc == UIEventSubtype.RemoteControlTogglePlayPause) {
 				this.TogglePlaying ();
 			} else if (rc == UIEventSubtype.RemoteControlPlay) {
-				if (this.Player != null)	
+				if (this.IsPlayerCreated)	
 					this.Player.SetIsPlaying (true, (error) => {
 				});
 			} else if (rc == UIEventSubtype.RemoteControlPause) {
-				if (this.Player != null)
+				if (this.IsPlayerCreated)
 					this.Player.SetIsPlaying (false, (error) => {
 				});
 			}
@@ -244,7 +255,7 @@ namespace Spookify
 			skipBackwardIntervalCommand.PreferredIntervals = new [] { 30.0 };
 			skipBackwardIntervalCommand.AddTarget( (remoteCommand) => 
 				{ 
-					if (this.Player != null) {
+					if (this.IsPlayerCreated) {
 						this.OnBackTime(null);
 						return MPRemoteCommandHandlerStatus.Success;
 					} else 
@@ -255,7 +266,7 @@ namespace Spookify
 			skipForwardIntervalCommand.PreferredIntervals = new [] { 30.0 };
 			skipForwardIntervalCommand.AddTarget( (remoteCommand) => 
 				{ 
-					if (this.Player != null) {
+					if (this.IsPlayerCreated) {
 						this.OnForwardTime(null);
 						return MPRemoteCommandHandlerStatus.Success;
 					} else 
@@ -264,7 +275,7 @@ namespace Spookify
 			commandCenter.TogglePlayPauseCommand.Enabled = true;
 			commandCenter.TogglePlayPauseCommand.AddTarget( (remoteCommand) => 
 				{ 
-					if (this.Player != null) {
+					if (this.IsPlayerCreated) {
 						this.TogglePlaying();
 						return MPRemoteCommandHandlerStatus.Success;
 					} else 
@@ -273,7 +284,7 @@ namespace Spookify
 			commandCenter.PlayCommand.Enabled = true;
 			commandCenter.PlayCommand.AddTarget( (remoteCommand) => 
 				{ 
-					if (this.Player != null) {
+					if (this.IsPlayerCreated) {
 						this.Player.SetIsPlaying(true, (error) => { });
 						return MPRemoteCommandHandlerStatus.Success;
 					} else 
@@ -282,7 +293,7 @@ namespace Spookify
 			commandCenter.StopCommand.Enabled = true;
 			commandCenter.StopCommand.AddTarget( (remoteCommand) => 
 				{ 
-					if (this.Player != null) {
+					if (this.IsPlayerCreated) {
 						this.Player.SetIsPlaying(false, (error) => { });
 						return MPRemoteCommandHandlerStatus.Success;
 					} else 
@@ -291,7 +302,7 @@ namespace Spookify
 			commandCenter.PauseCommand.Enabled = true;
 			commandCenter.PauseCommand.AddTarget( (remoteCommand) => 
 				{ 
-					if (this.Player != null) {
+					if (this.IsPlayerCreated) {
 						this.Player.SetIsPlaying(false, (error) => { });
 						return MPRemoteCommandHandlerStatus.Success;
 					} else 
@@ -300,7 +311,7 @@ namespace Spookify
 			commandCenter.SkipForwardCommand.Enabled = true;
 			commandCenter.SkipForwardCommand.AddTarget( (remoteCommand) => 
 			{ 
-				if (this.Player != null) {
+				if (this.IsPlayerCreated) {
 					this.OnForwardTime(null);
 					return MPRemoteCommandHandlerStatus.Success;
 				} else 
@@ -309,7 +320,7 @@ namespace Spookify
 			commandCenter.SkipBackwardCommand.Enabled = true;
 			commandCenter.SkipBackwardCommand.AddTarget( (remoteCommand) => 
 			{ 
-				if (this.Player != null) {
+				if (this.IsPlayerCreated) {
 					this.OnBackTime(null);
 					return MPRemoteCommandHandlerStatus.Success;
 				} else 
@@ -318,7 +329,7 @@ namespace Spookify
 			commandCenter.NextTrackCommand.Enabled = true;
 			commandCenter.NextTrackCommand.AddTarget( (remoteCommand) => 
 			{ 
-				if (this.Player != null) {
+				if (this.IsPlayerCreated) {
 					this.OnNextTrack(null);
 					return MPRemoteCommandHandlerStatus.Success;
 				} else 
@@ -327,7 +338,7 @@ namespace Spookify
 			commandCenter.PreviousTrackCommand.Enabled = true;
 			commandCenter.PreviousTrackCommand.AddTarget( (remoteCommand) => 
 			{ 
-				if (this.Player != null) {
+				if (this.IsPlayerCreated) {
 					this.OnPrevTrack(null);
 					return MPRemoteCommandHandlerStatus.Success;
 				} else 
@@ -384,7 +395,7 @@ namespace Spookify
 
 		partial void OnAddBookmark (UIKit.UIButton sender)
 		{
-			if (this.Player != null) {
+			if (this.IsPlayerCreated) {
 				var ab = CurrentState.Current.CurrentAudioBook;
 				if (ab != null && ab.CurrentPosition != null) {
 					var alertView = new UIAlertView("Lesezeichen","Lesezeichen hinzufügen?", null, "Abbrechen", "Ok");
@@ -408,7 +419,7 @@ namespace Spookify
 		{
 			bool hasConnection = Reachability.RemoteHostStatus () != NetworkStatus.NotReachable;
 			if (hasConnection) {
-				if (this.Player != null)
+				if (this.IsPlayerCreated)
 				{
 					if (CurrentState.Current.Audiobooks.Count == 0)
 						SwitchTab(2);
@@ -458,7 +469,7 @@ namespace Spookify
 
 		void TogglePlaying()
 		{
-			if (this.Player != null)
+			if (this.IsPlayerCreated)
 				this.Player.SetIsPlaying(!this.Player.IsPlaying, (error) => { });
 		}	
 
