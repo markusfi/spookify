@@ -4,11 +4,18 @@ using UIKit;
 using SpotifySDK;
 using Foundation;
 using CoreFoundation;
+using System.Collections.Generic;
+using CoreGraphics;
 
 namespace Spookify
 {
 	public partial class HoerbuchListeViewController : UIViewController
 	{
+		ResultsTableController resultsTableController;
+		UISearchController searchController;
+		bool searchControllerWasActive;
+		bool searchControllerSearchFieldWasFirstResponder;
+
 		public SPTPartialPlaylist PlayList { get; set; }
 		AudioBookPlaylist _audioBookPlaylist;
 		public AudioBookPlaylist ThisAudioBookPlaylist { 
@@ -36,9 +43,95 @@ namespace Spookify
 			this.HoerbuchListeTableView.DataSource = ds;
 			ds.Changed += (object sender, EventArgs e) => {
 				this.HoerbuchListeTableView.ReloadData();
+				this.UpdateSearchResults();
 			};
+			HoerbuchListeTableView.TableFooterView = new UIView (CGRect.Empty);
+				
+			resultsTableController = new ResultsTableController() {
+				HoerbuchTableView = this.HoerbuchListeTableView,
+				FilteredPlaylist = new List<PlaylistBook> ()
+			};
+			resultsTableController.TableView.RowHeight = 88;
+
+			searchController = new UISearchController (resultsTableController) {
+				WeakDelegate = this,
+				DimsBackgroundDuringPresentation = false,
+				WeakSearchResultsUpdater = this
+			};
+
+			searchController.SearchBar.SizeToFit ();
+			HoerbuchListeTableView.TableHeaderView = searchController.SearchBar;
+			HoerbuchListeTableView.ScrollToRow(NSIndexPath.FromRowSection(0,0), UITableViewScrollPosition.Top, false);
+
+			resultsTableController.TableView.WeakDelegate = this;
+			searchController.SearchBar.WeakDelegate = this;
+
+			resultsTableController.TableView.TableFooterView = new UIView (CGRect.Empty);
+
+			DefinesPresentationContext = true;
+
+			if (searchControllerWasActive) {
+				searchController.Active = searchControllerWasActive;
+				searchControllerWasActive = false;
+
+				if (searchControllerSearchFieldWasFirstResponder) {
+					searchController.SearchBar.BecomeFirstResponder ();
+					searchControllerSearchFieldWasFirstResponder = false;
+				}
+			}
 		}
 
+		public void UpdateSearchResults()
+		{
+			UpdateSearchResultsForSearchController (searchController);
+		}
+
+		[Export ("searchBarSearchButtonClicked:")]
+		public virtual void SearchButtonClicked (UISearchBar searchBar)
+		{
+			searchBar.ResignFirstResponder ();
+		}
+		[Export ("updateSearchResultsForSearchController:")]
+		public virtual void UpdateSearchResultsForSearchController (UISearchController searchController)
+		{
+			var tableController = (ResultsTableController)searchController.SearchResultsController;
+			tableController.HoerbuchListeViewController = this;
+			var newResult = PerformSearch (searchController.SearchBar.Text);
+			if (!newResult.SequenceEqual (tableController.FilteredPlaylist)) {
+				tableController.FilteredPlaylist = newResult;
+				tableController.TableView.ReloadData ();
+			} 
+			if (this.PlayList.TrackCount < (nuint)this.ThisAudioBookPlaylist.Books.Count) {
+				var ds = this.HoerbuchListeTableView.DataSource as HoerbuchListeDataSource;
+				if (ds != null)
+					ds.LoadMore ();
+			}
+			else if (tableController.LoadMoreCell) 
+			{
+				tableController.TableView.ReloadData ();
+			}
+		}
+		List<PlaylistBook> PerformSearch(string searchString)
+		{
+			searchString = searchString.Trim ();
+			string[] searchItems = string.IsNullOrEmpty (searchString)
+				? new string[0]
+				: searchString.Split (new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+			var filteredBooks = new List<PlaylistBook> ();
+
+			IEnumerable<PlaylistBook> query =
+				ThisAudioBookPlaylist.Books.Where (p => 
+					searchItems.All(item =>
+						p.Album.Name.IndexOf (item, StringComparison.OrdinalIgnoreCase) >= 0 || 
+						p.Artists.Any(a => a.IndexOf (item, StringComparison.OrdinalIgnoreCase) >= 0)
+					))
+					.OrderBy (p => p.Album.Name);
+
+			filteredBooks.AddRange (query);
+			var list = filteredBooks.Distinct ().ToList ();
+			return list;
+		}
 		public override void DidReceiveMemoryWarning ()
 		{
 			base.DidReceiveMemoryWarning ();
@@ -47,15 +140,24 @@ namespace Spookify
 
 		public override void PrepareForSegue (UIStoryboardSegue segue, NSObject sender)
 		{
-			// if (segue.Identifier.Equals(""))
-			NSIndexPath indexPath = this.HoerbuchListeTableView.IndexPathForSelectedRow;
-			var destinationViewController = segue.DestinationViewController as HoerbuchViewController;
-
-			if (ThisAudioBookPlaylist.Books.Count > indexPath.Row) {
+			var cell = sender as HoerbuchTableViewCell;
+			if (cell != null) {
+				var destinationViewController = segue.DestinationViewController as HoerbuchViewController;
 				try {
-					destinationViewController.Book = ThisAudioBookPlaylist.Books[indexPath.Row];
+					destinationViewController.Book = cell.CurrentBook;
 				} catch {
+
+				}
+			} else {
+				NSIndexPath indexPath = this.HoerbuchListeTableView.IndexPathForSelectedRow;
+				var destinationViewController = segue.DestinationViewController as HoerbuchViewController;
+
+				if (ThisAudioBookPlaylist.Books.Count > indexPath.Row) {
+					try {
+						destinationViewController.Book = ThisAudioBookPlaylist.Books [indexPath.Row];
+					} catch {
 					
+					}
 				}
 			}
 		}
@@ -143,6 +245,14 @@ namespace Spookify
 			}
 		}
 
+		public void LoadMore() 
+		{
+			var audiobooks = this.hoerbuchListeViewController.ThisAudioBookPlaylist;
+			if (audiobooks != null) {
+				if (hoerbuchListeViewController.PlayList.TrackCount > (nuint) hoerbuchListeViewController.ThisAudioBookPlaylist.Books.Count)
+					LoadNextPageAsync (audiobooks.CurrentPage);
+			}
+		}
 		void LoadNextPageAsync(SPTListPage page)
 		{
 			NSError errorOut, nsError;
@@ -174,25 +284,37 @@ namespace Spookify
 			if (audiobooks != null) {
 				if (indexPath.Row >= audiobooks.Books.Count ()) {
 					LoadNextPageAsync (audiobooks.CurrentPage);
-					cell.AlbumLabel.Text = "wird geladen...";
+					cell.AlbumLabel.Text = "";
 					cell.AuthorLabel.Text = "";
 					cell.AlbumImage.Image = null;
+				} else {
+					var currentBook = audiobooks.Books [indexPath.Row];
+					ConfigureCell (cell, currentBook);
 				}
-				else 
-				{
-					var currentBook = audiobooks.Books[indexPath.Row];
-					cell.AlbumLabel.Text = currentBook.Album.Name;
-					cell.AuthorLabel.Text = currentBook.Artists.FirstOrDefault ();
-					var imageView = cell.AlbumImage;
-					if (imageView != null) {
-						imageView.Image = null;
-						var gloalQueue = DispatchQueue.GetGlobalQueue (DispatchQueuePriority.Default);
-						gloalQueue.DispatchAsync (() => {
-							NSError err = null;
-							UIImage image = null;
-							NSData imageData = NSData.FromUrl( new NSUrl(currentBook.SmallestCoverURL), 0, out err);
-							if (imageData != null)
-								image = UIImage.LoadFromData (imageData);
+			}
+			return cell;
+		}
+		public static void ConfigureCell(HoerbuchTableViewCell cell, PlaylistBook currentBook)
+		{
+			cell.CurrentBook = currentBook;
+			cell.AlbumLabel.Text = currentBook.Album.Name;
+			cell.AuthorLabel.Text = currentBook.Artists.FirstOrDefault ();
+			var imageView = cell.AlbumImage;
+			if (imageView != null) {
+				imageView.Image = null;
+				var nd = CurrentLRUCache.Current.CoverCache.GetItem(currentBook.SmallestCoverURL);
+				if (nd != null) {
+					imageView.Image = nd.Data.ToImage();
+				}
+				else {
+					var gloalQueue = DispatchQueue.GetGlobalQueue (DispatchQueuePriority.Default);
+					gloalQueue.DispatchAsync (() => {
+						NSError err = null;
+						UIImage image = null;
+						NSData data = NSData.FromUrl( new NSUrl(currentBook.SmallestCoverURL), 0, out err);
+						if (data != null) {
+							CurrentLRUCache.Current.CoverCache.Insert(currentBook.SmallestCoverURL,data.ToByteArray());
+							image = UIImage.LoadFromData (data);
 
 							DispatchQueue.MainQueue.DispatchAsync (() => {
 								imageView.Image = image;
@@ -201,71 +323,64 @@ namespace Spookify
 									return;
 								}
 							});
-						});
-					}
-				}
-			}
-			return cell;
-		}
-
-
-/*      
-        public override UITableViewCell GetCell (UITableView tableView, Foundation.NSIndexPath indexPath)
-		{
-			var cell = tableView.DequeueReusableCell ("HoerbuchCell") as HoerbuchTableViewCell;
-			var p = PlaylistSnapshot;
-			if (p != null && p.FirstTrackPage != null && p.FirstTrackPage.Items != null) {
-				if (p.FirstTrackPage.Items.Length > indexPath.Row) {
-					try {
-						var track = p.FirstTrackPage.Items.ElementAt (indexPath.Row) as SPTPlaylistTrack;
-						if (track.Album != null)
-							cell.AlbumLabel.Text = track.Album.Name;
-						if (track.Artists != null)
-							cell.AuthorLabel.Text = track.Artists.Cast<SPTPartialArtist>().Select(a => a.Name).FirstOrDefault();
-						var imageView = cell.AlbumImage;
-						if (imageView != null && track.Album != null) {
-							imageView.Image = null;
-							var gloalQueue = DispatchQueue.GetGlobalQueue (DispatchQueuePriority.Default);
-							gloalQueue.DispatchAsync (() => {
-								NSError err = null;
-								UIImage image = null;
-								NSData imageData = NSData.FromUrl( track.Album.SmallestCover.ImageURL, 0, out err);
-								if (imageData != null)
-									image = UIImage.LoadFromData (imageData);
-
-								DispatchQueue.MainQueue.DispatchAsync (() => {
-									imageView.Image = image;
-									if (image == null) {
-										System.Diagnostics.Debug.WriteLine ("Could not load image with error: {0}", err);
-										return;
-									}
-								});
-							});
 						}
-					} catch (Exception ex) {
-						System.Diagnostics.Debug.WriteLine (ex.ToString ());
-					}
+					});
 				}
 			}
-			return cell;
 		}
-*/
-
-
 		public override nint NumberOfSections (UITableView tableView)
 		{
 			return 1;
 		}
 		public override string TitleForHeader (UITableView tableView, nint section)
 		{
-			return hoerbuchListeViewController.PlayList.Name;
+			return string.Format(" {0} ({1})",hoerbuchListeViewController.PlayList.Name, hoerbuchListeViewController.PlayList.TrackCount);
 		}
 		public override nint RowsInSection (UITableView tableView, nint section)
 		{
-			if (section == 0)
-				return (nint) hoerbuchListeViewController.PlayList.TrackCount;
+			if (section == 0) 
+				return (nint)hoerbuchListeViewController.PlayList.TrackCount;
 			else
 				return 0;
+		}
+	}
+
+	public class ResultsTableController : UITableViewController
+	{
+		public HoerbuchListeViewController HoerbuchListeViewController { get; set; }
+		public UITableView HoerbuchTableView { get; set; }
+		public List<PlaylistBook> FilteredPlaylist { get; set; }
+
+		public bool LoadMoreCell;
+
+		public override nint RowsInSection (UITableView tableview, nint section)
+		{
+			if (HoerbuchListeViewController == null)
+				return 0;
+			if (HoerbuchListeViewController.PlayList.TrackCount > (nuint)HoerbuchListeViewController.ThisAudioBookPlaylist.Books.Count) {
+				LoadMoreCell = true;
+				return FilteredPlaylist.Count + 1;
+			} else {
+				LoadMoreCell = false;
+				return FilteredPlaylist.Count;
+			}
+		}
+		public override UITableViewCell GetCell (UITableView tableView, NSIndexPath indexPath)
+		{
+			if (indexPath.Row < FilteredPlaylist.Count) {
+				PlaylistBook book = FilteredPlaylist [indexPath.Row];
+				var cell = HoerbuchTableView.DequeueReusableCell ("HoerbuchCell") as HoerbuchTableViewCell;
+				HoerbuchListeDataSource.ConfigureCell (cell, book);
+				return cell;
+			} else {
+				if (HoerbuchTableView != null) {
+					var ds = HoerbuchTableView.DataSource as HoerbuchListeDataSource;
+					if (ds != null)
+						ds.LoadMore ();
+				}
+				var cell = HoerbuchTableView.DequeueReusableCell ("HoerbuchLoadMoreCell");
+				return cell;
+			}
 		}
 	}
 }

@@ -102,26 +102,30 @@ namespace Spookify
 		public void PlayCurrentAudioBook()
 		{			
 			if (this.IsPlayerCreated) {
-				if (CurrentState.Current.CurrentAudioBook != null) {
+				if (CurrentState.Current.CurrentAudioBook != null && 
+					CurrentState.Current.CurrentAudioBook.Tracks != null) {
 					if (CurrentState.Current.CurrentAudioBook.CurrentPosition != null) {
-
 						CurrentStartTrack = CurrentState.Current.CurrentAudioBook.CurrentPosition.TrackIndex;
-						SPTPlayOptions options = new SPTPlayOptions ();
-						options.TrackIndex = 0;
-						options.StartTime = CurrentState.Current.CurrentAudioBook.CurrentPosition.PlaybackPosition;
-
-						this.Player.PlayURIs (CurrentState.Current.CurrentAudioBook.Tracks.Skip(CurrentStartTrack).Take(50).Select (t => t.NSUrl).ToArray (), 
-							options,
-							(playURIError1) => {
-							});
-
-					} else {
-						CurrentStartTrack = 0;
-						this.Player.PlayURIs (CurrentState.Current.CurrentAudioBook.Tracks.Take(50).Select (t => t.NSUrl).ToArray (), 
-							0, 
-							(playURIError) => {
-							});
+						if (CurrentStartTrack >= 0 &&
+						    CurrentStartTrack < CurrentState.Current.CurrentAudioBook.Tracks.Count) {
+							SPTPlayOptions options = new SPTPlayOptions () {
+								TrackIndex = 0, 
+								StartTime = CurrentState.Current.CurrentAudioBook.CurrentPosition.PlaybackPosition
+							};
+							this.Player.PlayURIs (CurrentState.Current.CurrentAudioBook.Tracks.Skip (CurrentStartTrack).Take (50).Select (t => t.NSUrl).ToArray (), 
+								options,
+								(playURIError1) => {
+								});
+							return;
+						}
 					}
+					CurrentStartTrack = 0;
+					if (CurrentState.Current.CurrentAudioBook.CurrentPosition != null)
+						CurrentState.Current.CurrentAudioBook.CurrentPosition.TrackIndex = 0;
+					this.Player.PlayURIs (CurrentState.Current.CurrentAudioBook.Tracks.Take(50).Select (t => t.NSUrl).ToArray (), 
+						0, 
+						(playURIError) => {
+						});
 				}
 			}
 		}

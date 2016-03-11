@@ -261,7 +261,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="17" id="uBa-hm-cdY"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -560,6 +560,41 @@
                                                     <outlet property="ZeitLabel" destination="ls9-Nd-iHi" id="6dg-aS-cc1"/>
                                                     <segue destination="MJR-vP-EN2" kind="show" id="COc-Kx-tIa"/>
                                                 </connections>
+                                            </tableViewCell>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="HoerbuchLoadMoreCell" id="Y7W-jb-7Dq">
+                                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Y7W-jb-7Dq" id="cCT-xu-OQ1">
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Weitere Hörbücher werden gesucht..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cYh-7F-qAS">
+                                                            <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="cvZ-Uj-CKL">
+                                                            <rect key="frame" x="-10" y="-10" width="20" height="20"/>
+                                                            <color key="color" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                        </activityIndicatorView>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstItem="cYh-7F-qAS" firstAttribute="centerY" secondItem="cCT-xu-OQ1" secondAttribute="centerY" id="Gm4-Y6-BR1"/>
+                                                        <constraint firstItem="cvZ-Uj-CKL" firstAttribute="centerY" secondItem="cCT-xu-OQ1" secondAttribute="centerY" id="jU7-4q-9My"/>
+                                                        <constraint firstItem="cYh-7F-qAS" firstAttribute="centerX" secondItem="cCT-xu-OQ1" secondAttribute="centerX" constant="-28" id="nZP-aF-QM3"/>
+                                                        <constraint firstAttribute="trailingMargin" secondItem="cvZ-Uj-CKL" secondAttribute="trailing" constant="20" id="qPz-J7-rHH"/>
+                                                    </constraints>
+                                                    <variation key="default">
+                                                        <mask key="subviews">
+                                                            <exclude reference="cYh-7F-qAS"/>
+                                                        </mask>
+                                                    </variation>
+                                                    <variation key="widthClass=compact">
+                                                        <mask key="subviews">
+                                                            <include reference="cYh-7F-qAS"/>
+                                                        </mask>
+                                                    </variation>
+                                                </tableViewCellContentView>
                                             </tableViewCell>
                                         </prototypes>
                                     </tableView>
@@ -967,7 +1002,7 @@
         <image name="Hoerbuecher" width="50" height="50"/>
         <image name="Ich" width="50" height="50"/>
         <image name="Next" width="25" height="25"/>
-        <image name="Play" width="25" height="25"/>
+        <image name="Play" width="24" height="24"/>
         <image name="Prev" width="25" height="25"/>
         <image name="Settings" width="50" height="50"/>
         <image name="Suche" width="50" height="50"/>

@@ -32,6 +32,8 @@ namespace Spookify
 			dg.Selected += RowSelected;
 
 			this.AutomaticallyAdjustsScrollViewInsets = false;
+
+			HoerbuchTableView.TableFooterView = new UIView (CGRect.Empty);
 		}
 		public void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
@@ -161,24 +163,32 @@ namespace Spookify
 					cell.GenereLabel.Text = p.Name.StartsWith("Hörbücher ") ? p.Name.Substring("Hörbücher ".Length) : p.Name;					
 					var imageView = cell.GenereImage;
 					if (imageView != null) {
-						var gloalQueue = DispatchQueue.GetGlobalQueue(DispatchQueuePriority.Default);
-						gloalQueue.DispatchAsync(() => 
-						{
-							NSError err = null;
-							UIImage image = null;
-							NSData imageData = NSData.FromUrl(p.SmallestImage.ImageURL, 0, out err);
-							if (imageData != null) 
-								image = UIImage.LoadFromData(imageData);
+						var nd = CurrentLRUCache.Current.CoverCache.GetItem(p.SmallestImage.ImageURL.AbsoluteString);
+						if (nd != null) {
+							imageView.Image = nd.Data.ToImage();
+						}
+						else {
+							var gloalQueue = DispatchQueue.GetGlobalQueue(DispatchQueuePriority.Default);
+							gloalQueue.DispatchAsync(() => 
+							{
+									NSError err = null;
+									UIImage image = null;
+									NSData imageData = NSData.FromUrl(p.SmallestImage.ImageURL, 0, out err);
+									if (imageData != null) {
+										CurrentLRUCache.Current.CoverCache.Insert(p.SmallestImage.ImageURL.AbsoluteString, imageData.ToByteArray());
+										image = UIImage.LoadFromData(imageData);
 
-							DispatchQueue.MainQueue.DispatchAsync(() => 
-								{
-									imageView.Image = image;
-									if (image == null) {
-										System.Diagnostics.Debug.WriteLine("Could not load image with error: {0}",err);
-										return;
+										DispatchQueue.MainQueue.DispatchAsync(() => 
+										{
+											imageView.Image = image;
+											if (image == null) {
+												System.Diagnostics.Debug.WriteLine("Could not load image with error: {0}",err);
+												return;
+											}
+										});
 									}
-									});
 							});
+						}
 					}
 				} catch (Exception ex) {
 					System.Diagnostics.Debug.WriteLine (ex.ToString ());

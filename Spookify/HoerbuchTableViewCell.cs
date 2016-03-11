@@ -9,6 +9,8 @@ namespace Spookify
 {
 	public partial class HoerbuchTableViewCell : UITableViewCell
 	{
+		public PlaylistBook CurrentBook { get; set; }
+
 		public HoerbuchTableViewCell (IntPtr handle) : base (handle)
 		{
 		}

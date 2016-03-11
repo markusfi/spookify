@@ -34,7 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <MtouchArch>ARMv7, ARMv7s, ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchFloat32>true</MtouchFloat32>
     <MtouchUseSGen>true</MtouchUseSGen>
@@ -154,6 +154,7 @@
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <None Include="LRU\LICENSE" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -202,6 +203,10 @@
     <Compile Include="AudioBook\CurrentPlayer.cs" />
     <Compile Include="PlayerViewSettings.cs" />
     <Compile Include="PlayerViewSleepTimer.cs" />
+    <Compile Include="LRU\LRUCache.cs" />
+    <Compile Include="LRU\Node.cs" />
+    <Compile Include="Util\GeneralExtensions.cs" />
+    <Compile Include="AudioBook\CurrentLRUCache.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
@@ -229,6 +234,8 @@
   <ItemGroup>
     <Folder Include="Resources\Images.xcassets\Anmelden.imageset\" />
     <Folder Include="AudioBook\" />
+    <Folder Include="LRU\" />
+    <Folder Include="Util\" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork%402x" />

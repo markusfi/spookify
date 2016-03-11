@@ -7,6 +7,7 @@ using Foundation;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using LRUCache.Implementation;
 
 namespace Spookify
 {	
@@ -81,10 +82,6 @@ namespace Spookify
 				formatter.Serialize (fs, this);
 			}
 		}
-			
-
 	}
-
-
 }
 

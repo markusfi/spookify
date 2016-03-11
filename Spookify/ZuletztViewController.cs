@@ -4,6 +4,7 @@ using Foundation;
 using UIKit;
 using System.Linq;
 using CoreFoundation;
+using CoreGraphics;
 
 namespace Spookify
 {
@@ -27,6 +28,7 @@ namespace Spookify
 			ds.Changed += (object sender, EventArgs e) => {
 				this.HoerbuchListeTableView.ReloadData();
 			};
+			this.HoerbuchListeTableView.TableFooterView = new UIView (CGRect.Empty);
 		}
 
 		public override void ViewDidAppear(bool animated)

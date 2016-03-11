@@ -132,6 +132,38 @@ namespace Spookify
 
 		AudioBook displayedAudioBook = null; 
 
+
+		private static string CommonPrefix(string[] ss)
+		{
+			if (ss.Length == 0)
+				return "";
+			if (ss.Length == 1)
+				return ss[0];
+
+			int prefixLength = 0;
+
+			foreach (char c in ss[0]) {
+				foreach (string s in ss) {
+					if (s.Length <= prefixLength || s[prefixLength] != c) {
+						return ss[0].Substring(0, prefixLength);
+					}
+				}
+				prefixLength++;
+			}
+			return ss[0]; // all strings identical
+		}
+		private static string RemoveDelimiter(string s)
+		{
+			if (string.IsNullOrEmpty (s))
+				return s;
+			int delimiterLength = 0; 
+			while (delimiterLength < s.Length &&
+			       ((char.IsPunctuation (s [delimiterLength]) || char.IsWhiteSpace (s [delimiterLength])))) {
+				delimiterLength++;
+			}
+			return delimiterLength > 0 ? s.Substring (delimiterLength) : s;
+		}
+
 		public void DisplayAlbum()
 		{
 			SavePosition ();
@@ -160,18 +192,18 @@ namespace Spookify
 				displayedAudioBook = null;
 				if (!hasConnection) {
 					this.AlbumLabel.Text = "Keine Internetverbindung\nStreaming nicht möglich";
-					// this.TrackLabel.Text = "Streaming nicht möglich";
+					// this.TrackLabel.Text = "";
 					this.PlayButton.SetImage (UIImage.FromBundle ("NoConnection"), UIControlState.Normal);
 					this.AlbumImage.Image = UIImage.FromBundle ("NoConnectionTitle");
 				} else if (!this.IsPlayerCreated) {
 					this.AlbumLabel.Text = "Bitte melde dich mit deinem\nPremium Spotify Account an";
-					// this.TrackLabel.Text = "Premium Spotify Account an";
+					// this.TrackLabel.Text = "";
 					this.AlbumImage.Image = UIImage.FromBundle ("Spotify");
 					this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn"), UIControlState.Normal);
 				} else {
-					this.AlbumLabel.Text = "Wähle ein Hörbuch aus einer\nder Playlisten oder Suche";
-					// this.TrackLabel.Text = "der Playlisten oder Suche";
-					this.AuthorLabel.Text = "nach einem Titel oder Autor";
+					this.AlbumLabel.Text = "Wähle ein Hörbuch aus einer\nder Playlisten oder Suche\nnach einem Titel oder Autor";
+					// this.TrackLabel.Text = "";
+					this.AuthorLabel.Text = "";
 					this.AlbumImage.Image = UIImage.FromBundle ("Books");
 					this.PlayButton.SetImage (UIImage.FromBundle ("Suche"), UIControlState.Normal);
 				}
@@ -186,6 +218,17 @@ namespace Spookify
 					ab.Tracks.Count () > c.CurrentAudioBook.CurrentPosition.TrackIndex) 
 				{
 					var track = ab.Tracks.ElementAt (c.CurrentAudioBook.CurrentPosition.TrackIndex);
+
+					string displayString = ab.Album.Name;
+					var prefix = CommonPrefix (new [] { track.Name, ab.Album.Name} );
+					if (prefix != null && prefix.Length == ab.Album.Name.Length) {
+						displayString = track.Name;
+					} else if (prefix != null && prefix.Length > 5 && track.Name.Length > (prefix.Length + 1)) {
+						displayString = ab.Album.Name + " - " + RemoveDelimiter(track.Name.Substring (prefix.Length));
+					} else
+						displayString = ab.Album.Name + " - " + track.Name;
+					this.AlbumLabel.Text = displayString;
+
 					// this.TrackLabel.Text = track.Name;
 					this.ProgressBar.Hidden = track.Duration == 0.0;
 					if (track.Duration != 0.0)
@@ -214,7 +257,6 @@ namespace Spookify
 					this.seitStartKapitelLabel.Text = "";
 				}
 				if (reload) { 
-					this.AlbumLabel.Text = ab.Album.Name;
 					this.AuthorLabel.Text = ab.Artists.FirstOrDefault ();
 					ab.SetLargeImage (this.AlbumImage);
 				} 

@@ -100,7 +100,15 @@ namespace Spookify
 					int kapitelNummer = 1;
 					var newbook = new AudioBook() {
 						Album = new AudioBookAlbum() { Name = album.Name } , 
-						Tracks = album.FirstTrackPage.Items.Cast<SPTPartialTrack>().Select(pt => new AudioBookTrack() { Url = pt.GetUri().AbsoluteString, Name = pt.Name, Duration = pt.Duration, Index = kapitelNummer++  } ).ToList(),
+						Tracks = album.FirstTrackPage.Items
+							.Cast<SPTPartialTrack>()
+							.Where(pt => pt.IsPlayable)
+							.Select(pt => new AudioBookTrack() { 
+								Url = pt.GetUri().AbsoluteString, 
+								Name = pt.Name, 
+								Duration = pt.Duration, 
+								Index = kapitelNummer++  } )
+							.ToList(),
 						Artists = album.Artists.Cast<SPTPartialArtist>().Select(a => a.Name).ToList(),
 						LargestCoverURL = album.LargestCover.ImageURL.AbsoluteString,
 						SmallestCoverURL = album.SmallestCover.ImageURL.AbsoluteString
@@ -135,7 +143,15 @@ namespace Spookify
 					var nextpage = SPTListPage.ListPageFromData(jsonData1, resp1, true, "", out nsError);
 					if (nextpage != null) {
 						int kapitelNummer = newbook.Tracks.Max(t => t.Index) + 1;
-						newbook.Tracks.AddRange(nextpage.Items.Cast<SPTPartialTrack>().Select(pt => new AudioBookTrack() { Url = pt.GetUri().AbsoluteString, Name = pt.Name, Duration = pt.Duration, Index = kapitelNummer++ } ));
+						newbook.Tracks.AddRange(nextpage.Items
+							.Cast<SPTPartialTrack>()
+							.Where(pt => pt.IsPlayable)
+							.Select(pt => new AudioBookTrack() { 
+								Url = pt.GetUri().AbsoluteString, 
+								Name = pt.Name, 
+								Duration = pt.Duration, 
+								Index = kapitelNummer++  } )
+							.ToList());
 						LoadNextPageAsync(newbook, nextpage, auth, p);
 					}
 				});
