@@ -18,6 +18,7 @@ namespace Spookify
 	{
 		PlayerViewSleepTimer _playerViewSleepTimer;
 		public bool IsSessionValid { get { return CurrentPlayer.Current.IsSessionValid; } }
+		public bool CanRenewSession { get { return CurrentPlayer.Current.CanRenewSession; } }
 		public bool IsPlayerCreated { get {	return CurrentPlayer.Current.IsPlayerCreated; } }
 		public SPTAudioStreamingController Player { get { return CurrentPlayer.Current.Player; } }
 		public void PlayCurrentAudioBook() { CurrentPlayer.Current.PlayCurrentAudioBook (); }
@@ -26,7 +27,7 @@ namespace Spookify
 		public PlayerViewController (IntPtr handle) : base (handle)
 		{
 		}
-			
+					
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();	
@@ -122,7 +123,10 @@ namespace Spookify
 		{
 			base.ViewDidAppear (animated);
 
-			UpdateUI ();
+			if (CurrentPlayer.Current.NeedToRenewSession)
+				CurrentPlayer.Current.RenewSession ();
+			
+			DisplayAlbum ();
 		}
 
 		public override void ViewDidDisappear (bool animated)
@@ -164,15 +168,113 @@ namespace Spookify
 			return delimiterLength > 0 ? s.Substring (delimiterLength) : s;
 		}
 
+		void ShowNoConnection() {
+			this.AlbumLabel.Text = "Keine Internetverbindung\nStreaming nicht möglich";
+			this.PlayButton.SetImage (UIImage.FromBundle ("NoConnection"), UIControlState.Normal);
+			this.AlbumImage.Image = UIImage.FromBundle ("NoConnectionTitle");
+			this.AlbumImage.Hidden = false;
+			this.ActivityIndicatorBackgroundView.Hidden = true;
+			this.ActivityIndicatorView.StopAnimating ();
+		}
+		void ShowPendingRenewSession() {
+			this.AlbumLabel.Text = "Sitzung wird aufgebaut";
+			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn"), UIControlState.Normal);
+			this.AlbumImage.Image = null;
+			this.AlbumImage.Hidden = true;
+			this.ActivityIndicatorBackgroundView.Hidden = false;
+			this.ActivityIndicatorBackgroundView.Layer.CornerRadius = 15f;
+			this.ActivityIndicatorView.StartAnimating();
+		}
+		void ShowPendingLogin() {
+			this.AlbumLabel.Text = "Anmeldung wird durchgeführt";
+			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn"), UIControlState.Normal);
+			this.AlbumImage.Image = null;
+			this.AlbumImage.Hidden = true;
+			this.ActivityIndicatorBackgroundView.Hidden = false;
+			this.ActivityIndicatorBackgroundView.Layer.CornerRadius = 15f;
+			this.ActivityIndicatorView.StartAnimating();
+		}
+		void ShowLoginToSpotify() {
+			this.AlbumLabel.Text = "Bitte melde dich mit deinem\nPremium Spotify Account an";
+			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn"), UIControlState.Normal);
+			this.AlbumImage.Image = UIImage.FromBundle ("Spotify");
+			this.AlbumImage.Hidden = false;
+			this.ActivityIndicatorBackgroundView.Hidden = true;
+			this.ActivityIndicatorView.StopAnimating ();
+		}
+		void ShowSelectAudiobook() {
+			this.AlbumLabel.Text = "Wähle ein Hörbuch aus einer\nder Playlisten oder Suche\nnach einem Titel oder Autor";
+			this.AuthorLabel.Text = "";
+			this.PlayButton.SetImage (UIImage.FromBundle ("Suche"), UIControlState.Normal);
+			this.AlbumImage.Image = UIImage.FromBundle ("Books");
+			this.AlbumImage.Hidden = false;
+			this.ActivityIndicatorBackgroundView.Hidden = true;
+			this.ActivityIndicatorView.StopAnimating ();
+		}
+		void DisplayCurrentAudiobook(AudioBook ab) {
+			this.ActivityIndicatorBackgroundView.Hidden = true;
+			this.ActivityIndicatorView.StopAnimating ();
+			this.PlayButton.SetImage (UIImage.FromBundle (this.Player.IsPlaying ? "Pause" : "Play"), UIControlState.Normal);
+
+			var c = CurrentState.Current;
+			if (c.CurrentAudioBook != null &&
+				c.CurrentAudioBook.CurrentPosition != null &&
+				ab.Tracks.Count () > c.CurrentAudioBook.CurrentPosition.TrackIndex) 
+			{
+				var track = ab.Tracks.ElementAt (c.CurrentAudioBook.CurrentPosition.TrackIndex);
+
+				string displayString = ab.Album.Name;
+				var prefix = CommonPrefix (new [] { track.Name, ab.Album.Name} );
+				if (prefix != null && prefix.Length == ab.Album.Name.Length) {
+					displayString = track.Name;
+				} else if (prefix != null && prefix.Length > 5 && track.Name.Length > (prefix.Length + 1)) {
+					displayString = ab.Album.Name + " - " + RemoveDelimiter(track.Name.Substring (prefix.Length));
+				} else
+					displayString = ab.Album.Name + " - " + track.Name;
+				this.AlbumLabel.Text = displayString;
+
+				// this.TrackLabel.Text = track.Name;
+				this.ProgressBar.Hidden = track.Duration == 0.0;
+				if (track.Duration != 0.0)
+					this.ProgressBar.Progress = (float)(c.CurrentAudioBook.CurrentPosition.PlaybackPosition / track.Duration);
+
+				var gesamtBisEnde = ab.Tracks.Skip(c.CurrentAudioBook.CurrentPosition.TrackIndex).Sum (t => t.Duration) - c.CurrentAudioBook.CurrentPosition.PlaybackPosition;
+				var tsBisEnde = TimeSpan.FromSeconds (gesamtBisEnde);
+				var gesamtSeitAnfang = ab.Tracks.Take (c.CurrentAudioBook.CurrentPosition.TrackIndex - 1).Sum (t => t.Duration) + c.CurrentAudioBook.CurrentPosition.PlaybackPosition;
+				var tsSeitAnfang = TimeSpan.FromSeconds (gesamtSeitAnfang);
+
+				if (Math.Truncate(tsBisEnde.TotalHours) > 1.0)
+					this.bisEndeBuchLabel.Text = string.Format ("{0} Stunden {1:00} Minuten verbleiben", Math.Truncate (tsBisEnde.TotalHours), tsBisEnde.Minutes);
+				else if (Math.Truncate(tsBisEnde.TotalHours) > 0.0)
+					this.bisEndeBuchLabel.Text = string.Format ("{0} Stunde {1:00} Minuten verbleiben", Math.Truncate (tsBisEnde.TotalHours), tsBisEnde.Minutes);
+				else 
+					this.bisEndeBuchLabel.Text = string.Format ("{0} Minuten {1:00} Sekunden verbleiben",  Math.Truncate(tsBisEnde.TotalMinutes), tsBisEnde.Seconds);
+				this.kapitelLabel.Text = string.Format ("Kapitel {0} von {1}", c.CurrentAudioBook.CurrentPosition.TrackIndex+1, ab.Tracks.Count);
+				var ts = TimeSpan.FromSeconds (c.CurrentAudioBook.CurrentPosition.PlaybackPosition);
+				this.seitStartKapitelLabel.Text = string.Format ("{0:00}:{1:00}", Math.Truncate(ts.TotalMinutes), ts.Seconds);
+				var tsToEnd = TimeSpan.FromSeconds (track.Duration).Subtract (ts);
+				this.bisEndeKapitelLabel.Text = string.Format ("{0:00}:{1:00}", Math.Truncate(tsToEnd.TotalMinutes), tsToEnd.Seconds);
+			} else {
+				this.bisEndeKapitelLabel.Text = "";
+				this.bisEndeBuchLabel.Text = "";
+				this.kapitelLabel.Text = "";
+				this.seitStartKapitelLabel.Text = "";
+			}
+			if (ab != displayedAudioBook) { 
+				this.AuthorLabel.Text = ab.Artists.FirstOrDefault ();
+				ab.SetLargeImage (this.AlbumImage);
+				displayedAudioBook = ab;
+			} 
+		}
 		public void DisplayAlbum()
 		{
 			SavePosition ();
 
 			var ab = CurrentState.Current.CurrentAudioBook;
-			bool reload = (ab != displayedAudioBook);
-			displayedAudioBook = ab;
 
 			bool hasConnection = Reachability.RemoteHostStatus () != NetworkStatus.NotReachable;
+			bool pendingLogin = CurrentPlayer.Current.TriggerWaitingForLogin;
+			bool pendingRenewSession = CurrentPlayer.Current.TriggerWaitingForSessionRenew;
 				
 			bool hideControls = ab == null || !hasConnection || !this.IsPlayerCreated;
 			this.SkipForward.Hidden = hideControls;
@@ -182,7 +284,7 @@ namespace Spookify
 			this.Airplay.Hidden = hideControls;
 			this.LesezeichenButton.Hidden = hideControls;
 
-			if (!hasConnection || !this.IsPlayerCreated || ab == null) {
+			if (!hasConnection || !this.IsPlayerCreated || ab == null || pendingLogin || pendingRenewSession) {
 				this.AuthorLabel.Text = "";
 				this.ProgressBar.Hidden = true;
 				this.bisEndeKapitelLabel.Text = "";
@@ -191,77 +293,33 @@ namespace Spookify
 				this.seitStartKapitelLabel.Text = "";
 				displayedAudioBook = null;
 				if (!hasConnection) {
-					this.AlbumLabel.Text = "Keine Internetverbindung\nStreaming nicht möglich";
-					// this.TrackLabel.Text = "";
-					this.PlayButton.SetImage (UIImage.FromBundle ("NoConnection"), UIControlState.Normal);
-					this.AlbumImage.Image = UIImage.FromBundle ("NoConnectionTitle");
-				} else if (!this.IsPlayerCreated) {
-					this.AlbumLabel.Text = "Bitte melde dich mit deinem\nPremium Spotify Account an";
-					// this.TrackLabel.Text = "";
-					this.AlbumImage.Image = UIImage.FromBundle ("Spotify");
-					this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn"), UIControlState.Normal);
+					ShowNoConnection();
+				}
+				else if (pendingRenewSession) {
+					ShowPendingRenewSession ();
+				}
+				else if (pendingLogin) {
+					ShowPendingLogin ();
+				}
+				else if (!this.IsPlayerCreated) {
+					if (this.IsSessionValid) {
+						ShowPendingLogin ();
+						var dummy = this.Player;
+					} else if (this.CanRenewSession) {
+						ShowPendingRenewSession ();
+						CurrentPlayer.Current.RenewSession ();
+					} else {
+						ShowLoginToSpotify();
+					}
 				} else {
-					this.AlbumLabel.Text = "Wähle ein Hörbuch aus einer\nder Playlisten oder Suche\nnach einem Titel oder Autor";
-					// this.TrackLabel.Text = "";
-					this.AuthorLabel.Text = "";
-					this.AlbumImage.Image = UIImage.FromBundle ("Books");
-					this.PlayButton.SetImage (UIImage.FromBundle ("Suche"), UIControlState.Normal);
+					ShowSelectAudiobook();
 				}
 			} 
 			else 
 			{
-				this.PlayButton.SetImage (UIImage.FromBundle (this.Player.IsPlaying ? "Pause" : "Play"), UIControlState.Normal);
-
-				var c = CurrentState.Current;
-				if (c.CurrentAudioBook != null &&
-					c.CurrentAudioBook.CurrentPosition != null &&
-					ab.Tracks.Count () > c.CurrentAudioBook.CurrentPosition.TrackIndex) 
-				{
-					var track = ab.Tracks.ElementAt (c.CurrentAudioBook.CurrentPosition.TrackIndex);
-
-					string displayString = ab.Album.Name;
-					var prefix = CommonPrefix (new [] { track.Name, ab.Album.Name} );
-					if (prefix != null && prefix.Length == ab.Album.Name.Length) {
-						displayString = track.Name;
-					} else if (prefix != null && prefix.Length > 5 && track.Name.Length > (prefix.Length + 1)) {
-						displayString = ab.Album.Name + " - " + RemoveDelimiter(track.Name.Substring (prefix.Length));
-					} else
-						displayString = ab.Album.Name + " - " + track.Name;
-					this.AlbumLabel.Text = displayString;
-
-					// this.TrackLabel.Text = track.Name;
-					this.ProgressBar.Hidden = track.Duration == 0.0;
-					if (track.Duration != 0.0)
-						this.ProgressBar.Progress = (float)(c.CurrentAudioBook.CurrentPosition.PlaybackPosition / track.Duration);
-
-					var gesamtBisEnde = ab.Tracks.Skip(c.CurrentAudioBook.CurrentPosition.TrackIndex).Sum (t => t.Duration) - c.CurrentAudioBook.CurrentPosition.PlaybackPosition;
-					var tsBisEnde = TimeSpan.FromSeconds (gesamtBisEnde);
-					var gesamtSeitAnfang = ab.Tracks.Take (c.CurrentAudioBook.CurrentPosition.TrackIndex - 1).Sum (t => t.Duration) + c.CurrentAudioBook.CurrentPosition.PlaybackPosition;
-					var tsSeitAnfang = TimeSpan.FromSeconds (gesamtSeitAnfang);
-
-					if (Math.Truncate(tsBisEnde.TotalHours) > 1.0)
-						this.bisEndeBuchLabel.Text = string.Format ("{0} Stunden {1:00} Minuten verbleiben", Math.Truncate (tsBisEnde.TotalHours), tsBisEnde.Minutes);
-					else if (Math.Truncate(tsBisEnde.TotalHours) > 0.0)
-						this.bisEndeBuchLabel.Text = string.Format ("{0} Stunde {1:00} Minuten verbleiben", Math.Truncate (tsBisEnde.TotalHours), tsBisEnde.Minutes);
-					else 
-						this.bisEndeBuchLabel.Text = string.Format ("{0} Minuten {1:00} Sekunden verbleiben",  Math.Truncate(tsBisEnde.TotalMinutes), tsBisEnde.Seconds);
-					this.kapitelLabel.Text = string.Format ("Kapitel {0} von {1}", c.CurrentAudioBook.CurrentPosition.TrackIndex+1, ab.Tracks.Count);
-					var ts = TimeSpan.FromSeconds (c.CurrentAudioBook.CurrentPosition.PlaybackPosition);
-					this.seitStartKapitelLabel.Text = string.Format ("{0:00}:{1:00}", Math.Truncate(ts.TotalMinutes), ts.Seconds);
-					var tsToEnd = TimeSpan.FromSeconds (track.Duration).Subtract (ts);
-					this.bisEndeKapitelLabel.Text = string.Format ("{0:00}:{1:00}", Math.Truncate(tsToEnd.TotalMinutes), tsToEnd.Seconds);
-				} else {
-					this.bisEndeKapitelLabel.Text = "";
-					this.bisEndeBuchLabel.Text = "";
-					this.kapitelLabel.Text = "";
-					this.seitStartKapitelLabel.Text = "";
-				}
-				if (reload) { 
-					this.AuthorLabel.Text = ab.Artists.FirstOrDefault ();
-					ab.SetLargeImage (this.AlbumImage);
-				} 
+				DisplayCurrentAudiobook (ab);
+				SetupNowPlaying ();
 			}
-			SetupNowPlaying ();
 		}
 		public override bool CanBecomeFirstResponder {
 			get {
@@ -426,12 +484,7 @@ namespace Spookify
 				}
 			}
 		}
-
-		public void UpdateUI()
-		{
-			DisplayAlbum ();
-		}
-
+			
 		public DateTime SleepTimerStartTime { get; set; } = DateTime.MinValue;
 		public int SleepTimerOpion = 0;
 
@@ -461,6 +514,17 @@ namespace Spookify
 		{
 			bool hasConnection = Reachability.RemoteHostStatus () != NetworkStatus.NotReachable;
 			if (hasConnection) {
+				if (!this.IsPlayerCreated) {
+					if (this.IsSessionValid) {
+						var dummy = this.Player;
+					}
+					else if (this.CanRenewSession) {
+						CurrentPlayer.Current.RenewSession();
+					}
+					else {
+						OpenLoginPage();
+					}
+				}
 				if (this.IsPlayerCreated)
 				{
 					if (CurrentState.Current.Audiobooks.Count == 0)
@@ -476,9 +540,6 @@ namespace Spookify
 								TogglePlaying();
 						}
 					}
-				}
-				else {
-					OpenLoginPage();
 				}
 			}
 		}

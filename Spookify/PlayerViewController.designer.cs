@@ -13,6 +13,12 @@ namespace Spookify
 	partial class PlayerViewController
 	{
 		[Outlet]
+		UIKit.UIView ActivityIndicatorBackgroundView { get; set; }
+
+		[Outlet]
+		UIKit.UIActivityIndicatorView ActivityIndicatorView { get; set; }
+
+		[Outlet]
 		UIKit.UIView Airplay { get; set; }
 
 		[Outlet]
@@ -177,6 +183,16 @@ namespace Spookify
 			if (TrackLabel != null) {
 				TrackLabel.Dispose ();
 				TrackLabel = null;
+			}
+
+			if (ActivityIndicatorView != null) {
+				ActivityIndicatorView.Dispose ();
+				ActivityIndicatorView = null;
+			}
+
+			if (ActivityIndicatorBackgroundView != null) {
+				ActivityIndicatorBackgroundView.Dispose ();
+				ActivityIndicatorBackgroundView = null;
 			}
 		}
 	}

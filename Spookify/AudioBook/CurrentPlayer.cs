@@ -37,21 +37,54 @@ namespace Spookify
 			get { 
 				if (_authPlayer == null) 
 				{
-					_authPlayer = new SPTAuth ();
-					_authPlayer.ClientID = ConfigSpotify.kClientId;
-					_authPlayer.RequestedScopes = new[]{ Constants.SPTAuthUserLibraryReadScope, Constants.SPTAuthStreamingScope };
-					_authPlayer.RedirectURL = new NSUrl(ConfigSpotify.kCallbackURL);
-
-					if (!string.IsNullOrEmpty(ConfigSpotify.kTokenSwapServiceURL))
-						_authPlayer.TokenSwapURL = new NSUrl(ConfigSpotify.kTokenSwapServiceURL);
-
-					if (!string.IsNullOrEmpty(ConfigSpotify.kTokenRefreshServiceURL))
-						_authPlayer.TokenRefreshURL = new NSUrl(ConfigSpotify.kTokenRefreshServiceURL);
-					_authPlayer.SessionUserDefaultsKey = ConfigSpotify.kSessionPlayerUserDefaultsKey;
-
+					CreateNewSPTAuth ();
 				}
 				return _authPlayer;
 			} 
+		}
+		public void CreateNewSPTAuth()
+		{
+			_authPlayer = new SPTAuth ();
+			_authPlayer.ClientID = ConfigSpotify.kClientId;
+			_authPlayer.RequestedScopes = new[]{ Constants.SPTAuthUserLibraryReadScope, Constants.SPTAuthStreamingScope };
+			_authPlayer.RedirectURL = new NSUrl(ConfigSpotify.kCallbackURL);
+
+			var c = CurrentSettings.Current;
+			if (!string.IsNullOrEmpty(ConfigSpotify.kTokenSwapServiceURL) && c.kTokenSwapService)
+				_authPlayer.TokenSwapURL = new NSUrl(ConfigSpotify.kTokenSwapServiceURL);
+
+			if (!string.IsNullOrEmpty(ConfigSpotify.kTokenRefreshServiceURL) && c.kTokenRefreshService)
+				_authPlayer.TokenRefreshURL = new NSUrl(ConfigSpotify.kTokenRefreshServiceURL);
+
+			_authPlayer.SessionUserDefaultsKey = ConfigSpotify.kSessionPlayerUserDefaultsKey;
+		}
+
+		public void RenewSession()
+		{
+			if (TriggerWaitingForSessionRenew) {
+				// do nothing right now, waiting for session renew...
+			} else {
+				if (HasConnection) {
+					SPTAuth auth = this.AuthPlayer;
+					TriggerSessionRenew = DateTime.Now;
+					auth.RenewSession (auth.Session, (error, session) => {
+						auth.Session = session;
+						TriggerSessionRenew = null;
+						if (error != null) {
+							new NSObject ().BeginInvokeOnMainThread (() => {
+								new UIAlertView ("Fehler", error.LocalizedDescription + error.Description, null, "OK").Show ();
+							});
+						}				
+					});
+				}
+			}
+		}
+
+		public bool HasConnection {
+			get {
+				bool hasConnection = Reachability.RemoteHostStatus () != NetworkStatus.NotReachable;
+				return hasConnection; 
+			}
 		}
 		public bool IsSessionValid {
 			get {
@@ -64,15 +97,50 @@ namespace Spookify
 
 		public bool IsPlayerCreated { 
 			get { 
-				return this.IsSessionValid && this.Player != null && this.Player.LoggedIn; 
+				var p = this.RawPlayer;
+				return this.IsSessionValid && p != null && p.LoggedIn; 
+			}
+		}
+
+		public bool CanRenewSession {
+			get {
+				SPTAuth auth = this.AuthPlayer;
+				return (auth.Session != null && !auth.Session.IsValid && auth.HasTokenRefreshService);
+			}
+		}
+		public bool NeedToRenewSession {
+			get {
+				return !IsSessionValid && CanRenewSession;
+			}
+		}
+		DateTime? TriggerSessionRenew = null;
+		public bool TriggerWaitingForSessionRenew {
+			get {
+				return TriggerSessionRenew.HasValue &&
+					(TriggerSessionRenew.Value.AddSeconds (30) > DateTime.Now) &&
+					!IsSessionValid;
+			}
+		}
+
+		DateTime? TriggerPlayerLogin = null;
+		public bool TriggerWaitingForLogin {
+			get {
+				return TriggerPlayerLogin.HasValue &&
+					(TriggerPlayerLogin.Value.AddSeconds (30) > DateTime.Now) &&
+					!IsPlayerCreated;				
 			}
 		}
 
 		SPTAudioStreamingController _player;
+		public SPTAudioStreamingController RawPlayer { get { return this._player; } }
 		public SPTAudioStreamingController Player
 		{
 			get 
 			{ 
+				if (this.NeedToRenewSession) {
+					this.RenewSession ();
+				}
+					
 				if (this.IsSessionValid) {
 					if (_player == null) {
 						SPTAuth auth = this.AuthPlayer;
@@ -81,15 +149,30 @@ namespace Spookify
 						_player.PlaybackDelegate = _mySPTAudioStreamingDelegate;
 						_player.DiskCache = new SPTDiskCache(1024 * 1024 * 64);
 					} 
-					if (!_player.LoggedIn) {
-						SPTAuth auth = this.AuthPlayer;
-						_player.LoginWithSession (auth.Session, error => {
+					if (_player.LoggedIn) {
+						TriggerPlayerLogin = null;
+					} 
+					else 
+					{
+						if (TriggerWaitingForLogin)
+						{
+							// wait, do nothing now...
+						}
+						else {
+							if (HasConnection) {
+								SPTAuth auth = this.AuthPlayer;
+								_player.LoginWithSession (auth.Session, error => {
 
-							// login failed.
-							Console.WriteLine(error);
-						});
+									// login failed.
+									Console.WriteLine (error);
+									TriggerPlayerLogin = null;
+								});
+								TriggerPlayerLogin = DateTime.Now;
+							}
+						}
 					}
 				} else {
+					TriggerPlayerLogin = null;
 					_player = null;
 					_authPlayer = null;
 				}
@@ -101,7 +184,7 @@ namespace Spookify
 
 		public void PlayCurrentAudioBook()
 		{			
-			if (this.IsPlayerCreated) {
+			if (this.IsPlayerCreated && HasConnection) {
 				if (CurrentState.Current.CurrentAudioBook != null && 
 					CurrentState.Current.CurrentAudioBook.Tracks != null) {
 					if (CurrentState.Current.CurrentAudioBook.CurrentPosition != null) {
@@ -152,25 +235,27 @@ namespace Spookify
 			return false;
 		}
 
-		public void OpenLoginPage(PlayerViewController vc)
+		public void OpenLoginPage(UIViewController vc)
 		{
-			if (this.AuthPlayer.Session == null)
-				this._authPlayer = null;
-			this.authViewController = SPTAuthViewController.AuthenticationViewControllerWithAuth(this.AuthPlayer);
-			this.authViewController.HideSignup = false;
-			this.authViewController.Delegate = new MySPTAuthViewDelegate (vc);
-			this.authViewController.ModalPresentationStyle = UIModalPresentationStyle.FullScreen;
-			this.authViewController.ModalTransitionStyle = UIModalTransitionStyle.CrossDissolve;
+			if (HasConnection) {
+				if (this.AuthPlayer.Session == null)
+					this._authPlayer = null;
+				this.authViewController = SPTAuthViewController.AuthenticationViewControllerWithAuth (this.AuthPlayer);
+				this.authViewController.HideSignup = true;
+				this.authViewController.Delegate = new MySPTAuthViewDelegate (vc);
+				this.authViewController.ModalPresentationStyle = UIModalPresentationStyle.FullScreen;
+				this.authViewController.ModalTransitionStyle = UIModalTransitionStyle.CrossDissolve;
 
-			vc.ModalPresentationStyle = UIModalPresentationStyle.CurrentContext;
-			vc.DefinesPresentationContext = true;
+				vc.ModalPresentationStyle = UIModalPresentationStyle.CurrentContext;
+				vc.DefinesPresentationContext = true;
 
-			vc.PresentViewController (this.authViewController, false, null);
+				vc.PresentViewController (this.authViewController, false, null);
+			}
 		}
 
 		public class MySPTAuthViewDelegate : SPTAuthViewDelegate {
-			PlayerViewController viewController = null;
-			public MySPTAuthViewDelegate(PlayerViewController vc)  {
+			UIViewController viewController = null;
+			public MySPTAuthViewDelegate(UIViewController vc)  {
 				this.viewController = vc;
 			}
 
@@ -178,26 +263,35 @@ namespace Spookify
 
 			public override void AuthenticationViewControllerDidCancelLogin (SPTAuthViewController authenticationViewController)
 			{
-				//this.viewController.AlbumLabel.Text = "Login abgebrochen";
+				BeginInvokeOnMainThread (() => {
+					new UIAlertView("Fehler","Login abgebrochen",null,"OK").Show();
+				});
 			}
 
 			public override void AuthenticationViewControllerFail (SPTAuthViewController authenticationViewController, NSError error)
 			{
-				//this.viewController.AlbumLabel.Text = "Login Fehler";
+				BeginInvokeOnMainThread (() => {
+					new UIAlertView("Fehler",error.LocalizedDescription + error.Description,null,"OK").Show();
+				});
 			}
 
 			public override void AuthenticationViewControllerLogin (SPTAuthViewController authenticationViewController, SPTSession session)
 			{
 				if (this.viewController != null) {
-					this.viewController.UpdateUI ();
+					if (this.viewController is PlayerViewController) {
+						var playerViewController = this.viewController as PlayerViewController;
+						playerViewController.DisplayAlbum ();
 
-					if (CurrentState.Current.Audiobooks.Count == 0) {
-						viewController.SwitchTab (2); // liste der Bücher in Playlists
-					} else if (CurrentState.Current.CurrentAudioBook == null) {
-						viewController.SwitchTab (0); // Liste der gewählten Bücher
+						if (CurrentState.Current.Audiobooks.Count == 0) {
+							playerViewController.SwitchTab (2); // liste der Bücher in Playlists
+						} else if (CurrentState.Current.CurrentAudioBook == null) {
+							playerViewController.SwitchTab (0); // Liste der gewählten Bücher
+						} else {
+							playerViewController.SwitchTab (1);
+							playerViewController.PlayCurrentAudioBook ();
+						}
 					} else {
-						viewController.SwitchTab (1);
-						viewController.PlayCurrentAudioBook ();
+						new UIAlertView("Spookify","Login erfolgreich",null,"OK").Show();
 					}
 				}
 			}
@@ -212,31 +306,31 @@ namespace Spookify
 			}
 			public override void AudioStreaming (SPTAudioStreamingController audioStreaming, bool isPlaying)
 			{
-				viewController.UpdateUI();
+				viewController.DisplayAlbum();
 			}
 			public override void AudioStreaming (SPTAudioStreamingController audioStreaming, double offset)
 			{
-				viewController.UpdateUI();
+				viewController.DisplayAlbum();
 			}
 			public override void AudioStreaming (SPTAudioStreamingController audioStreaming, NSDictionary trackMetadata)
 			{
-				viewController.UpdateUI();
+				viewController.DisplayAlbum();
 			}
 			public override void AudioStreamingDidFailToPlayTrack (SPTAudioStreamingController audioStreaming, NSUrl trackUri)
 			{
-				viewController.UpdateUI();
+				viewController.DisplayAlbum();
 			}
 			public override void AudioStreamingDidLosePermissionForPlayback (SPTAudioStreamingController audioStreaming)
 			{
-				viewController.UpdateUI();
+				viewController.DisplayAlbum();
 			}
 			public override void AudioStreamingDidSkipToNextTrack (SPTAudioStreamingController audioStreaming)
 			{
-				viewController.UpdateUI();
+				viewController.DisplayAlbum();
 			}
 			public override void AudioStreamingDidSkipToPreviousTrack (SPTAudioStreamingController audioStreaming)
 			{
-				viewController.UpdateUI();
+				viewController.DisplayAlbum();
 			}
 		}
 	}

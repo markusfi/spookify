@@ -66,9 +66,11 @@ namespace Spookify
 		void SetUIImage(UIImageView imageView, string converUrl, NSData coverData, Action<NSData> coverDataSetter)
 		{
 			if (imageView != null) {
-				if (coverData != null)
+				if (coverData != null) {
 					imageView.Image = UIImage.LoadFromData (coverData);
-				else if (converUrl != null) {
+					if (imageView.Image != null)
+						imageView.Hidden = false;
+				} else if (converUrl != null) {
 					imageView.Image = null;
 					var gloalQueue = DispatchQueue.GetGlobalQueue (DispatchQueuePriority.Default);
 					gloalQueue.DispatchAsync (() => {
@@ -81,6 +83,8 @@ namespace Spookify
 
 						DispatchQueue.MainQueue.DispatchAsync (() => {
 							imageView.Image = image;
+							if (image != null)
+								imageView.Hidden = false;
 							if (image == null) {
 								System.Diagnostics.Debug.WriteLine ("Could not load image with error: {0}", err);
 								return;

@@ -8,7 +8,7 @@ namespace Spookify
 		{
 		}
 
-		// Your client ID for ABStream App
+		// Your client ID for Spookify App
 		public static string kClientId = "66a58efd5a7d44f4b6a1d44d8d78f1cd"; // "e6695c6d22214e0f832006889566df9c";
 
 		// Your applications callback URL
@@ -17,12 +17,12 @@ namespace Spookify
 		// The URL to your token swap endpoint
 		// If you don't provide a token swap service url the login will use implicit grant tokens, which means that your user will need to sign in again every time the token expires.
 
-		public static string kTokenSwapServiceURL = ""; // "http://spookify.de/swap"; // "http://localhost:1234/swap"
+		public static string kTokenSwapServiceURL = "http://consultdot.net:81/SpookifyAuth/swap"; // "http://spookify.de/swap"; // "http://localhost:1234/swap"
 
 		// The URL to your token refresh endpoint
 		// If you don't provide a token refresh service url, the user will need to sign in again every time their token expires.
 
-		public static string kTokenRefreshServiceURL = ""; // "http://spookify.de/refresh"; // "http://localhost:1234/refresh"
+		public static string kTokenRefreshServiceURL = "http://consultdot.net:81/SpookifyAuth/refresh"; // "http://spookify.de/refresh"; // "http://localhost:1234/refresh"
 
 		public static string kSessionUserDefaultsKey = "SpotifySession";
 

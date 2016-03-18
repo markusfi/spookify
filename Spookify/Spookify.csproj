@@ -34,7 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <MtouchArch>ARMv7, ARMv7s, ARM64</MtouchArch>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchFloat32>true</MtouchFloat32>
     <MtouchUseSGen>true</MtouchUseSGen>
@@ -188,10 +188,6 @@
     <Compile Include="PlayerViewController.designer.cs">
       <DependentUpon>PlayerViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="SecondViewController.cs" />
-    <Compile Include="SecondViewController.designer.cs">
-      <DependentUpon>SecondViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="ZuletztViewController.cs" />
     <Compile Include="ZuletztViewController.designer.cs">
       <DependentUpon>ZuletztViewController.cs</DependentUpon>
@@ -207,6 +203,16 @@
     <Compile Include="LRU\Node.cs" />
     <Compile Include="Util\GeneralExtensions.cs" />
     <Compile Include="AudioBook\CurrentLRUCache.cs" />
+    <Compile Include="AudioBook\CurrentSettings.cs" />
+    <Compile Include="ConfigViewController.cs" />
+    <Compile Include="ConfigViewController.designer.cs">
+      <DependentUpon>ConfigViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SecondViewController.cs" />
+    <Compile Include="SecondViewController.designer.cs">
+      <DependentUpon>SecondViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SomeExtensionMethods.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
