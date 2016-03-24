@@ -9,7 +9,7 @@ namespace Spookify
 		}
 
 		// Your client ID for Spookify App
-		public static string kClientId = "66a58efd5a7d44f4b6a1d44d8d78f1cd"; // "e6695c6d22214e0f832006889566df9c";
+		public static string kClientId = "Apply for a Spotify developer key";
 
 		// Your applications callback URL
 		public static string kCallbackURL = "abstreamspotifyios://";
