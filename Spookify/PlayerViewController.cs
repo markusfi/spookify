@@ -37,7 +37,7 @@ namespace Spookify
 			volumeView.ShowsVolumeSlider = false;
 			volumeView.SizeToFit();
 			volumeView.TranslatesAutoresizingMaskIntoConstraints = false;
-			volumeView.TintColor = UIColor.DarkGray;
+			volumeView.TintColor = UIColor.White;
 			foreach (var wnd in volumeView.Subviews) {
 				if (wnd is UIButton) {
 					var img = (wnd as UIButton).CurrentImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
@@ -50,8 +50,13 @@ namespace Spookify
 			this.Airplay.AddConstraint (NSLayoutConstraint.Create (volumeView, NSLayoutAttribute.CenterX, NSLayoutRelation.Equal, this.Airplay, NSLayoutAttribute.CenterX, 1f, 0));
 			this.Airplay.AddConstraint (NSLayoutConstraint.Create (volumeView, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, this.Airplay, NSLayoutAttribute.CenterY, 1f, 0));
 
-			// if (this.IsPlayerCreated) 							
-			//	PlayCurrentAudioBook ();
+			foreach (var wnd in this.View.Subviews) {
+				if (wnd is UIButton) {
+					var img = (wnd as UIButton).CurrentImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+					wnd.TintColor = UIColor.White;
+					(wnd as UIButton).SetImage(img, UIControlState.Normal);
+				}
+			}
 			
 			SetupRemoteControl ();
 
@@ -60,7 +65,10 @@ namespace Spookify
 			rightButton.Image = UIImage.FromBundle ("Kaset");
 			rightButton.Clicked += PlaySettingsClicked;
 
-			this.NavigationController.NavigationBar.TintColor = UIColor.DarkGray;
+			this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
+			this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB (25, 25, 25);
+			this.NavigationController.NavigationBar.Translucent = false;
+			this.NavigationController.NavigationBar.TintColor = UIColor.White;
 
 			this.NavigationItem.SetRightBarButtonItem (rightButton, false);
 
@@ -170,7 +178,7 @@ namespace Spookify
 
 		void ShowNoConnection() {
 			this.AlbumLabel.Text = "Keine Internetverbindung\nStreaming nicht möglich";
-			this.PlayButton.SetImage (UIImage.FromBundle ("NoConnection"), UIControlState.Normal);
+			this.PlayButton.SetImage (UIImage.FromBundle ("NoConnection").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
 			this.AlbumImage.Image = UIImage.FromBundle ("NoConnectionTitle");
 			this.AlbumImage.Hidden = false;
 			this.ActivityIndicatorBackgroundView.Hidden = true;
@@ -178,7 +186,7 @@ namespace Spookify
 		}
 		void ShowPendingRenewSession() {
 			this.AlbumLabel.Text = "Sitzung wird aufgebaut";
-			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn"), UIControlState.Normal);
+			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
 			this.AlbumImage.Image = null;
 			this.AlbumImage.Hidden = true;
 			this.ActivityIndicatorBackgroundView.Hidden = false;
@@ -187,7 +195,7 @@ namespace Spookify
 		}
 		void ShowPendingLogin() {
 			this.AlbumLabel.Text = "Anmeldung wird durchgeführt";
-			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn"), UIControlState.Normal);
+			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
 			this.AlbumImage.Image = null;
 			this.AlbumImage.Hidden = true;
 			this.ActivityIndicatorBackgroundView.Hidden = false;
@@ -196,7 +204,7 @@ namespace Spookify
 		}
 		void ShowLoginToSpotify() {
 			this.AlbumLabel.Text = "Bitte melde dich mit deinem\nPremium Spotify Account an";
-			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn"), UIControlState.Normal);
+			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
 			this.AlbumImage.Image = UIImage.FromBundle ("Spotify");
 			this.AlbumImage.Hidden = false;
 			this.ActivityIndicatorBackgroundView.Hidden = true;
@@ -205,7 +213,7 @@ namespace Spookify
 		void ShowSelectAudiobook() {
 			this.AlbumLabel.Text = "Wähle ein Hörbuch aus einer\nder Playlisten oder Suche\nnach einem Titel oder Autor";
 			this.AuthorLabel.Text = "";
-			this.PlayButton.SetImage (UIImage.FromBundle ("Suche"), UIControlState.Normal);
+			this.PlayButton.SetImage (UIImage.FromBundle ("Suche").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
 			this.AlbumImage.Image = UIImage.FromBundle ("Books");
 			this.AlbumImage.Hidden = false;
 			this.ActivityIndicatorBackgroundView.Hidden = true;
@@ -214,7 +222,7 @@ namespace Spookify
 		void DisplayCurrentAudiobook(AudioBook ab) {
 			this.ActivityIndicatorBackgroundView.Hidden = true;
 			this.ActivityIndicatorView.StopAnimating ();
-			this.PlayButton.SetImage (UIImage.FromBundle (this.Player.IsPlaying ? "Pause" : "Play"), UIControlState.Normal);
+			this.PlayButton.SetImage (UIImage.FromBundle (this.Player.IsPlaying ? "Pause" : "Play").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
 
 			var c = CurrentState.Current;
 			if (c.CurrentAudioBook != null &&

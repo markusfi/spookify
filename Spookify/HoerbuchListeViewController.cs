@@ -37,14 +37,17 @@ namespace Spookify
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-			// Perform any additional setup after loading the view, typically from a nib.
-			this.HoerbuchListeTableView.Delegate = new HoerbuchListeDelegate() { hoerbuchListeViewController = this };
+
+			this.AutomaticallyAdjustsScrollViewInsets = false;
+
 			var ds = new HoerbuchListeDataSource () { hoerbuchListeViewController = this };
-			this.HoerbuchListeTableView.DataSource = ds;
+			this.HoerbuchListeTableView.Source = ds;
 			ds.Changed += (object sender, EventArgs e) => {
 				this.HoerbuchListeTableView.ReloadData();
 				this.UpdateSearchResults();
 			};
+			ds.Selected += RowSelected;
+
 			HoerbuchListeTableView.TableFooterView = new UIView (CGRect.Empty);
 				
 			resultsTableController = new ResultsTableController() {
@@ -80,7 +83,17 @@ namespace Spookify
 				}
 			}
 		}
-
+		public override void ViewWillAppear (bool animated)
+		{
+			base.ViewWillAppear (animated);
+			if (!CurrentPlayer.Current.IsSessionValid && CurrentPlayer.Current.CanRenewSession) {
+				CurrentPlayer.Current.RenewSession ();
+			}
+		}
+		public void RowSelected (UITableView tableView, NSIndexPath indexPath)
+		{
+			tableView.DeselectRow(indexPath, true);
+		}
 		public void UpdateSearchResults()
 		{
 			UpdateSearchResultsForSearchController (searchController);
@@ -162,12 +175,40 @@ namespace Spookify
 			}
 		}
 	}
-	public class HoerbuchListeDelegate : UITableViewDelegate
+	public class HoerbuchListeDataSource : UITableViewSource
 	{
 		public HoerbuchListeViewController hoerbuchListeViewController { get; set; }
-	}
-	public class HoerbuchListeDataSource : UITableViewDataSource
-	{
+		public delegate void RowSelectedEventHandler (UITableView tableView, NSIndexPath indexPath);
+
+		public event RowSelectedEventHandler Selected;
+		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
+		{
+			OnRowSelected (tableView, indexPath);
+		}
+		private void OnRowSelected(UITableView tableView, NSIndexPath indexPath)
+		{
+			if (Selected != null)
+				Selected (tableView, indexPath);
+		}
+
+		public override UIView GetViewForHeader (UITableView tableView, nint section)
+		{
+			var view = new UIView (new CGRect (0, 0, tableView.Frame.Width, tableView.SectionHeaderHeight));
+			var label = new UILabel ();
+			view.BackgroundColor = label.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+			label.TextColor = UIColor.LightGray;
+			var prettyString = new NSMutableAttributedString (string.Format ("{0} ({1})", hoerbuchListeViewController.PlayList.Name, hoerbuchListeViewController.PlayList.TrackCount),
+				UIFont.FromName ("HelveticaNeue-Light", 15f));
+			label.AttributedText = prettyString;
+
+			label.TranslatesAutoresizingMaskIntoConstraints = false;
+			view.AddSubview (label);
+			view.AddConstraint (NSLayoutConstraint.Create (label, NSLayoutAttribute.Leading, NSLayoutRelation.Equal, view, NSLayoutAttribute.Leading, 1f, 10f));
+			view.AddConstraint (NSLayoutConstraint.Create (label, NSLayoutAttribute.Trailing, NSLayoutRelation.Equal, view, NSLayoutAttribute.Trailing, 1f, 10f));
+			view.AddConstraint (NSLayoutConstraint.Create (label, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, view, NSLayoutAttribute.CenterY, 1f, 0));
+			return view;
+		}
+	
 		public event EventHandler Changed;
 		private void OnChanged() {
 			DispatchQueue.MainQueue.DispatchAsync(() => {
@@ -176,7 +217,6 @@ namespace Spookify
 			});
 		}
 
-		public HoerbuchListeViewController hoerbuchListeViewController { get; set; }
 		SPTPlaylistSnapshot _playlistSnapshot = null;
 
 		bool semi = false;

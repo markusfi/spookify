@@ -22,7 +22,19 @@ namespace Spookify
 		public UIKit.UILabel AuthorLabel { get; private set; }
 
 		[Outlet]
-		UIKit.UITabBar TabBar { get; set; }
+		UIKit.UIButton BuchSelektiertButton { get; set; }
+
+		[Outlet]
+		UIKit.UIView ContainerView { get; set; }
+
+		[Outlet]
+		UIKit.UITextView DescriptionTextView { get; set; }
+
+		[Outlet]
+		UIKit.UILabel LengthLabel { get; set; }
+
+		[Outlet]
+		UIKit.UIScrollView ScrollView { get; set; }
 
 		[Action ("OnBuchSelektiert:")]
 		partial void OnBuchSelektiert (UIKit.UIButton sender);
@@ -44,9 +56,29 @@ namespace Spookify
 				AuthorLabel = null;
 			}
 
-			if (TabBar != null) {
-				TabBar.Dispose ();
-				TabBar = null;
+			if (BuchSelektiertButton != null) {
+				BuchSelektiertButton.Dispose ();
+				BuchSelektiertButton = null;
+			}
+
+			if (DescriptionTextView != null) {
+				DescriptionTextView.Dispose ();
+				DescriptionTextView = null;
+			}
+
+			if (LengthLabel != null) {
+				LengthLabel.Dispose ();
+				LengthLabel = null;
+			}
+
+			if (ScrollView != null) {
+				ScrollView.Dispose ();
+				ScrollView = null;
+			}
+
+			if (ContainerView != null) {
+				ContainerView.Dispose ();
+				ContainerView = null;
 			}
 		}
 	}

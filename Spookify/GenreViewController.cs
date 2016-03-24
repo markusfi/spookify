@@ -18,10 +18,19 @@ namespace Spookify
 		public GenreViewController () : base ("HoerbuecherViewController", null)
 		{
 		}
-
+		public override UIStatusBarStyle PreferredStatusBarStyle ()
+		{
+			return UIStatusBarStyle.LightContent;
+		}
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+
+			this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
+			this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB (25, 25, 25);
+			this.NavigationController.NavigationBar.Translucent = false;
+			this.NavigationController.NavigationBar.TintColor = UIColor.White;
+
 			// Perform any additional setup after loading the view, typically from a nib.
 			this.HoerbuchTableView.Delegate = new HoerbuecherDelegate();
 			var ds = new HoerbuecherDataSource ();
@@ -38,6 +47,7 @@ namespace Spookify
 		public void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
 			// this.PerformSegue("Hoerbuecher",this);
+			tableView.DeselectRow(indexPath, true);
 
 		}
 		void DataSourceChanged (object sender, EventArgs args)
@@ -47,6 +57,11 @@ namespace Spookify
 		public override void ViewDidAppear (bool animated)
 		{
 			base.ViewDidAppear (animated);
+
+			if (!CurrentPlayer.Current.IsSessionValid && CurrentPlayer.Current.CanRenewSession) {
+				CurrentPlayer.Current.RenewSession ();
+			}
+
 			if (CurrentPlayer.Current.IsSessionValid) {
 				var ds = this.HoerbuchTableView.DataSource as HoerbuecherDataSource;
 				if (ds == null || ds.ObjectsNeedInitialisation())

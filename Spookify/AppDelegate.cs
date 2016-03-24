@@ -37,6 +37,16 @@ namespace Spookify
 			if (!string.IsNullOrEmpty(ConfigSpotify.kTokenRefreshServiceURL))
 				auth.TokenRefreshURL = new NSUrl(ConfigSpotify.kTokenRefreshServiceURL);
 			auth.SessionUserDefaultsKey = ConfigSpotify.kSessionUserDefaultsKey;
+
+			UINavigationBar.Appearance.SetTitleTextAttributes(new UITextAttributes() {
+				TextColor = UIColor.White,
+				TextShadowColor = UIColor.Clear,
+				Font = UIFont.FromName("HelveticaNeue-Light",18)
+			}); 
+
+			UIApplication.SharedApplication.SetStatusBarStyle(UIStatusBarStyle.LightContent, false);
+			UINavigationBar.Appearance.ShadowImage = new UIImage();
+			UINavigationBar.Appearance.SetBackgroundImage (new UIImage (), UIBarMetrics.Default);
 			return true;
 		}
 

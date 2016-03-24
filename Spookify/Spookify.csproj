@@ -87,6 +87,9 @@
     <Reference Include="Xamarin.iOS" />
     <Reference Include="System.Web.Services" />
     <Reference Include="MonoTouch.Dialog-1" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
@@ -155,6 +158,7 @@
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
     <None Include="LRU\LICENSE" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -213,6 +217,7 @@
       <DependentUpon>SecondViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="SomeExtensionMethods.cs" />
+    <Compile Include="ConfigGoogle.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
@@ -230,6 +235,7 @@
     <BundleResource Include="Resources\Images\user_male_circle.png" />
     <BundleResource Include="Resources\Images\literature_filled.png" />
     <BundleResource Include="Resources\Images\search.png" />
+    <BundleResource Include="Resources\.DS_Store" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpotifySDK\SpotifySDK.csproj">
@@ -246,5 +252,11 @@
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork%402x" />
     <ITunesArtwork Include="iTunesArtwork" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="json.net">
+      <Version>7.0.1</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
   </ItemGroup>
 </Project>

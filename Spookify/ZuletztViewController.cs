@@ -21,6 +21,12 @@ namespace Spookify
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+
+			this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
+			this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB (25, 25, 25);
+			this.NavigationController.NavigationBar.Translucent = false;
+			this.NavigationController.NavigationBar.TintColor = UIColor.White;
+
 			// Perform any additional setup after loading the view, typically from a nib.
 			this.HoerbuchListeTableView.Delegate = new ZuletztListeDelegate() { zuletztViewController = this };
 			var ds = new ZuletztDataSource () { zuletztViewController = this };
