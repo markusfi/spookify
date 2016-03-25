@@ -30,6 +30,21 @@ namespace Spookify
 			this.BuchSelektiertButton.Layer.CornerRadius = 15;
 			this.BuchSelektiertButton.Layer.BackgroundColor = UIColor.FromRGB (100, 143, 0).CGColor;
 
+			this.SucheAmazonButton.Layer.CornerRadius = 10;
+			this.SucheAmazonButton.Layer.BorderWidth = 0.5f;
+			this.SucheAmazonButton.Layer.BorderColor = UIColor.LightGray.CGColor;
+			this.SucheAmazonButton.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+
+			this.SucheBuechertreffButton.Layer.CornerRadius = 10;
+			this.SucheBuechertreffButton.Layer.BorderWidth = 0.5f;
+			this.SucheBuechertreffButton.Layer.BorderColor = UIColor.LightGray.CGColor;
+			this.SucheBuechertreffButton.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+
+			this.MehrVomAutorButton.Layer.CornerRadius = 10;
+			this.MehrVomAutorButton.Layer.BorderWidth = 0.5f;
+			this.MehrVomAutorButton.Layer.BorderColor = UIColor.LightGray.CGColor;
+			this.MehrVomAutorButton.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
+
 			SetBookTitleAndAuthor ();
 			LoadBookTracksAsync ();
 			LoadCoverAsync ();
@@ -38,12 +53,6 @@ namespace Spookify
 			ScrollView.TranslatesAutoresizingMaskIntoConstraints = false;
 			ContainerView.TranslatesAutoresizingMaskIntoConstraints = false;
 		}
-		public override void ViewWillLayoutSubviews ()
-		{
-			base.ViewWillLayoutSubviews ();
-			this.ScrollView.ContentSize = new CGSize (this.ContainerView.Frame.Width, ContainerView.Subviews.Max (x => x.Frame.Bottom) - this.ContainerView.Frame.Y);
-		}
-
 		void SetBookTitleAndAuthor()
 		{
 			if (Book != null) {
@@ -91,53 +100,73 @@ namespace Spookify
 					NSError err = null;
 					var name = MakeSearchKey (Book.Album.Name);
 					var author = MakeSearchKey (Book.Artists.FirstOrDefault ());
-					var json = (string)NSString.FromData (NSData.FromUrl (new NSUrl (string.Format ("{0}?q=intitle:{1}+inauthor:{2}&key={3}",
-						          ConfigGoogle.kSearchTitleURL,
-						          System.Web.HttpUtility.UrlEncode (name),
-						          System.Web.HttpUtility.UrlEncode (author),
-						          ConfigGoogle.kDeveloperKey)), 0, out err), NSStringEncoding.UTF8);
+					var data = NSData.FromUrl (new NSUrl (string.Format ("{0}?q=intitle:{1}+inauthor:{2}&key={3}",
+						           ConfigGoogle.kSearchTitleURL,
+						           System.Web.HttpUtility.UrlEncode (name),
+						           System.Web.HttpUtility.UrlEncode (author),
+						           ConfigGoogle.kDeveloperKey)), 0, out err);
+				
 					if (err == null) {
-						string description = string.Empty;
-						var volume = Newtonsoft.Json.Linq.JObject.Parse (json);
-						if (volume != null && volume.HasValues) {
-							var items = volume ["items"];
-							if (items != null) {
-								JToken book = null;
-								if (items.Count () > 1) {
-									book = items.FirstOrDefault (x => string.Compare ((string)x ["volumeInfo"] ["title"], name, true) == 0);
-								} else if (items.Count () > 0) {
-									book = items [0];
-								}
-								if (book != null) {
-									JToken volumeInfo = book ["volumeInfo"];
-									if (volumeInfo != null) {
-										description = (string) volumeInfo["description"];
-										var tmp = (string)volumeInfo ["publishedDate"];
-										if (!string.IsNullOrWhiteSpace(tmp)) {
-											DateTime date;
-											if (DateTime.TryParseExact(tmp, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
-											{
-												description += "\n\nErscheinungsdatum: "+date.ToShortDateString();
+						var json = (string)NSString.FromData (data, NSStringEncoding.UTF8);
+						if (json != null) {
+							string description = string.Empty;
+							var volume = Newtonsoft.Json.Linq.JObject.Parse (json);
+							if (volume != null && volume.HasValues) {
+								var items = volume ["items"];
+								if (items != null) {
+									JToken book = null;
+									if (items.Count () > 1) {
+										book = items.FirstOrDefault (x => string.Compare ((string)x ["volumeInfo"] ["title"], name, true) == 0);
+									} else if (items.Count () > 0) {
+										book = items [0];
+									}
+									if (book != null) {
+										JToken volumeInfo = book ["volumeInfo"];
+										if (volumeInfo != null) {
+											description = (string)volumeInfo ["description"];
+											var tmp = (string)volumeInfo ["publishedDate"];
+											if (!string.IsNullOrWhiteSpace (tmp)) {
+												DateTime date;
+												if (DateTime.TryParseExact (tmp, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date)) {
+													description += "\n\nErscheinungsdatum: " + date.ToShortDateString ();
+												}
 											}
-										}
-											tmp =  (string)volumeInfo ["publisher"];
-										if (!string.IsNullOrWhiteSpace(tmp)) {
-											description += "\n\nVerlag: "+tmp;
+											tmp = (string)volumeInfo ["publisher"];
+											if (!string.IsNullOrWhiteSpace (tmp)) {
+												description += "\n\nVerlag: " + tmp;
+											}
 										}
 									}
 								}
 							}
-						}
-						DispatchQueue.MainQueue.DispatchAsync (() => {
-							this.DescriptionTextView.Text = description;
-							this.DescriptionTextView.TextColor = this.AlbumLabel.TextColor;
+							DispatchQueue.MainQueue.DispatchAsync (() => {
+								this.DescriptionTextView.Text = description;
+								this.DescriptionTextView.TextColor = this.AlbumLabel.TextColor;
 
-							var frame = this.DescriptionTextView.Frame;
-							var height = this.DescriptionTextView.SizeThatFits(this.DescriptionTextView.Frame.Size).Height;
-							this.DescriptionTextView.Frame = new CGRect(frame.Location, new CGSize(frame.Width,height));
-						});
-					}					
-				});			
+								var frame = this.DescriptionTextView.Frame;
+								var height = this.DescriptionTextView.SizeThatFits (this.DescriptionTextView.Frame.Size).Height;
+								this.DescriptionTextView.Frame = new CGRect (frame.Location, new CGSize (frame.Width, height));
+								this.DescriptionTextViewHeightLayoutConstraint.Constant = height;
+
+								// Find the right size for the content view - that is the view inside the scrollview that holds all controls that can grow or shrink
+								var size = new CGSize (this.ContainerView.Frame.Width, ContainerView.Subviews.Max (x => x.Frame.Bottom) - this.ContainerView.Frame.Y);
+								// now adjust the content view by - do this by changing its height constraint and bottom alignment to its parent scroll view
+								var delta = size.Height - this.ScrollView.Frame.Height;
+								this.ContainerBottomLayoutConstraint.Constant = -delta;
+								this.ContainerHeightLayoutConstraint.Constant = delta;
+								// now recalculate the constraints
+								this.View.NeedsUpdateConstraints ();
+								this.View.UpdateConstraintsIfNeeded();
+								// now recalculate the layout
+								this.View.SetNeedsLayout();
+								this.View.LayoutIfNeeded();
+								// now we have the right size for the scrollview content after all children have been moved around
+								size = new CGSize (this.ContainerView.Frame.Width, ContainerView.Subviews.Max (x => x.Frame.Bottom) - this.ContainerView.Frame.Y);
+								this.ScrollView.ContentSize = size;
+							});
+						}	
+					}
+				});
 			}
 		}
 		void LoadCoverAsync()
@@ -199,10 +228,22 @@ namespace Spookify
 		public override void PrepareForSegue (UIStoryboardSegue segue, NSObject sender)
 		{
 			try {
-				var rechercheViewController = segue.DestinationViewController as RechercheViewController;
-				var name = MakeSearchKeyUrlEncode(Book.Album.Name);
-				var author = MakeSearchKeyUrlEncode(Book.Artists.FirstOrDefault());
-				rechercheViewController.Url = string.Format(@"https://www.google.de/search?q='{0}'{1}'{2}'&as_sitesearch=amazon.de",name,System.Web.HttpUtility.UrlEncode(" "),author);
+				if (segue.DestinationViewController is RechercheViewController) {
+					var rechercheViewController = segue.DestinationViewController as RechercheViewController;
+					var name = MakeSearchKeyUrlEncode(Book.Album.Name);
+					var author = MakeSearchKeyUrlEncode(Book.Artists.FirstOrDefault());
+					if (sender == SucheAmazonButton)
+						rechercheViewController.Url = string.Format(@"https://www.google.de/search?q='{0}'{1}'{2}'&as_sitesearch=amazon.de&num=1",name,System.Web.HttpUtility.UrlEncode(" "),author);
+					else if (sender == SucheBuechertreffButton)
+						rechercheViewController.Url = string.Format(@"https://www.google.de/search?q='{0}'{1}'{2}'&as_sitesearch=buechertreff.de&num=1",name,System.Web.HttpUtility.UrlEncode(" "),author);
+					else
+						rechercheViewController.Url = string.Format(@"https://www.google.de/search?q='{0}'{1}'{2}'",name,System.Web.HttpUtility.UrlEncode(" "),author);
+				}
+				if (segue.DestinationViewController is AutorViewController) {
+					var autorViewController = segue.DestinationViewController as AutorViewController;
+					// suche nach anderen Büchern des Autors
+					autorViewController.NewBook = this.NewBook;
+				}
 			}
 			catch(System.Exception ex) {
 				System.Diagnostics.Debug.WriteLine ("Bug: " + ex.ToString ());
@@ -242,7 +283,7 @@ namespace Spookify
 								Duration = pt.Duration, 
 								Index = kapitelNummer++  } )
 							.ToList(),
-						Artists = album.Artists.Cast<SPTPartialArtist>().Select(a => a.Name).ToList(),
+						Authors = album.Artists.Cast<SPTPartialArtist>().Select(a => new Author() { Name = a.Name, URI = a.Uri.AbsoluteString }).ToList(),
 						LargestCoverURL = album.LargestCover.ImageURL.AbsoluteString,
 						SmallestCoverURL = album.SmallestCover.ImageURL.AbsoluteString
 					};
@@ -250,6 +291,16 @@ namespace Spookify
 					LoadNextPageAsync(NewBook, album.FirstTrackPage, auth, p);
 				}
 			});
+		}
+
+		partial void OnSucheAmazon (UIKit.UIButton sender)
+		{
+			this.PerformSegue("RechercheSegue",sender);
+		}
+
+		partial void OnSucheBuechertreff (UIKit.UIButton sender)
+		{
+			this.PerformSegue("RechercheSegue",sender);
 		}
 
 		partial void OnBuchSelektiert (UIKit.UIButton sender)

@@ -545,7 +545,7 @@ namespace SpotifySDK
 		// @property (readonly, nonatomic) NSArray * artists;
 		[Export ("artists")]
 		// [Verify (StronglyTypedNSArray)]
-		NSObject[] Artists { get; }
+		SPTPartialArtist[] Artists { get; }
 
 		// @property (readonly, nonatomic) SPTListPage * firstTrackPage;
 		[Export ("firstTrackPage")]
@@ -719,13 +719,13 @@ namespace SpotifySDK
 		[Static]
 		[Export ("artistsFromData:withResponse:error:")]
 		// [Verify (StronglyTypedNSArray)]
-		NSObject[] ArtistsFromData (NSData data, NSUrlResponse response, out NSError error);
+		SPTArtist[] ArtistsFromData (NSData data, NSUrlResponse response, out NSError error);
 
 		// +(NSArray *)artistsFromDecodedJSON:(id)decodedObject error:(NSError **)error;
 		[Static]
 		[Export ("artistsFromDecodedJSON:error:")]
 		// [Verify (StronglyTypedNSArray)]
-		NSObject[] ArtistsFromDecodedJSON (NSObject decodedObject, out NSError error);
+		SPTArtist[] ArtistsFromDecodedJSON (NSObject decodedObject, out NSError error);
 
 		// +(void)artistWithURI:(NSURL *)uri session:(SPTSession *)session callback:(SPTRequestCallback)block;
 		[Static]

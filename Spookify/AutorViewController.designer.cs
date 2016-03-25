@@ -1,4 +1,4 @@
-// WARNING
+﻿// WARNING
 //
 // This file has been generated automatically by Xamarin Studio to store outlets and
 // actions made in the UI designer. If it is removed, they will be lost.
@@ -9,17 +9,17 @@ using System.CodeDom.Compiler;
 
 namespace Spookify
 {
-	[Register ("HoerbuchListeViewController")]
-	partial class HoerbuchListeViewController
+	[Register ("AutorViewController")]
+	partial class AutorViewController
 	{
 		[Outlet]
-		UIKit.UITableView HoerbuchListeTableView { get; set; }
+		UIKit.UITableView HoerbuchTableView { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (HoerbuchListeTableView != null) {
-				HoerbuchListeTableView.Dispose ();
-				HoerbuchListeTableView = null;
+			if (HoerbuchTableView != null) {
+				HoerbuchTableView.Dispose ();
+				HoerbuchTableView = null;
 			}
 		}
 	}

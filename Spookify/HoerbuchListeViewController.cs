@@ -66,6 +66,11 @@ namespace Spookify
 			HoerbuchListeTableView.TableHeaderView = searchController.SearchBar;
 			HoerbuchListeTableView.ScrollToRow(NSIndexPath.FromRowSection(0,0), UITableViewScrollPosition.Top, false);
 
+			resultsTableController.TableView.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+			searchController.SearchBar.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+			searchController.SearchBar.BarTintColor = UIColor.FromRGB (25, 25, 25);
+			searchController.SearchBar.TintColor = UIColor.White;
+
 			resultsTableController.TableView.WeakDelegate = this;
 			searchController.SearchBar.WeakDelegate = this;
 
@@ -249,10 +254,17 @@ namespace Spookify
 								this._playlistSnapshot = SPTPlaylistSnapshot.PlaylistSnapshotFromData (dat, resp, out errorOut);
 								AddListPageTracks(this._playlistSnapshot.FirstTrackPage);
 							});
+						} else {
+							semi = false;
+							if (CurrentPlayer.Current.CanRenewSession) {
+								CurrentPlayer.Current.RenewSession(() => InitPlaylistSnapshot());
+							}
 						}
-					}
+					} else 
+						semi = false;
 				} catch {
 					// dieses hoerbuch hat fehlende Daten...
+					semi = false;
 				}
 			}
 		}
@@ -264,14 +276,16 @@ namespace Spookify
 					var playlist = hoerbuchListeViewController.ThisAudioBookPlaylist;
 					foreach (SPTPlaylistTrack track in page.Items)
 					{
-						var newPlaylistItem = new PlaylistBook();
-						newPlaylistItem.Album = new AudioBookAlbum() {
-							Name = track.Album.Name
+						var newPlaylistItem = new PlaylistBook() {
+							 Album = new AudioBookAlbum() {
+								Name = track.Album.Name
+							 },
+							 Authors = track.Artists.Cast<SPTPartialArtist>().Select(a => new Author() { Name = a.Name}).ToList(),
+							 SmallestCoverURL = track.Album.SmallestCover.ImageURL.AbsoluteString,
+							 LargestCoverURL = track.Album.LargestCover.ImageURL.AbsoluteString,
+							 Uri = track.Album.GetUri().AbsoluteString
 						};
-						newPlaylistItem.Artists = track.Artists.Cast<SPTPartialArtist>().Select(a => a.Name).ToList();
-						newPlaylistItem.SmallestCoverURL = track.Album.SmallestCover.ImageURL.AbsoluteString;
-						newPlaylistItem.LargestCoverURL = track.Album.LargestCover.ImageURL.AbsoluteString;
-						newPlaylistItem.Uri = track.Album.GetUri().AbsoluteString;
+
 						playlist.Books.Add(newPlaylistItem);
 					}
 					if (page.HasNextPage) {
@@ -313,6 +327,10 @@ namespace Spookify
 					}
 				} else {
 					InitPlaylistSnapshot ();
+				}
+			} else {
+				if (CurrentPlayer.Current.CanRenewSession) {
+					CurrentPlayer.Current.RenewSession(() => LoadNextPageAsync(page)); 
 				}
 			}
 		}

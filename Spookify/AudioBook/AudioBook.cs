@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using SpotifySDK;
 using System.Collections.Generic;
 using Foundation;
@@ -43,7 +44,8 @@ namespace Spookify
 		public AudioBookAlbum Album { get; set; }
 		public List<AudioBookTrack> Tracks { get; set; }
 		public List<AudioBookBookmark> Bookmarks { get; set; }
-		public List<string> Artists { get; set; } 
+		public IEnumerable<string> Artists { get { return Authors != null ? Authors.Select (a => a.Name) : new string[0]; } }
+		public List<Author> Authors { get; set; } 
 		public string SmallestCoverURL  { get; set; }
 		public string LargestCoverURL { get; set; }
 
@@ -97,11 +99,19 @@ namespace Spookify
 	}
 
 	[Serializable]
+	public class Author
+	{
+		public string Name { get; set; }
+		public string URI { get; set; }
+	}
+
+	[Serializable]
 	public class PlaylistBook
 	{
 		public AudioBookAlbum Album { get; set; }
 		public List<AudioBookTrack> Tracks { get; set; }
-		public List<string> Artists { get; set; } 
+		public IEnumerable<string> Artists { get { return Authors != null ? Authors.Select (a => a.Name) : new string[0]; } }
+		public List<Author> Authors { get; set; } 
 		public string SmallestCoverURL { get; set; }
 		public string LargestCoverURL { get; set; }
 		public string Uri { get; set; }

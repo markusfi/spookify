@@ -59,7 +59,7 @@ namespace Spookify
 			_authPlayer.SessionUserDefaultsKey = ConfigSpotify.kSessionPlayerUserDefaultsKey;
 		}
 
-		public void RenewSession()
+		public void RenewSession(Action completionAction = null)
 		{
 			if (TriggerWaitingForSessionRenew) {
 				// do nothing right now, waiting for session renew...
@@ -70,7 +70,11 @@ namespace Spookify
 					auth.RenewSession (auth.Session, (error, session) => {
 						auth.Session = session;
 						TriggerSessionRenew = null;
-						if (error != null) {
+						if (error == null) {
+							if (completionAction != null)
+								completionAction();
+						}
+						else  {
 							new NSObject ().BeginInvokeOnMainThread (() => {
 								new UIAlertView ("Fehler", error.LocalizedDescription + error.Description, null, "OK").Show ();
 							});

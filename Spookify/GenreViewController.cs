@@ -59,9 +59,17 @@ namespace Spookify
 			base.ViewDidAppear (animated);
 
 			if (!CurrentPlayer.Current.IsSessionValid && CurrentPlayer.Current.CanRenewSession) {
-				CurrentPlayer.Current.RenewSession ();
-			}
+				CurrentPlayer.Current.RenewSession (() => {
+					if (CurrentPlayer.Current.IsSessionValid) {
+						BeginInvokeOnMainThread (LoadGenereData);
+					}
+				});
+			} else
+				LoadGenereData ();
+		}
 
+		void LoadGenereData()
+		{
 			if (CurrentPlayer.Current.IsSessionValid) {
 				var ds = this.HoerbuchTableView.DataSource as HoerbuecherDataSource;
 				if (ds == null || ds.ObjectsNeedInitialisation())

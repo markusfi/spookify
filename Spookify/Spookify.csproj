@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -41,8 +41,7 @@
     <CodesignKey>iPhone Distribution: Markus Fischer (8LR9UZJY9J)</CodesignKey>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <CodesignProvision>c8eb0c92-1507-4e1d-9d67-310598fb8a2c</CodesignProvision>
-    <IpaPackageName>
-    </IpaPackageName>
+    <IpaPackageName></IpaPackageName>
     <MtouchExtraArgs>-gcc_flags "-ObjC" </MtouchExtraArgs>
     <MtouchUseLlvm>true</MtouchUseLlvm>
   </PropertyGroup>
@@ -76,8 +75,7 @@
     <MtouchDebug>true</MtouchDebug>
     <MtouchUseSGen>true</MtouchUseSGen>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
-    <IpaPackageName>
-    </IpaPackageName>
+    <IpaPackageName></IpaPackageName>
     <CodesignProvision>5e40fd7d-6971-44c6-9c9b-52d1bc89aebe</CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
@@ -159,6 +157,7 @@
     <None Include="Entitlements.plist" />
     <None Include="LRU\LICENSE" />
     <None Include="packages.config" />
+    <Compile Include="AutorViewController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -218,6 +217,9 @@
     </Compile>
     <Compile Include="SomeExtensionMethods.cs" />
     <Compile Include="ConfigGoogle.cs" />
+    <Compile Include="AutorViewController.designer.cs">
+      <DependentUpon>AutorViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>

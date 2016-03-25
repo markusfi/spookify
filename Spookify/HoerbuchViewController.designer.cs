@@ -25,19 +25,43 @@ namespace Spookify
 		UIKit.UIButton BuchSelektiertButton { get; set; }
 
 		[Outlet]
+		UIKit.NSLayoutConstraint ContainerBottomLayoutConstraint { get; set; }
+
+		[Outlet]
+		UIKit.NSLayoutConstraint ContainerHeightLayoutConstraint { get; set; }
+
+		[Outlet]
 		UIKit.UIView ContainerView { get; set; }
 
 		[Outlet]
 		UIKit.UITextView DescriptionTextView { get; set; }
 
 		[Outlet]
+		UIKit.NSLayoutConstraint DescriptionTextViewHeightLayoutConstraint { get; set; }
+
+		[Outlet]
 		UIKit.UILabel LengthLabel { get; set; }
+
+		[Outlet]
+		UIKit.UIButton MehrVomAutorButton { get; set; }
 
 		[Outlet]
 		UIKit.UIScrollView ScrollView { get; set; }
 
+		[Outlet]
+		UIKit.UIButton SucheAmazonButton { get; set; }
+
+		[Outlet]
+		UIKit.UIButton SucheBuechertreffButton { get; set; }
+
 		[Action ("OnBuchSelektiert:")]
 		partial void OnBuchSelektiert (UIKit.UIButton sender);
+
+		[Action ("OnSucheAmazon:")]
+		partial void OnSucheAmazon (UIKit.UIButton sender);
+
+		[Action ("OnSucheBuechertreff:")]
+		partial void OnSucheBuechertreff (UIKit.UIButton sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
@@ -61,6 +85,11 @@ namespace Spookify
 				BuchSelektiertButton = null;
 			}
 
+			if (ContainerView != null) {
+				ContainerView.Dispose ();
+				ContainerView = null;
+			}
+
 			if (DescriptionTextView != null) {
 				DescriptionTextView.Dispose ();
 				DescriptionTextView = null;
@@ -71,14 +100,39 @@ namespace Spookify
 				LengthLabel = null;
 			}
 
+			if (MehrVomAutorButton != null) {
+				MehrVomAutorButton.Dispose ();
+				MehrVomAutorButton = null;
+			}
+
 			if (ScrollView != null) {
 				ScrollView.Dispose ();
 				ScrollView = null;
 			}
 
-			if (ContainerView != null) {
-				ContainerView.Dispose ();
-				ContainerView = null;
+			if (SucheAmazonButton != null) {
+				SucheAmazonButton.Dispose ();
+				SucheAmazonButton = null;
+			}
+
+			if (SucheBuechertreffButton != null) {
+				SucheBuechertreffButton.Dispose ();
+				SucheBuechertreffButton = null;
+			}
+
+			if (ContainerHeightLayoutConstraint != null) {
+				ContainerHeightLayoutConstraint.Dispose ();
+				ContainerHeightLayoutConstraint = null;
+			}
+
+			if (ContainerBottomLayoutConstraint != null) {
+				ContainerBottomLayoutConstraint.Dispose ();
+				ContainerBottomLayoutConstraint = null;
+			}
+
+			if (DescriptionTextViewHeightLayoutConstraint != null) {
+				DescriptionTextViewHeightLayoutConstraint.Dispose ();
+				DescriptionTextViewHeightLayoutConstraint = null;
 			}
 		}
 	}
