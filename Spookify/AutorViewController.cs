@@ -29,6 +29,9 @@ namespace Spookify
 			source.Changed += (object sender, EventArgs e) => {
 				this.HoerbuchTableView.ReloadData();
 			};
+			source.Selected += (tableView, indexPath) => {
+				tableView.DeselectRow(indexPath, true);
+			};
 		}
 
 		public override void DidReceiveMemoryWarning ()
@@ -43,7 +46,7 @@ namespace Spookify
 			if (cell != null) {
 				var destinationViewController = segue.DestinationViewController as HoerbuchViewController;
 				try {
-					destinationViewController.Book = cell.CurrentBook;
+					destinationViewController.Book = cell.CurrentPlaylistBook;
 				} catch {
 
 				}
@@ -220,7 +223,7 @@ namespace Spookify
 			}
 			public static void ConfigureCell(HoerbuchTableViewCell cell, PlaylistBook currentBook)
 			{
-				cell.CurrentBook = currentBook;
+				cell.CurrentPlaylistBook = currentBook;
 				cell.AlbumLabel.Text = currentBook.Album.Name;
 				cell.AuthorLabel.Text = currentBook.Artists.FirstOrDefault ();
 				var imageView = cell.AlbumImage;

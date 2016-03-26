@@ -36,7 +36,19 @@ namespace Spookify
 			};
 			this.HoerbuchListeTableView.TableFooterView = new UIView (CGRect.Empty);
 		}
+		public override void PrepareForSegue (UIStoryboardSegue segue, NSObject sender)
+		{
+			base.PrepareForSegue (segue, sender);
+			var cell = sender as HoerbuchTableViewCell;
+			if (cell != null) {
+				var destinationViewController = segue.DestinationViewController as HoerbuchViewController;
+				try {
+					destinationViewController.Book = (PlaylistBook)cell.CurrentAudioBook;
+				} catch {
 
+				}
+			}
+		}
 		public override void ViewDidAppear(bool animated)
 		{
 			base.ViewDidAppear (animated);
@@ -47,6 +59,7 @@ namespace Spookify
 		{
 			public ZuletztViewController zuletztViewController { get; set; }
 
+			/*
 			public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 			{
 				var selectedBook = CurrentState.Current.Audiobooks [indexPath.Row];
@@ -64,7 +77,7 @@ namespace Spookify
 						tabBarController.SelectedIndex = 1;
 					});
 				}
-			}
+			}*/
 			public override string TitleForDeleteConfirmation (UITableView tableView, NSIndexPath indexPath)
 			{
 				return "Buch entfernen";
@@ -112,6 +125,8 @@ namespace Spookify
 				if (audiobooks != null) {
 					if (indexPath.Row < audiobooks.Count) {
 						var currentBook = audiobooks[indexPath.Row];
+						cell.CurrentAudioBook = currentBook;
+							
 						cell.AlbumLabel.Text = currentBook.Album.Name;
 						cell.AuthorLabel.Text = currentBook.Artists.FirstOrDefault ();
 

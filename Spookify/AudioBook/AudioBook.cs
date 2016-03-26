@@ -39,7 +39,7 @@ namespace Spookify
 	}
 
 	[Serializable]
-	public class AudioBook
+	public class AudioBook 
 	{
 		public AudioBookAlbum Album { get; set; }
 		public List<AudioBookTrack> Tracks { get; set; }
@@ -48,6 +48,7 @@ namespace Spookify
 		public List<Author> Authors { get; set; } 
 		public string SmallestCoverURL  { get; set; }
 		public string LargestCoverURL { get; set; }
+		public string Uri { get; set; }
 
 		[NonSerializedAttribute]
 		NSData SmallestCoverData;
@@ -106,8 +107,8 @@ namespace Spookify
 	}
 
 	[Serializable]
-	public class PlaylistBook
-	{
+	public class PlaylistBook 
+	{		
 		public AudioBookAlbum Album { get; set; }
 		public List<AudioBookTrack> Tracks { get; set; }
 		public IEnumerable<string> Artists { get { return Authors != null ? Authors.Select (a => a.Name) : new string[0]; } }
@@ -115,6 +116,18 @@ namespace Spookify
 		public string SmallestCoverURL { get; set; }
 		public string LargestCoverURL { get; set; }
 		public string Uri { get; set; }
+
+		public static explicit operator PlaylistBook(AudioBook ab)
+		{
+			return new PlaylistBook() {
+				Album = new AudioBookAlbum() { Name = ab.Album == null ? null : ab.Album.Name },
+				Tracks = ab.Tracks == null ? null : ab.Tracks.Select(t => new AudioBookTrack() { Name = t.Name, Index = t.Index, Url = t.Url, Duration = t.Duration }).ToList(),
+				Authors = ab.Authors == null ? null : ab.Authors.Select(a => new Author() { Name = a.Name, URI = a.URI }).ToList(),
+				SmallestCoverURL = ab.SmallestCoverURL,
+				LargestCoverURL = ab.LargestCoverURL,
+				Uri = ab.Uri
+			};
+		}
 	}
 
 	[Serializable]

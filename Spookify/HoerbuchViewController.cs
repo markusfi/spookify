@@ -196,6 +196,8 @@ namespace Spookify
 		}
 		string MakeSearchKey(string name)
 		{
+			if (string.IsNullOrWhiteSpace (name))
+				return name;
 			// remove everything in ( xxx ) when not starting with it...
 			int pos = name.IndexOf ('(');
 			if (pos != -1 && pos > 1) {
@@ -258,39 +260,46 @@ namespace Spookify
 
 		void LoadBookTracksAsync()
 		{
-			var url = new NSUrl(Book.Uri);
-			SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
-			var p = SPTRequest.SPTRequestHandlerProtocol;
-			NSError errorOut;
+			if (Book != null && Book.Uri != null) {
+				var url = new NSUrl (Book.Uri);
+				SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
+				var p = SPTRequest.SPTRequestHandlerProtocol;
+				NSError errorOut;
 
-			var nsUrlRequest = SPTAlbum.CreateRequestForAlbum(url, auth.Session.AccessToken, "DE", out errorOut);
-			SPTRequestHandlerProtocol_Extensions.Callback(p, nsUrlRequest, (er,resp,jsonData) => {
-				if (er != null) {
-					return;
-				}
-				NSError nsError;
-				var album = SPTAlbum.AlbumFromData(jsonData, resp, out nsError);
-				if (album!= null) {
-					int kapitelNummer = 1;
-					NewBook = new AudioBook() {
-						Album = new AudioBookAlbum() { Name = album.Name } , 
-						Tracks = album.FirstTrackPage.Items
-							.Cast<SPTPartialTrack>()
-							.Where(pt => pt.IsPlayable)
-							.Select(pt => new AudioBookTrack() { 
-								Url = pt.GetUri().AbsoluteString, 
+				var nsUrlRequest = SPTAlbum.CreateRequestForAlbum (url, auth.Session.AccessToken, "DE", out errorOut);
+				SPTRequestHandlerProtocol_Extensions.Callback (p, nsUrlRequest, (er, resp, jsonData) => {
+					if (er != null) {
+						return;
+					}
+					NSError nsError;
+					var album = SPTAlbum.AlbumFromData (jsonData, resp, out nsError);
+					if (album != null) {
+						int kapitelNummer = 1;
+						NewBook = new AudioBook () {
+							Uri = album.Uri.AbsoluteString,
+							Album = new AudioBookAlbum () { Name = album.Name }, 
+							Tracks = album.FirstTrackPage.Items
+							.Cast<SPTPartialTrack> ()
+							.Where (pt => pt.IsPlayable)
+							.Select (pt => new AudioBookTrack () { 
+								Url = pt.GetUri ().AbsoluteString, 
 								Name = pt.Name, 
 								Duration = pt.Duration, 
-								Index = kapitelNummer++  } )
-							.ToList(),
-						Authors = album.Artists.Cast<SPTPartialArtist>().Select(a => new Author() { Name = a.Name, URI = a.Uri.AbsoluteString }).ToList(),
-						LargestCoverURL = album.LargestCover.ImageURL.AbsoluteString,
-						SmallestCoverURL = album.SmallestCover.ImageURL.AbsoluteString
-					};
-					SetBookLength();
-					LoadNextPageAsync(NewBook, album.FirstTrackPage, auth, p);
-				}
-			});
+								Index = kapitelNummer++
+							})
+							.ToList (),
+							Authors = album.Artists.Cast<SPTPartialArtist> ().Select (a => new Author () {
+								Name = a.Name,
+								URI = a.Uri.AbsoluteString
+							}).ToList (),
+							LargestCoverURL = album.LargestCover.ImageURL.AbsoluteString,
+							SmallestCoverURL = album.SmallestCover.ImageURL.AbsoluteString
+						};
+						SetBookLength ();
+						LoadNextPageAsync (NewBook, album.FirstTrackPage, auth, p);
+					}
+				});
+			}
 		}
 
 		partial void OnSucheAmazon (UIKit.UIButton sender)
@@ -324,6 +333,13 @@ namespace Spookify
 				UIView  toView = tabBarController.ViewControllers[1].View;
 
 				UIView.Transition(fromView,toView,0.5,UIViewAnimationOptions.CurveEaseInOut,() => { tabBarController.SelectedIndex = 1; });
+
+				var fromNavController = tabBarController.SelectedViewController as UINavigationController;
+				if (fromNavController != null && 
+					fromNavController.ViewControllers != null &&
+					fromNavController.ViewControllers.Length > 0 && 
+					fromNavController.ViewControllers[0].GetType() == typeof(ZuletztViewController))
+					this.NavigationController.PopToRootViewController (false);
 			} 
 		}
 

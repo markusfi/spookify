@@ -38,6 +38,10 @@ namespace Spookify
 		{
 			base.ViewDidLoad ();
 
+			this.HoerbuchListeTableView.SeparatorColor = UIColor.FromRGB (50, 50, 50);
+			this.HoerbuchListeTableView.SeparatorStyle = UITableViewCellSeparatorStyle.SingleLine;
+			this.HoerbuchListeTableView.SeparatorInset = new UIEdgeInsets (0, 0, 0, 0);
+
 			this.AutomaticallyAdjustsScrollViewInsets = false;
 
 			var ds = new HoerbuchListeDataSource () { hoerbuchListeViewController = this };
@@ -162,7 +166,7 @@ namespace Spookify
 			if (cell != null) {
 				var destinationViewController = segue.DestinationViewController as HoerbuchViewController;
 				try {
-					destinationViewController.Book = cell.CurrentBook;
+					destinationViewController.Book = cell.CurrentPlaylistBook;
 				} catch {
 
 				}
@@ -280,7 +284,7 @@ namespace Spookify
 							 Album = new AudioBookAlbum() {
 								Name = track.Album.Name
 							 },
-							 Authors = track.Artists.Cast<SPTPartialArtist>().Select(a => new Author() { Name = a.Name}).ToList(),
+							 Authors = track.Artists.Cast<SPTPartialArtist>().Select(a => new Author() { Name = a.Name, URI = a.Uri.AbsoluteString }).ToList(),
 							 SmallestCoverURL = track.Album.SmallestCover.ImageURL.AbsoluteString,
 							 LargestCoverURL = track.Album.LargestCover.ImageURL.AbsoluteString,
 							 Uri = track.Album.GetUri().AbsoluteString
@@ -354,7 +358,7 @@ namespace Spookify
 		}
 		public static void ConfigureCell(HoerbuchTableViewCell cell, PlaylistBook currentBook)
 		{
-			cell.CurrentBook = currentBook;
+			cell.CurrentPlaylistBook = currentBook;
 			cell.AlbumLabel.Text = currentBook.Album.Name;
 			cell.AuthorLabel.Text = currentBook.Artists.FirstOrDefault ();
 			var imageView = cell.AlbumImage;
@@ -411,6 +415,13 @@ namespace Spookify
 
 		public bool LoadMoreCell;
 
+		public override void ViewDidLoad ()
+		{
+			base.ViewDidLoad ();
+			this.TableView.SeparatorColor = UIColor.FromRGB (50, 50, 50);
+			this.TableView.SeparatorStyle = UITableViewCellSeparatorStyle.SingleLine;
+			this.TableView.SeparatorInset = new UIEdgeInsets (0, 0, 0, 0);
+		}
 		public override nint RowsInSection (UITableView tableview, nint section)
 		{
 			if (HoerbuchListeViewController == null)
