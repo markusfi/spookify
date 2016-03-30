@@ -179,6 +179,7 @@ namespace Spookify
 		void ShowNoConnection() {
 			this.AlbumLabel.Text = "Keine Internetverbindung\nStreaming nicht möglich";
 			this.PlayButton.SetImage (UIImage.FromBundle ("NoConnection").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
+			this.PlayButton.Hidden = true;
 			this.AlbumImage.Image = UIImage.FromBundle ("NoConnectionTitle");
 			this.AlbumImage.Hidden = false;
 			this.ActivityIndicatorBackgroundView.Hidden = true;
@@ -187,6 +188,7 @@ namespace Spookify
 		void ShowPendingRenewSession() {
 			this.AlbumLabel.Text = "Sitzung wird aufgebaut";
 			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
+			this.PlayButton.Hidden = true;
 			this.AlbumImage.Image = null;
 			this.AlbumImage.Hidden = true;
 			this.ActivityIndicatorBackgroundView.Hidden = false;
@@ -196,6 +198,7 @@ namespace Spookify
 		void ShowPendingLogin() {
 			this.AlbumLabel.Text = "Anmeldung wird durchgeführt";
 			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
+			this.PlayButton.Hidden = true;
 			this.AlbumImage.Image = null;
 			this.AlbumImage.Hidden = true;
 			this.ActivityIndicatorBackgroundView.Hidden = false;
@@ -205,6 +208,7 @@ namespace Spookify
 		void ShowLoginToSpotify() {
 			this.AlbumLabel.Text = "Bitte melde dich mit deinem\nPremium Spotify Account an";
 			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
+			this.PlayButton.Hidden = false;
 			this.AlbumImage.Image = UIImage.FromBundle ("Spotify");
 			this.AlbumImage.Hidden = false;
 			this.ActivityIndicatorBackgroundView.Hidden = true;
@@ -223,6 +227,7 @@ namespace Spookify
 			this.ActivityIndicatorBackgroundView.Hidden = true;
 			this.ActivityIndicatorView.StopAnimating ();
 			this.PlayButton.SetImage (UIImage.FromBundle (this.Player.IsPlaying ? "Pause" : "Play").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
+			this.PlayButton.Hidden = false;
 
 			var c = CurrentState.Current;
 			if (c.CurrentAudioBook != null &&
@@ -276,7 +281,8 @@ namespace Spookify
 		}
 		public void DisplayAlbum()
 		{
-			SavePosition ();
+			if (!CurrentPlayer.Current.TriggerWaitingForPlayUri)
+				SavePosition ();
 
 			var ab = CurrentState.Current.CurrentAudioBook;
 
@@ -472,17 +478,15 @@ namespace Spookify
 					nowPlaying.ElapsedPlaybackTime = 0;
 
 					if (ab.Tracks != null) {
-						nowPlaying.ChapterCount = ab.Tracks.Count;
 						nowPlaying.AlbumTrackCount = ab.Tracks.Count;
 						if (ab.CurrentPosition != null && 
 							ab.Tracks != null && 
 							ab.CurrentPosition.TrackIndex < ab.Tracks.Count) {
 							var track = ab.Tracks.ElementAt (ab.CurrentPosition.TrackIndex);
 							nowPlaying.Title = track.Name;
-							nowPlaying.AlbumTrackNumber = ab.CurrentPosition.TrackIndex;
+							nowPlaying.AlbumTrackNumber = ab.CurrentPosition.TrackIndex+1;
 							nowPlaying.ElapsedPlaybackTime = ab.CurrentPosition.PlaybackPosition;
 							nowPlaying.PlaybackDuration = track.Duration;
-							nowPlaying.ChapterNumber = ab.CurrentPosition.TrackIndex;
 						}
 					}
 

@@ -23,18 +23,19 @@ namespace Spookify
 		{ 
 			get {
 				if (_currentState == null) {
-					try {
-						BinaryFormatter formatter = new BinaryFormatter();
-						if (File.Exists (CurrentState.StateFilename)) {
-							using (var fs = new FileStream (CurrentState.StateFilename, FileMode.Open, FileAccess.Read)) {
-								_currentState = formatter.Deserialize (fs) as CurrentState;
+					lock (typeof(CurrentState)) {						
+						try {
+							BinaryFormatter formatter = new BinaryFormatter ();
+							if (File.Exists (CurrentState.StateFilename)) {
+								using (var fs = new FileStream (CurrentState.StateFilename, FileMode.Open, FileAccess.Read)) {
+									_currentState = formatter.Deserialize (fs) as CurrentState;
+								}
 							}
-						}
-						if (_currentState == null)
+							if (_currentState == null)
+								_currentState = new CurrentState ();
+						} catch {
 							_currentState = new CurrentState ();
-					}
-					catch {
-						_currentState = new CurrentState ();
+						}
 					}
 				}
 				return _currentState;			
@@ -73,13 +74,15 @@ namespace Spookify
 		}
 		public void StoreCurrentState()
 		{
-			BinaryFormatter formatter = new BinaryFormatter();
-			if (File.Exists (CurrentState.StateFilename))
-				File.Delete (CurrentState.StateFilename);
-			using (var fs = new FileStream (CurrentState.StateFilename, FileMode.CreateNew, FileAccess.ReadWrite)) {
-				fs.Seek (0, SeekOrigin.Begin);
-				fs.SetLength (0);
-				formatter.Serialize (fs, this);
+			lock (typeof(CurrentState)) {
+				BinaryFormatter formatter = new BinaryFormatter ();
+				if (File.Exists (CurrentState.StateFilename))
+					File.Delete (CurrentState.StateFilename);
+				using (var fs = new FileStream (CurrentState.StateFilename, FileMode.CreateNew, FileAccess.ReadWrite)) {
+					fs.Seek (0, SeekOrigin.Begin);
+					fs.SetLength (0);
+					formatter.Serialize (fs, this);
+				}
 			}
 		}
 	}

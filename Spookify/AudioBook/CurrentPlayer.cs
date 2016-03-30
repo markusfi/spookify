@@ -68,9 +68,9 @@ namespace Spookify
 					SPTAuth auth = this.AuthPlayer;
 					TriggerSessionRenew = DateTime.Now;
 					auth.RenewSession (auth.Session, (error, session) => {
-						auth.Session = session;
 						TriggerSessionRenew = null;
 						if (error == null) {
+							auth.Session = session;
 							if (completionAction != null)
 								completionAction();
 						}
@@ -78,7 +78,7 @@ namespace Spookify
 							new NSObject ().BeginInvokeOnMainThread (() => {
 								new UIAlertView ("Fehler", error.LocalizedDescription + error.Description, null, "OK").Show ();
 							});
-						}				
+						}			
 					});
 				}
 			}
@@ -135,6 +135,19 @@ namespace Spookify
 			}
 		}
 
+		DateTime? TriggerPlayUri = null;
+		public bool TriggerWaitingForPlayUri {
+			get {
+				return TriggerPlayUri.HasValue &&
+					(TriggerPlayUri.Value.AddSeconds (1) > DateTime.Now);
+			}
+		}
+		public void SetTriggerWaitForPlayUri() {
+			if (!TriggerWaitingForPlayUri)
+				TriggerPlayUri=DateTime.Now;
+		}
+
+
 		SPTAudioStreamingController _player;
 		public SPTAudioStreamingController RawPlayer { get { return this._player; } }
 		public SPTAudioStreamingController Player
@@ -184,35 +197,42 @@ namespace Spookify
 			}
 		}
 
-		int CurrentStartTrack;
+		public int CurrentStartTrack;
 
 		public void PlayCurrentAudioBook()
 		{			
 			if (this.IsPlayerCreated && HasConnection) {
-				if (CurrentState.Current.CurrentAudioBook != null && 
-					CurrentState.Current.CurrentAudioBook.Tracks != null) {
-					if (CurrentState.Current.CurrentAudioBook.CurrentPosition != null) {
-						CurrentStartTrack = CurrentState.Current.CurrentAudioBook.CurrentPosition.TrackIndex;
+				var ab = CurrentState.Current.CurrentAudioBook;
+				if (ab != null && 
+					ab.Tracks != null) {
+					if (ab.CurrentPosition != null) {
+						CurrentStartTrack = (ab.CurrentPosition.TrackIndex - (ab.CurrentPosition.TrackIndex % 25));
 						if (CurrentStartTrack >= 0 &&
-						    CurrentStartTrack < CurrentState.Current.CurrentAudioBook.Tracks.Count) {
+						    CurrentStartTrack < ab.Tracks.Count) {
 							SPTPlayOptions options = new SPTPlayOptions () {
-								TrackIndex = 0, 
-								StartTime = CurrentState.Current.CurrentAudioBook.CurrentPosition.PlaybackPosition
+								TrackIndex = ab.CurrentPosition.TrackIndex - CurrentStartTrack, 
+								StartTime = ab.CurrentPosition.PlaybackPosition
 							};
-							this.Player.PlayURIs (CurrentState.Current.CurrentAudioBook.Tracks.Skip (CurrentStartTrack).Take (50).Select (t => t.NSUrl).ToArray (), 
+							SetTriggerWaitForPlayUri ();
+							CurrentState.Current.StoreCurrentState ();
+							this.Player.PlayURIs (ab.Tracks.Skip (CurrentStartTrack).Take (50).Select (t => t.NSUrl).ToArray (), 
 								options,
 								(playURIError1) => {
 								});
+							Console.WriteLine ("Player.PlayURI(" + CurrentStartTrack + ",options(TrackIndex=" + options.TrackIndex + ",StartTime=" + options.StartTime + ")");
 							return;
 						}
 					}
 					CurrentStartTrack = 0;
-					if (CurrentState.Current.CurrentAudioBook.CurrentPosition != null)
-						CurrentState.Current.CurrentAudioBook.CurrentPosition.TrackIndex = 0;
-					this.Player.PlayURIs (CurrentState.Current.CurrentAudioBook.Tracks.Take(50).Select (t => t.NSUrl).ToArray (), 
+					if (ab.CurrentPosition != null)
+						ab.CurrentPosition.TrackIndex = 0;
+					SetTriggerWaitForPlayUri ();
+					CurrentState.Current.StoreCurrentState ();
+					this.Player.PlayURIs (ab.Tracks.Take(50).Select (t => t.NSUrl).ToArray (), 
 						0, 
 						(playURIError) => {
 						});
+					Console.WriteLine ("Player.PlayURI(" + CurrentStartTrack + ")");
 				}
 			}
 		}
@@ -305,35 +325,64 @@ namespace Spookify
 
 		public class MySPTAudioStreamingDelegate : SPTAudioStreamingPlaybackDelegate {
 			PlayerViewController viewController = null;
+		
 			public MySPTAudioStreamingDelegate(PlayerViewController vc) {
 				this.viewController = vc;
 			}
+			void LogState(string txt)
+			{
+				#if DEBUG
+				Console.WriteLine(txt);
+				var p = this.viewController.Player;
+				if (p != null) {
+					Console.WriteLine ("Player.CurrentTrackIndex="+p.CurrentTrackIndex+", Player.CurrentPlaybackPosition"+p.CurrentPlaybackPosition+") CurrentStartTrack="+CurrentPlayer.Current.CurrentStartTrack);
+				}
+				#endif
+			}
+				
 			public override void AudioStreaming (SPTAudioStreamingController audioStreaming, bool isPlaying)
 			{
+				LogState ("AudioStreaming (isPlaying = " + isPlaying + ")");
 				viewController.DisplayAlbum();
 			}
 			public override void AudioStreaming (SPTAudioStreamingController audioStreaming, double offset)
 			{
+				LogState ("AudioStreaming (double offset = " + offset + ")");
 				viewController.DisplayAlbum();
 			}
 			public override void AudioStreaming (SPTAudioStreamingController audioStreaming, NSDictionary trackMetadata)
 			{
+				LogState ("AudioStreaming (trackMetadata)");
 				viewController.DisplayAlbum();
 			}
 			public override void AudioStreamingDidFailToPlayTrack (SPTAudioStreamingController audioStreaming, NSUrl trackUri)
 			{
+				LogState ("AudioStreamingDidFailToPlayTrack (NSUrl trackUri)");
 				viewController.DisplayAlbum();
 			}
 			public override void AudioStreamingDidLosePermissionForPlayback (SPTAudioStreamingController audioStreaming)
 			{
+				LogState ("AudioStreamingDidLosePermissionForPlayback ()");
 				viewController.DisplayAlbum();
 			}
 			public override void AudioStreamingDidSkipToNextTrack (SPTAudioStreamingController audioStreaming)
 			{
+				LogState ("AudioStreamingDidSkipToNextTrack ()");
 				viewController.DisplayAlbum();
 			}
 			public override void AudioStreamingDidSkipToPreviousTrack (SPTAudioStreamingController audioStreaming)
 			{
+				LogState ("AudioStreamingDidSkipToPreviousTrack ()");
+				viewController.DisplayAlbum();
+			}
+			public override void AudioStreamingDidStartPlayingTrack (SPTAudioStreamingController audioStreaming, NSUrl trackUri)
+			{
+				LogState ("AudioStreamingDidStartPlayingTrack (trackUri="+trackUri.AbsoluteString+")");
+				viewController.DisplayAlbum();
+			}
+			public override void AudioStreamingDidStopPlayingTrack (SPTAudioStreamingController audioStreaming, NSUrl trackUri)
+			{
+				LogState ("AudioStreamingDidStopPlayingTrack (trackUri="+trackUri.AbsoluteString+")");
 				viewController.DisplayAlbum();
 			}
 		}
