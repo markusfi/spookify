@@ -11,7 +11,7 @@ namespace Spookify
 {
 	public partial class HoerbuchListeViewController : UIViewController
 	{
-		ResultsTableController resultsTableController;
+		ResultsTableViewController resultsTableController;
 		UISearchController searchController;
 		bool searchControllerWasActive;
 		bool searchControllerSearchFieldWasFirstResponder;
@@ -54,7 +54,7 @@ namespace Spookify
 
 			HoerbuchListeTableView.TableFooterView = new UIView (CGRect.Empty);
 				
-			resultsTableController = new ResultsTableController() {
+			resultsTableController = new ResultsTableViewController() {
 				HoerbuchTableView = this.HoerbuchListeTableView,
 				FilteredPlaylist = new List<PlaylistBook> ()
 			};
@@ -67,10 +67,11 @@ namespace Spookify
 			};
 
 			searchController.SearchBar.SizeToFit ();
+
 			HoerbuchListeTableView.TableHeaderView = searchController.SearchBar;
 			HoerbuchListeTableView.ScrollToRow(NSIndexPath.FromRowSection(0,0), UITableViewScrollPosition.Top, false);
 
-			resultsTableController.TableView.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+			searchController.ObscuresBackgroundDuringPresentation = true;
 			searchController.SearchBar.BackgroundColor = UIColor.FromRGB (25, 25, 25);
 			searchController.SearchBar.BarTintColor = UIColor.FromRGB (25, 25, 25);
 			searchController.SearchBar.TintColor = UIColor.White;
@@ -78,7 +79,10 @@ namespace Spookify
 			resultsTableController.TableView.WeakDelegate = this;
 			searchController.SearchBar.WeakDelegate = this;
 
-			resultsTableController.TableView.TableFooterView = new UIView (CGRect.Empty);
+			foreach (UIView subview in this.HoerbuchListeTableView.Subviews) {
+				subview.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+			}
+
 
 			DefinesPresentationContext = true;
 
@@ -116,7 +120,7 @@ namespace Spookify
 		[Export ("updateSearchResultsForSearchController:")]
 		public virtual void UpdateSearchResultsForSearchController (UISearchController searchController)
 		{
-			var tableController = (ResultsTableController)searchController.SearchResultsController;
+			var tableController = (ResultsTableViewController)searchController.SearchResultsController;
 			tableController.HoerbuchListeViewController = this;
 			var newResult = PerformSearch (searchController.SearchBar.Text);
 			if (!newResult.SequenceEqual (tableController.FilteredPlaylist)) {
@@ -407,7 +411,7 @@ namespace Spookify
 		}
 	}
 
-	public class ResultsTableController : UITableViewController
+	public class ResultsTableViewController : UITableViewController
 	{
 		public HoerbuchListeViewController HoerbuchListeViewController { get; set; }
 		public UITableView HoerbuchTableView { get; set; }
@@ -421,6 +425,9 @@ namespace Spookify
 			this.TableView.SeparatorColor = UIColor.FromRGB (50, 50, 50);
 			this.TableView.SeparatorStyle = UITableViewCellSeparatorStyle.SingleLine;
 			this.TableView.SeparatorInset = new UIEdgeInsets (0, 0, 0, 0);
+
+			this.TableView.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+			this.TableView.TableFooterView = new UIView (CGRect.Empty);
 		}
 		public override nint RowsInSection (UITableView tableview, nint section)
 		{
@@ -443,7 +450,7 @@ namespace Spookify
 				return cell;
 			} else {
 				if (HoerbuchTableView != null) {
-					var ds = HoerbuchTableView.DataSource as HoerbuchListeDataSource;
+					var ds = HoerbuchTableView.Source as HoerbuchListeDataSource;
 					if (ds != null)
 						ds.LoadMore ();
 				}

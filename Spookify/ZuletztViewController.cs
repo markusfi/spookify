@@ -59,9 +59,9 @@ namespace Spookify
 		{
 			public ZuletztViewController zuletztViewController { get; set; }
 
-			/*
 			public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 			{
+				/*
 				var selectedBook = CurrentState.Current.Audiobooks [indexPath.Row];
 				if (selectedBook != null) {
 					CurrentState.Current.CurrentAudioBook = selectedBook;
@@ -77,7 +77,8 @@ namespace Spookify
 						tabBarController.SelectedIndex = 1;
 					});
 				}
-			}*/
+				*/
+			}
 			public override string TitleForDeleteConfirmation (UITableView tableView, NSIndexPath indexPath)
 			{
 				return "Buch entfernen";

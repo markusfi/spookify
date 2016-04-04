@@ -142,6 +142,7 @@ namespace Spookify
 							DispatchQueue.MainQueue.DispatchAsync (() => {
 								this.DescriptionTextView.Text = description;
 								this.DescriptionTextView.TextColor = this.AlbumLabel.TextColor;
+								this.DescriptionTextView.Font = UIFont.FromName(@"HelveticaNeue-Light",14.0f);
 
 								var frame = this.DescriptionTextView.Frame;
 								var height = this.DescriptionTextView.SizeThatFits (this.DescriptionTextView.Frame.Size).Height;
