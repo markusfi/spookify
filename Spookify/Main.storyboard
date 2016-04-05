@@ -70,6 +70,46 @@
                                                     <segue destination="AQr-cE-rfX" kind="show" id="7RX-at-53n"/>
                                                 </connections>
                                             </tableViewCell>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TippCell" rowHeight="88" id="oat-kF-zna" customClass="GenreTableViewCell">
+                                                <rect key="frame" x="0.0" y="92" width="600" height="88"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="center" tableViewCell="oat-kF-zna" id="O5x-TB-OKN">
+                                                    <rect key="frame" x="0.0" y="0.0" width="567" height="87"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <imageView userInteractionEnabled="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="LM9-fN-8iT">
+                                                            <rect key="frame" x="2" y="2" width="84" height="83"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="84" id="650-xi-qIb"/>
+                                                            </constraints>
+                                                        </imageView>
+                                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kOw-RL-6nE">
+                                                            <rect key="frame" x="99" y="33" width="436" height="21"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="ixa-Fc-oOs"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                    <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <constraints>
+                                                        <constraint firstItem="LM9-fN-8iT" firstAttribute="leading" secondItem="O5x-TB-OKN" secondAttribute="leading" constant="2" id="50C-tO-AiO"/>
+                                                        <constraint firstAttribute="trailingMargin" secondItem="kOw-RL-6nE" secondAttribute="trailing" constant="24" id="UQF-xq-NI3"/>
+                                                        <constraint firstItem="kOw-RL-6nE" firstAttribute="centerY" secondItem="LM9-fN-8iT" secondAttribute="centerY" id="gTr-Io-5HL"/>
+                                                        <constraint firstItem="kOw-RL-6nE" firstAttribute="leading" secondItem="LM9-fN-8iT" secondAttribute="trailing" constant="13" id="lI3-0H-sI1"/>
+                                                        <constraint firstItem="LM9-fN-8iT" firstAttribute="top" secondItem="O5x-TB-OKN" secondAttribute="top" constant="2" id="rmb-fp-vAY"/>
+                                                        <constraint firstItem="kOw-RL-6nE" firstAttribute="centerY" secondItem="O5x-TB-OKN" secondAttribute="centerY" id="wGp-iK-W9a"/>
+                                                    </constraints>
+                                                </tableViewCellContentView>
+                                                <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
+                                                <connections>
+                                                    <outlet property="GenereImage" destination="LM9-fN-8iT" id="VFY-Dx-X2O"/>
+                                                    <outlet property="GenereLabel" destination="kOw-RL-6nE" id="x9d-Hs-YeW"/>
+                                                    <segue destination="MJR-vP-EN2" kind="show" id="ACY-J5-LSb"/>
+                                                </connections>
+                                            </tableViewCell>
                                         </prototypes>
                                     </tableView>
                                 </subviews>

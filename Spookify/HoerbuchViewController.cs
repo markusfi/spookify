@@ -15,6 +15,7 @@ namespace Spookify
 	{
 		public PlaylistBook Book { get; set; }
 		public AudioBook NewBook { get; set; }
+		public bool ViewDidAppearCalled { get; private set; }
 
 		public HoerbuchViewController (IntPtr handle) : base (handle)
 		{
@@ -45,13 +46,20 @@ namespace Spookify
 			this.MehrVomAutorButton.Layer.BorderColor = UIColor.LightGray.CGColor;
 			this.MehrVomAutorButton.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
+			InitialWithCurrentBook ();
+
+			ScrollView.TranslatesAutoresizingMaskIntoConstraints = false;
+			ContainerView.TranslatesAutoresizingMaskIntoConstraints = false;
+			ViewDidAppearCalled = true;
+		}
+		public void InitialWithCurrentBook (PlaylistBook book = null)
+		{
+			if (book != null)
+				Book = book;
 			SetBookTitleAndAuthor ();
 			LoadBookTracksAsync ();
 			LoadCoverAsync ();
 			LoadDescriptionAsync ();
-
-			ScrollView.TranslatesAutoresizingMaskIntoConstraints = false;
-			ContainerView.TranslatesAutoresizingMaskIntoConstraints = false;
 		}
 		void SetBookTitleAndAuthor()
 		{
