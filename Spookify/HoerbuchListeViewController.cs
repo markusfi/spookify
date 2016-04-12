@@ -259,8 +259,14 @@ namespace Spookify
 								if (er != null) {
 									return;
 								}
-								this._playlistSnapshot = SPTPlaylistSnapshot.PlaylistSnapshotFromData (dat, resp, out errorOut);
-								AddListPageTracks(this._playlistSnapshot.FirstTrackPage);
+								try { 
+									this._playlistSnapshot = SPTPlaylistSnapshot.PlaylistSnapshotFromData (dat, resp, out errorOut);
+									AddListPageTracks(this._playlistSnapshot.FirstTrackPage);
+								}
+								catch (Exception ex)
+								{
+									Console.WriteLine(ex.Message);
+								}
 							});
 						} else {
 							semi = false;

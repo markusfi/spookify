@@ -26,13 +26,15 @@ namespace Spookify
 		{
 			base.ViewDidLoad ();
 
+			this.NavigationController.NavigationBar.TopItem.Title = this.NavigationController.TabBarItem.Title;
+
 			this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
 			this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB (25, 25, 25);
 			this.NavigationController.NavigationBar.Translucent = false;
 			this.NavigationController.NavigationBar.TintColor = UIColor.White;
 
 			// Perform any additional setup after loading the view, typically from a nib.
-			var ds = new HoerbuecherSource ();
+			var ds = new HoerbuecherSource (this);
 			this.HoerbuchTableView.Source = ds;
 			ds.Changed += DataSourceChanged;
 			ds.Selected += RowSelected;
@@ -83,13 +85,16 @@ namespace Spookify
 		{
 			// if (segue.Identifier.Equals(""))
 			NSIndexPath indexPath = this.HoerbuchTableView.IndexPathForSelectedRow;
-			var p = (this.HoerbuchTableView.Source as HoerbuecherSource).Getplaylist (indexPath);
-			var destinationViewController = segue.DestinationViewController as HoerbuchListeViewController;
-			if (destinationViewController != null) {
-				destinationViewController.PlayList = p;
+			if (indexPath != null) {
+				var p = (this.HoerbuchTableView.Source as HoerbuecherSource).Getplaylist (indexPath);
+				var destinationViewController = segue.DestinationViewController as HoerbuchListeViewController;
+				if (destinationViewController != null) {
+					destinationViewController.PlayList = p;
+				}
 			} else {
 				var hoerbuchViewController = segue.DestinationViewController as HoerbuchViewController;
 				if (hoerbuchViewController != null) {
+					var p = (this.HoerbuchTableView.Source as HoerbuecherSource).Getplaylist (NSIndexPath.FromItemSection(segue.Identifier == "HB1" ? 0 : 1, 0));
 
 					SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
 					NSError errorOut;
@@ -99,20 +104,23 @@ namespace Spookify
 							return;
 						}
 						var page = SPTPlaylistSnapshot.PlaylistSnapshotFromData (dat, resp, out errorOut);
-						if (page != null && page.FirstTrackPage != null && page.FirstTrackPage.Items != null && page.FirstTrackPage.Items.Any()) {
-							var track = page.FirstTrackPage.Items.FirstOrDefault() as SPTPlaylistTrack;
+						if (page != null && page.FirstTrackPage != null && page.FirstTrackPage.Items != null && page.FirstTrackPage.Items.Any ()) {
+							var track = page.FirstTrackPage.Items.FirstOrDefault () as SPTPlaylistTrack;
 							if (track != null) {
-								var newPlaylistItem = new PlaylistBook() {
-									Album = new AudioBookAlbum() {
+								var newPlaylistItem = new PlaylistBook () {
+									Album = new AudioBookAlbum () {
 										Name = track.Album.Name   
 									},
-									Authors = track.Artists.Cast<SPTPartialArtist>().Select(a => new Author() { Name = a.Name, URI = a.Uri.AbsoluteString }).ToList(),
+									Authors = track.Artists.Cast<SPTPartialArtist> ().Select (a => new Author () {
+										Name = a.Name,
+										URI = a.Uri.AbsoluteString
+									}).ToList (),
 									SmallestCoverURL = track.Album.SmallestCover.ImageURL.AbsoluteString,
 									LargestCoverURL = track.Album.LargestCover.ImageURL.AbsoluteString,
-									Uri = track.Album.GetUri().AbsoluteString
+									Uri = track.Album.GetUri ().AbsoluteString
 								};
 								if (hoerbuchViewController.ViewDidAppearCalled) {
-									hoerbuchViewController.InitialWithCurrentBook(newPlaylistItem);
+									hoerbuchViewController.InitialWithCurrentBook (newPlaylistItem);
 								}
 							}
 						}
@@ -124,6 +132,13 @@ namespace Spookify
 
 	public class HoerbuecherSource : UITableViewSource
 	{
+		GenreViewController genreViewController;
+
+		public HoerbuecherSource(GenreViewController genreViewController)
+		{
+			this.genreViewController = genreViewController; 
+		}
+			
 		public delegate void RowSelectedEventHandler (UITableView tableView, NSIndexPath indexPath);
 
 		public event RowSelectedEventHandler Selected;
@@ -197,6 +212,38 @@ namespace Spookify
 		string prefixHoerspiele = "Hörspiele ";
 		string[] sectionList = "Tipps der Woche,Hörbücher,Hörspiele,Genres".Split(',');
 
+		public string[] GetBarSectionList()
+		{
+			var tag = this.genreViewController.NavigationController.TabBarItem.Tag;
+			if (tag == 1)
+				return sectionList.Skip (3).Take (1).ToArray ();
+			else if (tag == 2)
+				return sectionList.Take (3).ToArray ();
+			else
+				return new string[0];
+		}
+			
+		public IEnumerable<SPTPartialPlaylist>GetBarSublist(nint section)
+		{
+			var tag = this.genreViewController.NavigationController.TabBarItem.Tag;
+			if (tag == 1)
+				return GetSublist(section == 0 ? 3 : -1);
+			else if (tag == 2)
+				return GetSublist  (section < 3 ? section : -1);
+			else
+				return GetSublist (-1);
+		}
+		public int GetBarNumberOfSection()
+		{
+			var tag = this.genreViewController.NavigationController.TabBarItem.Tag;
+			if (tag == 1)
+				return 1;
+			else if (tag == 2)
+				return 3;
+			else
+				return 0;
+		}
+
 		public IEnumerable<SPTPartialPlaylist>GetSublist(nint section)
 		{
 			if (this.PlayListArray != null) {
@@ -221,7 +268,7 @@ namespace Spookify
 		public SPTPartialPlaylist Getplaylist(Foundation.NSIndexPath indexPath) {	
 
 			if (indexPath.LongSection >= 0 && indexPath.LongSection < 4) {
-				var sublist = this.GetSublist (indexPath.LongSection);
+				var sublist = this.GetBarSublist (indexPath.LongSection);
 				if (indexPath.Row >= 0 && indexPath.Row < sublist.Count())
 					return sublist.ElementAt (indexPath.Row);
 			}
@@ -233,37 +280,20 @@ namespace Spookify
 			GenreTableViewCell cell = null;
 			try {
 				var p = Getplaylist(indexPath);
-				cell = tableView.DequeueReusableCell (p.Name.Contains(keyTippDerWoche) ? "TippCell" : "GenereCell") as GenreTableViewCell;
+				bool tippCell = p.Name.Contains(keyTippDerWoche);
+				cell = tableView.DequeueReusableCell (tippCell ? "TippCell" : "GenereCell") as GenreTableViewCell;
 				if (cell != null) {
-					cell.GenereLabel.Text = p.Name.StartsWith(prefixHoerbuecher) ? p.Name.Substring(prefixHoerbuecher.Length) : p.Name.StartsWith(prefixHoerspiele) ? p.Name.Substring(prefixHoerspiele.Length) : p.Name;					
-					var imageView = cell.GenereImage;
-					if (imageView != null) {
-						var nd = CurrentLRUCache.Current.CoverCache.GetItem(p.SmallestImage.ImageURL.AbsoluteString);
-						if (nd != null) {
-							imageView.Image = nd.Data.ToImage();
-						}
-						else {
-							var gloalQueue = DispatchQueue.GetGlobalQueue(DispatchQueuePriority.Default);
-							gloalQueue.DispatchAsync(() => 
-							{
-									NSError err = null;
-									UIImage image = null;
-									NSData imageData = NSData.FromUrl(p.SmallestImage.ImageURL, 0, out err);
-									if (imageData != null) {
-										CurrentLRUCache.Current.CoverCache.Insert(p.SmallestImage.ImageURL.AbsoluteString, imageData.ToByteArray());
-										image = UIImage.LoadFromData(imageData);
-
-										DispatchQueue.MainQueue.DispatchAsync(() => 
-										{
-											imageView.Image = image;
-											if (image == null) {
-												System.Diagnostics.Debug.WriteLine("Could not load image with error: {0}",err);
-												return;
-											}
-										});
-									}
-							});
-						}
+					if (!tippCell) {
+						cell.SelectionStyle = UITableViewCellSelectionStyle.Blue;
+						cell.GenereLabel.Text = p.Name.StartsWith(prefixHoerbuecher) ? p.Name.Substring(prefixHoerbuecher.Length) : p.Name.StartsWith(prefixHoerspiele) ? p.Name.Substring(prefixHoerspiele.Length) : p.Name;					
+					}
+					LoadImage(cell.GenereImage, p);
+					if (tippCell) {
+						cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+						cell.GenereImage.AddGestureRecognizer(new UITapGestureRecognizer(() => { this.genreViewController.PerformSegue("HB1",cell.GenereImage); }));
+						cell.GenereImage2.AddGestureRecognizer(new UITapGestureRecognizer(() => { this.genreViewController.PerformSegue("HB2",cell.GenereImage); }));
+						var p2 = Getplaylist(NSIndexPath.FromItemSection(indexPath.Item+1,indexPath.Section));
+						LoadImage(cell.GenereImage2, p2);
 					}
 				}
 			} catch (Exception ex) {
@@ -271,17 +301,60 @@ namespace Spookify
 			}
 			return cell;
 		}
+		public override nfloat GetHeightForRow (UITableView tableView, NSIndexPath indexPath)
+		{
+			var p = Getplaylist(indexPath);
+			bool tippCell = p.Name.Contains(keyTippDerWoche);
+			return tippCell ? 180 : 88;
+		}
+		void LoadImage(UIImageView imageView, SPTPartialPlaylist p)
+		{
+			if (imageView != null) {
+				var nd = CurrentLRUCache.Current.CoverCache.GetItem(p.SmallestImage.ImageURL.AbsoluteString);
+				if (nd != null) {
+					imageView.Image = nd.Data.ToImage();
+				}
+				else {
+					var gloalQueue = DispatchQueue.GetGlobalQueue(DispatchQueuePriority.Default);
+					gloalQueue.DispatchAsync(() => 
+						{
+							NSError err = null;
+							UIImage image = null;
+							NSData imageData = NSData.FromUrl(p.SmallestImage.ImageURL, 0, out err);
+							if (imageData != null) {
+								CurrentLRUCache.Current.CoverCache.Insert(p.SmallestImage.ImageURL.AbsoluteString, imageData.ToByteArray());
+								image = UIImage.LoadFromData(imageData);
+
+								DispatchQueue.MainQueue.DispatchAsync(() => 
+									{
+										imageView.Image = image;
+										if (image == null) {
+											System.Diagnostics.Debug.WriteLine("Could not load image with error: {0}",err);
+											return;
+										}
+									});
+							}
+						});
+				}
+			}
+		}
 		public override string TitleForHeader (UITableView tableView, nint section)
 		{
-			return sectionList[section];
+			return GetBarSectionList()[section];
 		}
 		public override nint NumberOfSections (UITableView tableView)
 		{
-			return sectionList.Length;
+			return this.PlayListArray != null && this.PlayListArray.Any() ? GetBarNumberOfSection()
+				: 0;
 		}
 		public override nint RowsInSection (UITableView tableView, nint section)
-		{
-			return this.GetSublist(section).Count();
+		{			
+			if (section == 0) {
+				var tag = this.genreViewController.NavigationController.TabBarItem.Tag;
+				if (tag == 2)
+					return 1;
+			}
+			return this.GetBarSublist(section).Count();
 		}
 
 		public override UIView GetViewForHeader (UITableView tableView, nint section)
@@ -290,10 +363,10 @@ namespace Spookify
 			var label = new UILabel ();
 			view.BackgroundColor = label.BackgroundColor = UIColor.FromRGB (25, 25, 25);
 			label.TextColor = UIColor.LightGray;
-			var trackCount = this.GetSublist (section).Sum (x => (int)x.TrackCount);
+			var trackCount = this.GetBarSublist (section).Sum (x => (int)x.TrackCount);
 			var prettyString = new NSMutableAttributedString (section == 0 
-				? sectionList [section]
-				: string.Format ("{0} ({1})", sectionList [section], trackCount),
+				? GetBarSectionList() [section]
+				: string.Format ("{0} ({1})", GetBarSectionList() [section], trackCount),
 				UIFont.FromName ("HelveticaNeue-Light", 15f));
 			label.AttributedText = prettyString;
 
