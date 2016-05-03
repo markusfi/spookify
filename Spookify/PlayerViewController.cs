@@ -112,7 +112,7 @@ namespace Spookify
 		{
 			if (SavePosition (false)) {
 				if (CurrentState.Current.CurrentAudioBook.SkipTrack (step)) {
-					CurrentState.Current.StoreCurrentState ();
+					CurrentState.Current.StoreCurrent ();
 					PlayCurrentAudioBook ();
 				}
 			}
@@ -121,7 +121,7 @@ namespace Spookify
 		{
 			if (SavePosition (false)) {
 				if (CurrentState.Current.CurrentAudioBook.AdjustTime (seconds)) {
-					CurrentState.Current.StoreCurrentState ();
+					CurrentState.Current.StoreCurrent ();
 					PlayCurrentAudioBook ();
 				}
 			}
@@ -512,7 +512,7 @@ namespace Spookify
 							if (ab.Bookmarks == null)
 								ab.Bookmarks = new List<AudioBookBookmark>();
 							ab.Bookmarks.Add(new AudioBookBookmark(ab.CurrentPosition));
-							CurrentState.Current.StoreCurrentState();
+							CurrentState.Current.StoreCurrent();
 						}
 					};
 				}

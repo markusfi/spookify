@@ -16,22 +16,13 @@ namespace Spookify
 		bool searchControllerWasActive;
 		bool searchControllerSearchFieldWasFirstResponder;
 
-		public SPTPartialPlaylist PlayList { get; set; }
-		AudioBookPlaylist _audioBookPlaylist;
-		public AudioBookPlaylist ThisAudioBookPlaylist { 
-			get 
-			{ 
-				if (_audioBookPlaylist == null)
-					_audioBookPlaylist = new AudioBookPlaylist ();
-				return _audioBookPlaylist;
-			}
-		}
+		public UserPlaylist ThisAudioBookPlaylist { get; set; }
+
 		public HoerbuchListeViewController (IntPtr handle) : base (handle)
 		{
 		}
 		public HoerbuchListeViewController () : base ("HoerbuchListeViewController", null)
 		{
-			
 		}
 
 		public override void ViewDidLoad ()
@@ -83,7 +74,6 @@ namespace Spookify
 				subview.BackgroundColor = UIColor.FromRGB (25, 25, 25);
 			}
 
-
 			DefinesPresentationContext = true;
 
 			if (searchControllerWasActive) {
@@ -127,7 +117,7 @@ namespace Spookify
 				tableController.FilteredPlaylist = newResult;
 				tableController.TableView.ReloadData ();
 			} 
-			if (this.PlayList.TrackCount < (nuint)this.ThisAudioBookPlaylist.Books.Count) {
+			if (this.ThisAudioBookPlaylist.TrackCount > (nuint)this.ThisAudioBookPlaylist.Books.Count) {
 				var ds = this.HoerbuchListeTableView.DataSource as HoerbuchListeDataSource;
 				if (ds != null)
 					ds.LoadMore ();
@@ -210,7 +200,7 @@ namespace Spookify
 			var label = new UILabel ();
 			view.BackgroundColor = label.BackgroundColor = UIColor.FromRGB (25, 25, 25);
 			label.TextColor = UIColor.LightGray;
-			var prettyString = new NSMutableAttributedString (string.Format ("{0} ({1})", hoerbuchListeViewController.PlayList.Name, hoerbuchListeViewController.PlayList.TrackCount),
+			var prettyString = new NSMutableAttributedString (string.Format ("{0} ({1})", hoerbuchListeViewController.ThisAudioBookPlaylist.Name, hoerbuchListeViewController.ThisAudioBookPlaylist.TrackCount),
 				UIFont.FromName ("HelveticaNeue-Light", 15f));
 			label.AttributedText = prettyString;
 
@@ -230,122 +220,12 @@ namespace Spookify
 			});
 		}
 
-		SPTPlaylistSnapshot _playlistSnapshot = null;
-
-		bool semi = false;
-		public SPTPlaylistSnapshot PlaylistSnapshot
-		{
-			get 
-			{	
-				if (this._playlistSnapshot == null) 
-					InitPlaylistSnapshot ();
-				return this._playlistSnapshot;
-			}
-		}
-
-		void InitPlaylistSnapshot()
-		{
-			if (!semi) {
-				try {
-					semi = true; 
-					if (this._playlistSnapshot == null) {
-						if (CurrentPlayer.Current.IsSessionValid) {
-							SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
-							var p = SPTRequest.SPTRequestHandlerProtocol;
-							NSError errorOut;
-							NSUrlRequest playlistReq = SPTPlaylistSnapshot.CreateRequestForPlaylistWithURI (hoerbuchListeViewController.PlayList.Uri, auth.Session.AccessToken, out errorOut);
-							SPTRequestHandlerProtocol_Extensions.Callback (p, playlistReq, (er, resp, dat) => {
-								semi = false;
-								if (er != null) {
-									return;
-								}
-								try { 
-									this._playlistSnapshot = SPTPlaylistSnapshot.PlaylistSnapshotFromData (dat, resp, out errorOut);
-									AddListPageTracks(this._playlistSnapshot.FirstTrackPage);
-								}
-								catch (Exception ex)
-								{
-									Console.WriteLine(ex.Message);
-								}
-							});
-						} else {
-							semi = false;
-							if (CurrentPlayer.Current.CanRenewSession) {
-								CurrentPlayer.Current.RenewSession(() => InitPlaylistSnapshot());
-							}
-						}
-					} else 
-						semi = false;
-				} catch {
-					// dieses hoerbuch hat fehlende Daten...
-					semi = false;
-				}
-			}
-		}
-
-		void AddListPageTracks(SPTListPage page)
-		{
-			if (page != null && page.Items != null) {
-				try {
-					var playlist = hoerbuchListeViewController.ThisAudioBookPlaylist;
-					foreach (SPTPlaylistTrack track in page.Items)
-					{
-						var newPlaylistItem = new PlaylistBook() {
-							 Album = new AudioBookAlbum() {
-								Name = track.Album.Name
-							 },
-							 Authors = track.Artists.Cast<SPTPartialArtist>().Select(a => new Author() { Name = a.Name, URI = a.Uri.AbsoluteString }).ToList(),
-							 SmallestCoverURL = track.Album.SmallestCover.ImageURL.AbsoluteString,
-							 LargestCoverURL = track.Album.LargestCover.ImageURL.AbsoluteString,
-							 Uri = track.Album.GetUri().AbsoluteString
-						};
-
-						playlist.Books.Add(newPlaylistItem);
-					}
-					if (page.HasNextPage) {
-						playlist.NextPageURL = page.NextPageURL.AbsoluteString;
-						playlist.CurrentPage = page;
-					}
-					OnChanged ();
-				} catch (Exception ex) {
-					System.Diagnostics.Debug.WriteLine (ex.ToString ());
-				}
-			}
-		}
-
 		public void LoadMore() 
 		{
 			var audiobooks = this.hoerbuchListeViewController.ThisAudioBookPlaylist;
 			if (audiobooks != null) {
-				if (hoerbuchListeViewController.PlayList.TrackCount > (nuint) hoerbuchListeViewController.ThisAudioBookPlaylist.Books.Count)
-					LoadNextPageAsync (audiobooks.CurrentPage);
-			}
-		}
-		void LoadNextPageAsync(SPTListPage page)
-		{
-			NSError errorOut, nsError;
-			if (CurrentPlayer.Current.IsSessionValid) {
-				if (page != null && page.HasNextPage) {
-					if (!semi) {
-						semi = true;
-						SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
-						var p = SPTRequest.SPTRequestHandlerProtocol;
-						var nsUrlRequest = page.CreateRequestForNextPageWithAccessToken (auth.Session.AccessToken, out errorOut);
-						SPTRequestHandlerProtocol_Extensions.Callback (p, nsUrlRequest, (er1, resp1, jsonData1) => {
-							var nextpage = SPTListPage.ListPageFromData (jsonData1, resp1, true, "", out nsError);
-							if (nextpage != null) {
-								AddListPageTracks (nextpage);
-							}
-							semi = false;
-						});
-					}
-				} else {
-					InitPlaylistSnapshot ();
-				}
-			} else {
-				if (CurrentPlayer.Current.CanRenewSession) {
-					CurrentPlayer.Current.RenewSession(() => LoadNextPageAsync(page)); 
-				}
+				// if (hoerbuchListeViewController.PlayList.TrackCount > (nuint) hoerbuchListeViewController.ThisAudioBookPlaylist.Books.Count)
+				//	LoadNextPageAsync (audiobooks.CurrentPage);
 			}
 		}
 
@@ -355,7 +235,7 @@ namespace Spookify
 			var audiobooks = this.hoerbuchListeViewController.ThisAudioBookPlaylist;
 			if (audiobooks != null) {
 				if (indexPath.Row >= audiobooks.Books.Count ()) {
-					LoadNextPageAsync (audiobooks.CurrentPage);
+					// LoadNextPageAsync (audiobooks.CurrentPage);
 					cell.AlbumLabel.Text = "";
 					cell.AuthorLabel.Text = "";
 					cell.AlbumImage.Image = null;
@@ -406,12 +286,12 @@ namespace Spookify
 		}
 		public override string TitleForHeader (UITableView tableView, nint section)
 		{
-			return string.Format(" {0} ({1})",hoerbuchListeViewController.PlayList.Name, hoerbuchListeViewController.PlayList.TrackCount);
+			return string.Format(" {0} ({1})",hoerbuchListeViewController.ThisAudioBookPlaylist.Name, hoerbuchListeViewController.ThisAudioBookPlaylist.TrackCount);
 		}
 		public override nint RowsInSection (UITableView tableView, nint section)
 		{
 			if (section == 0) 
-				return (nint)hoerbuchListeViewController.PlayList.TrackCount;
+				return (nint)hoerbuchListeViewController.ThisAudioBookPlaylist.TrackCount;
 			else
 				return 0;
 		}
@@ -439,7 +319,7 @@ namespace Spookify
 		{
 			if (HoerbuchListeViewController == null)
 				return 0;
-			if (HoerbuchListeViewController.PlayList.TrackCount > (nuint)HoerbuchListeViewController.ThisAudioBookPlaylist.Books.Count) {
+			if (HoerbuchListeViewController.ThisAudioBookPlaylist.TrackCount > (nuint)HoerbuchListeViewController.ThisAudioBookPlaylist.Books.Count) {
 				LoadMoreCell = true;
 				return FilteredPlaylist.Count + 1;
 			} else {

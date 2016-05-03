@@ -64,7 +64,7 @@ namespace Spookify
 		{
 			CurrentSettings.Current.kTokenSwapService = this.SwapURLSwitch.On;
 			CurrentSettings.Current.kTokenRefreshService = this.RefreshURLSwitch.On;
-			CurrentSettings.Current.StoreCurrentSettings();
+			CurrentSettings.Current.StoreCurrent();
 			UpdateStatus ();
 		}
 

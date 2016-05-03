@@ -46,16 +46,21 @@ namespace Spookify
 			this.MehrVomAutorButton.Layer.BorderColor = UIColor.LightGray.CGColor;
 			this.MehrVomAutorButton.BackgroundColor = UIColor.FromRGBA (0, 0, 0, 0);
 
-			InitialWithCurrentBook ();
+			InitLabels ();
 
 			ScrollView.TranslatesAutoresizingMaskIntoConstraints = false;
 			ContainerView.TranslatesAutoresizingMaskIntoConstraints = false;
 			ViewDidAppearCalled = true;
 		}
-		public void InitialWithCurrentBook (PlaylistBook book = null)
+		public void InitialWithCurrentBook (PlaylistBook book)
 		{
 			if (book != null)
 				Book = book;
+			if (ViewDidAppearCalled)
+				InitLabels ();
+		}
+		void InitLabels()
+		{
 			SetBookTitleAndAuthor ();
 			LoadBookTracksAsync ();
 			LoadCoverAsync ();
@@ -333,7 +338,7 @@ namespace Spookify
 
 				CurrentState.Current.Audiobooks.Add(NewBook);
 				CurrentState.Current.CurrentAudioBook = NewBook;
-				CurrentState.Current.StoreCurrentState();
+				CurrentState.Current.StoreCurrent();
 				CurrentPlayer.Current.PlayCurrentAudioBook();
 
 				var tabBarController = this.TabBarController;

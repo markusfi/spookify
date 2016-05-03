@@ -111,7 +111,7 @@ namespace Spookify
 									CurrentState.Current.CurrentAudioBook = null;
 							}
 							CurrentState.Current.Audiobooks.RemoveAt (indexPath.Row);
-							CurrentState.Current.StoreCurrentState ();
+							CurrentState.Current.StoreCurrent ();
 							tableView.ReloadData ();
 						}
 					}

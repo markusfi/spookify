@@ -214,7 +214,7 @@ namespace Spookify
 								StartTime = ab.CurrentPosition.PlaybackPosition
 							};
 							SetTriggerWaitForPlayUri ();
-							CurrentState.Current.StoreCurrentState ();
+							CurrentState.Current.StoreCurrent ();
 							this.Player.PlayURIs (ab.Tracks.Skip (CurrentStartTrack).Take (50).Select (t => t.NSUrl).ToArray (), 
 								options,
 								(playURIError1) => {
@@ -227,7 +227,7 @@ namespace Spookify
 					if (ab.CurrentPosition != null)
 						ab.CurrentPosition.TrackIndex = 0;
 					SetTriggerWaitForPlayUri ();
-					CurrentState.Current.StoreCurrentState ();
+					CurrentState.Current.StoreCurrent ();
 					this.Player.PlayURIs (ab.Tracks.Take(50).Select (t => t.NSUrl).ToArray (), 
 						0, 
 						(playURIError) => {
@@ -250,7 +250,7 @@ namespace Spookify
 							TrackIndex = playerTrack
 						};
 						if (store) {
-							CurrentState.Current.StoreCurrentState ();
+							CurrentState.Current.StoreCurrent ();
 						}
 					}
 					return true;

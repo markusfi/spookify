@@ -89,6 +89,11 @@ namespace Spookify
 		{
 			// Use this method to release shared resources, save user data, invalidate timers and store the application state.
 			// If your application supports background exection this method is called instead of WillTerminate when the user quits.
+			CurrentPlaylistsCache.Current.StoreCurrent();
+			CurrentLRUCache.Current.StoreCurrent();
+
+			if (CurrentAudiobooks.Current.IsComplete)
+				CurrentAudiobooks.Current.StoreCurrent ();
 		}
 
 		public override void WillEnterForeground (UIApplication application)
@@ -106,7 +111,6 @@ namespace Spookify
 		public override void WillTerminate (UIApplication application)
 		{
 			// Called when the application is about to terminate. Save data, if needed. See also DidEnterBackground.
-			CurrentLRUCache.Current.StoreCurrentState();
 		}
 	}
 }

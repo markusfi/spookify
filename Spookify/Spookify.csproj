@@ -147,6 +147,12 @@
     <ImageAsset Include="Resources\Images.xcassets\KapitelSettings.imageset\Kaset.png" />
     <ImageAsset Include="Resources\Images.xcassets\Spotify.imageset\Spotify.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\Spotify.imageset\log_in-mobile.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Genre.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Genre.imageset\theatre_mask.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Image-1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Hoerbuecher.imageset\literature.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Books.imageset\books-120.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Books.imageset\books-114.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -158,6 +164,15 @@
     <None Include="LRU\LICENSE" />
     <None Include="packages.config" />
     <Compile Include="AutorViewController.cs" />
+    <Compile Include="AudioBook\CurrentBase.cs" />
+    <Compile Include="AudioBook\CurrentPlaylistsCache.cs" />
+    <Compile Include="AudioBook\CurrentAudiobooks.cs" />
+    <Compile Include="GenreImagesTableViewCell.cs" />
+    <Compile Include="GenreImagesTableViewCell.designer.cs">
+      <DependentUpon>GenreImagesTableViewCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GenreCollectionViewCell.cs" />
+    <Compile Include="GenreCollectionViewCell.designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
