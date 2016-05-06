@@ -1,6 +1,7 @@
 ﻿using Foundation;
 using UIKit;
 using SpotifySDK;
+using CoreFoundation;
 
 namespace Spookify
 {
@@ -47,6 +48,8 @@ namespace Spookify
 			UIApplication.SharedApplication.SetStatusBarStyle(UIStatusBarStyle.LightContent, false);
 			UINavigationBar.Appearance.ShadowImage = new UIImage();
 			UINavigationBar.Appearance.SetBackgroundImage (new UIImage (), UIBarMetrics.Default);
+
+			ApplicationHelper.AsyncLoadWhenSession ();
 			return true;
 		}
 

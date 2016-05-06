@@ -35,6 +35,8 @@ namespace Spookify
 				this.HoerbuchListeTableView.ReloadData();
 			};
 			this.HoerbuchListeTableView.TableFooterView = new UIView (CGRect.Empty);
+
+			this.TabBarController.SwitchToPlayWhenNoSession();
 		}
 		public override void PrepareForSegue (UIStoryboardSegue segue, NSObject sender)
 		{
@@ -53,6 +55,7 @@ namespace Spookify
 		{
 			base.ViewDidAppear (animated);
 			this.HoerbuchListeTableView.ReloadData ();
+			this.TabBarController.SwitchToPlayWhenNoSession();
 		}
 
 		public class ZuletztListeDelegate : UITableViewDelegate

@@ -177,6 +177,7 @@
     <Compile Include="GenreCollectionViewCell.designer.cs" />
     <Compile Include="ResultsTableViewController.cs" />
     <Compile Include="Helper\ImageHelper.cs" />
+    <Compile Include="Helper\ApplicationHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

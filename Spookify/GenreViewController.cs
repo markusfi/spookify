@@ -49,7 +49,10 @@ namespace Spookify
 			HoerbuchTableView.TableFooterView = new UIView (CGRect.Empty);
 
 			SetupSearch ();
+
+			this.TabBarController.SwitchToPlayWhenNoSession();
 		}
+
 		void SetupSearch()
 		{
 			var tag = this.NavigationController.TabBarItem.Tag;
@@ -70,9 +73,10 @@ namespace Spookify
 				searchController.SearchBar.SizeToFit ();
 
 				HoerbuchTableView.TableHeaderView = searchController.SearchBar;
-				if (tag < 3)
-					HoerbuchTableView.ScrollToRow (NSIndexPath.FromRowSection (0, 0), UITableViewScrollPosition.Top, false);
-
+				if (CurrentAudiobooks.Current.HasPlaylists) {
+					if (tag < 3)
+						HoerbuchTableView.ScrollToRow (NSIndexPath.FromRowSection (0, 0), UITableViewScrollPosition.Top, false);
+				}
 				searchController.ObscuresBackgroundDuringPresentation = true;
 				searchController.SearchBar.BackgroundColor = UIColor.FromRGB (25, 25, 25);
 				searchController.SearchBar.BarTintColor = UIColor.FromRGB (25, 25, 25);
@@ -166,6 +170,7 @@ namespace Spookify
 		public override void ViewDidAppear (bool animated)
 		{
 			base.ViewDidAppear (animated);
+			this.TabBarController.SwitchToPlayWhenNoSession();
 
 			if (!CurrentPlayer.Current.IsSessionValid && CurrentPlayer.Current.CanRenewSession) {
 				CurrentPlayer.Current.RenewSession (() => {
@@ -181,8 +186,10 @@ namespace Spookify
 		{
 			if (CurrentPlayer.Current.IsSessionValid) {
 				var ds = this.HoerbuchTableView.Source as HoerbuecherSource;
-				if (ds == null || ds.ObjectsNeedInitialisation())
+				if (ds == null || ds.ObjectsNeedInitialisation ()) {
+					ApplicationHelper.AsyncLoadWhenSession ();
 					this.HoerbuchTableView.ReloadData ();
+				}
 			}
 		}
 
@@ -238,7 +245,7 @@ namespace Spookify
 		public HoerbuecherSource(GenreViewController genreViewController)
 		{
 			this.genreViewController = genreViewController; 
-			CurrentAudiobooks.Current.User.Changed += (object sender, PlaylistChangedEventArgs e) => {
+			CurrentAudiobooks.Current.Changed += (object sender, PlaylistChangedEventArgs e) => {
 				OnChanged();
 			};
 		}

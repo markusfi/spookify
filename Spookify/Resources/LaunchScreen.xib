@@ -24,7 +24,7 @@
                     <color key="textColor" red="0.37520973154362414" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Books" translatesAutoresizingMaskIntoConstraints="NO" id="xtX-Wb-ce6">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="Books" translatesAutoresizingMaskIntoConstraints="NO" id="xtX-Wb-ce6">
                     <rect key="frame" x="150" y="215" width="180" height="180"/>
                     <color key="tintColor" red="0.37520973149999998" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                 </imageView>
@@ -46,6 +46,6 @@
         </view>
     </objects>
     <resources>
-        <image name="Books" width="180" height="180"/>
+        <image name="Books" width="114" height="114"/>
     </resources>
 </document>

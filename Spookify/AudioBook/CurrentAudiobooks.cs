@@ -87,6 +87,8 @@ namespace Spookify
 			    (!HasPlaylists ||
 				(DateTime.UtcNow - LastUpdate).TotalDays > 1)) 
 			{
+				if (!CurrentPlayer.Current.IsSessionValid)
+					return;
 				lock (typeof(CurrentAudiobooks)) {
 					if (refreshRunning == null) {
 						refreshRunning = new CurrentAudiobooks ();
@@ -230,7 +232,6 @@ namespace Spookify
 				Queue<Tuple<SPTPartialPlaylist, SPTListPage>> RequestsQueue = new Queue<Tuple<SPTPartialPlaylist, SPTListPage>> ();
 				GetPlaylist(playListArray, completionHandler, RequestsQueue);
 			}
-			return;
 			if (playlistlists.HasNextPage) {
 				// BreathFirstQueue.Enqueue (playlistlists);
 
