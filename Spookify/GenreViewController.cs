@@ -12,6 +12,11 @@ namespace Spookify
 {
 	public partial class GenreViewController : UIViewController 
 	{
+		ResultsTableViewController resultsTableController;
+		UISearchController searchController;
+		bool searchControllerWasActive;
+		bool searchControllerSearchFieldWasFirstResponder;
+
 		public GenreViewController (IntPtr handle) : base (handle)
 		{
 		}
@@ -42,7 +47,112 @@ namespace Spookify
 			this.AutomaticallyAdjustsScrollViewInsets = false;
 
 			HoerbuchTableView.TableFooterView = new UIView (CGRect.Empty);
+
+			SetupSearch ();
 		}
+		void SetupSearch()
+		{
+			var tag = this.NavigationController.TabBarItem.Tag;
+			if (tag >= 1) {
+
+				resultsTableController = new ResultsTableViewController () {
+					HoerbuchTableView = this.HoerbuchTableView,
+					FilteredPlaylist = new List<PlaylistBook> ()
+				};
+				resultsTableController.TableView.RowHeight = 88;
+
+				searchController = new UISearchController (resultsTableController) {
+					WeakDelegate = this,
+					DimsBackgroundDuringPresentation = false,
+					WeakSearchResultsUpdater = this
+				};
+
+				searchController.SearchBar.SizeToFit ();
+
+				HoerbuchTableView.TableHeaderView = searchController.SearchBar;
+				if (tag < 3)
+					HoerbuchTableView.ScrollToRow (NSIndexPath.FromRowSection (0, 0), UITableViewScrollPosition.Top, false);
+
+				searchController.ObscuresBackgroundDuringPresentation = true;
+				searchController.SearchBar.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+				searchController.SearchBar.BarTintColor = UIColor.FromRGB (25, 25, 25);
+				searchController.SearchBar.TintColor = UIColor.White;
+
+				resultsTableController.TableView.WeakDelegate = this;
+				searchController.SearchBar.WeakDelegate = this;
+
+
+				foreach (UIView subview in this.HoerbuchTableView.Subviews) {
+					subview.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+				}
+
+				DefinesPresentationContext = true;
+
+				if (searchControllerWasActive) {
+					searchController.Active = searchControllerWasActive;
+					searchControllerWasActive = false;
+
+					if (searchControllerSearchFieldWasFirstResponder) {
+						searchController.SearchBar.BecomeFirstResponder ();
+						searchControllerSearchFieldWasFirstResponder = false;
+					}
+				}
+			}
+		}
+		public void UpdateSearchResults()
+		{
+			UpdateSearchResultsForSearchController (searchController);
+		}
+
+		[Export ("searchBarSearchButtonClicked:")]
+		public virtual void SearchButtonClicked (UISearchBar searchBar)
+		{
+			searchBar.ResignFirstResponder ();
+		}
+		[Export ("updateSearchResultsForSearchController:")]
+		public virtual void UpdateSearchResultsForSearchController (UISearchController searchController)
+		{
+			var tableController = (ResultsTableViewController)searchController.SearchResultsController;
+			tableController.HoerbuchListeViewController = null;
+			tableController.GenreViewController = this;
+			var newResult = PerformSearch (searchController.SearchBar.Text);
+			if (!newResult.SequenceEqual (tableController.FilteredPlaylist)) {
+				tableController.FilteredPlaylist = newResult;
+				tableController.TableView.ReloadData ();
+			} 
+
+			if (!CurrentAudiobooks.Current.IsComplete) {
+				
+			}
+			else if (tableController.LoadMoreCell) 
+			{
+				tableController.TableView.ReloadData ();
+			}
+		}
+		List<PlaylistBook> PerformSearch(string searchString)
+		{
+			searchString = searchString.Trim ();
+			string[] searchItems = string.IsNullOrEmpty (searchString)
+				? new string[0]
+				: searchString.Split (new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+			var filteredBooks = new List<PlaylistBook> ();
+
+			IEnumerable<PlaylistBook> query =
+				CurrentAudiobooks.Current.User.Playlists.SelectMany(pl => pl.Books).Where (p => 
+					searchItems.All(item =>
+						p.Album.Name.IndexOf (item, StringComparison.OrdinalIgnoreCase) >= 0 || 
+						p.Artists.Any(a => a.IndexOf (item, StringComparison.OrdinalIgnoreCase) >= 0)
+					))
+					.GroupBy(p => p.Uri)
+					.Select(g => g.First())
+					.OrderBy (p => p.Album.Name);
+
+			filteredBooks.AddRange (query);
+			var list = filteredBooks.Distinct ().ToList ();
+			return list;
+		}
+
 		public void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
 			this.PerformSegue("HB",this);
@@ -90,15 +200,19 @@ namespace Spookify
 				if (destinationViewController != null && genreImagesTableViewCell != null) {
 					destinationViewController.ThisAudioBookPlaylist = genreImagesTableViewCell.UserPlaylist;
 				}
-			} 
-			else if (sender is GenreCollectionViewCell) {
+			} else if (sender is GenreCollectionViewCell) {
 				var genreCollectionViewCell = sender as GenreCollectionViewCell;
 				var hoerbuchViewController = segue.DestinationViewController as HoerbuchViewController;
 				if (hoerbuchViewController != null && genreCollectionViewCell != null) {
 					hoerbuchViewController.InitialWithCurrentBook (genreCollectionViewCell.Book);
 				}
-			}
-			else {
+			} else if ((sender is HoerbuchTableViewCell) &&
+				(segue.DestinationViewController is HoerbuchViewController) &&
+				((sender as HoerbuchTableViewCell).CurrentPlaylistBook != null)) {
+				var cell = sender as HoerbuchTableViewCell;
+				var hoerbuchViewController = segue.DestinationViewController as HoerbuchViewController;
+				hoerbuchViewController.InitialWithCurrentBook (cell.CurrentPlaylistBook);				
+			} else {
 				NSIndexPath indexPath = this.HoerbuchTableView.IndexPathForSelectedRow;
 				if (indexPath != null) {
 					var p = (this.HoerbuchTableView.Source as HoerbuecherSource).Getplaylist (indexPath);
@@ -160,7 +274,7 @@ namespace Spookify
 			});
 		}
 		public bool ObjectsNeedInitialisation() {
-			return false; //  _playListArray == null;
+			return !CurrentAudiobooks.Current.HasPlaylists;
 		}
 
 		List<UserPlaylist> PlaylistLists {
@@ -194,7 +308,9 @@ namespace Spookify
 				return GetSublist(section == 0 ? 3 : -1);
 			else if (tag == 2)
 				return GetSublist  (section < 3 ? section : -1);
-			else
+			else if (tag == 3)
+				return this.GetSublist(4);
+			else 
 				return GetSublist (-1);
 		}
 		public int GetBarNumberOfSection()
@@ -204,6 +320,8 @@ namespace Spookify
 				return 1;
 			else if (tag == 2)
 				return 3;
+			else if (tag == 3)
+				return 1;
 			else
 				return 0;
 		}
@@ -214,11 +332,13 @@ namespace Spookify
 				if (section == 0) {
 					return this.PlaylistLists.Where (p => p.Name.Contains (keyTippDerWoche));
 				} else if (section == 1) {
-					return this.PlaylistLists.Where (p => p.Name.Contains (keyHoerbuecher) && keyList.Any(k => p.Name.Contains(k)));
+					return this.PlaylistLists.Where (p => p.Name.Contains (keyHoerbuecher) && keyList.Any (k => p.Name.Contains (k)));
 				} else if (section == 2) {
-					return this.PlaylistLists.Where (p => !p.Name.Contains (keyHoerbuecher) && keyList.Any(k => p.Name.Contains(k)));
+					return this.PlaylistLists.Where (p => !p.Name.Contains (keyHoerbuecher) && keyList.Any (k => p.Name.Contains (k)));
 				} else if (section == 3) {
-					return this.PlaylistLists.Where (p => !p.Name.Contains (keyTippDerWoche) && !keyList.Any(k => p.Name.Contains(k)));
+					return this.PlaylistLists.Where (p => !p.Name.Contains (keyTippDerWoche) && !keyList.Any (k => p.Name.Contains (k)));
+				} else if (section == 4) {
+					return this.PlaylistLists.Where (p => !p.Name.Contains (keyTippDerWoche));
 				}
 			}
 			return new UserPlaylist[0];
@@ -242,7 +362,7 @@ namespace Spookify
 		UITableViewCell ConfigureCollectionViewCell(UITableView tableView, UserPlaylist playlist, Foundation.NSIndexPath indexPath)
 		{
 			var cell = tableView.DequeueReusableCell (indexPath.Row % 2 == 1 ? "ImagesCell" : "ImagesCellTiny") as GenreImagesTableViewCell;
-			if (cell != null) {
+			if (cell != null && playlist != null) {
 				cell.CollectionView.Source = new CollectionViewDataSource(this.genreViewController, playlist);
 				cell.TitleButton.SetTitle(playlist.Name, UIControlState.Normal);
 				cell.MoreButton.SetTitle ("mehr...", UIControlState.Normal);
@@ -273,7 +393,7 @@ namespace Spookify
 				if (collectionViewCell != null) {
 					collectionViewCell.Book = _playlist.Books.ElementAt((int)indexPath.Item);
 					collectionViewCell.GenreViewController = _genreViewController;
-					LoadImage(collectionViewCell.ImageView, _playlist.Books.ElementAt((int)indexPath.Item));
+					collectionViewCell.ImageView.LoadImage(_playlist.Books.ElementAt((int)indexPath.Item));
 				}
 				return collectionViewCell;
 			}
@@ -281,27 +401,31 @@ namespace Spookify
 
 		public override UITableViewCell GetCell (UITableView tableView, Foundation.NSIndexPath indexPath)
 		{
+			var tag = this.genreViewController.NavigationController.TabBarItem.Tag;
 			GenreTableViewCell cell = null;
 			try {
 				var p = Getplaylist(indexPath);
-				bool tippCell = p != null && p.Name != null && p.Name.Contains(keyTippDerWoche);
-				if (!tippCell)
+
+				bool tippCell = tag == 2 && p != null && p.Name != null && p.Name.Contains(keyTippDerWoche);
+
+				if ((tag == 1 || tag == 2) && !tippCell)
 					return ConfigureCollectionViewCell(tableView, p, indexPath);
+				
 				cell = tableView.DequeueReusableCell (tippCell ? "TippCell" : "GenereCell") as GenreTableViewCell;
 				if (cell != null) {
 					if (!tippCell) {
 						cell.SelectionStyle = UITableViewCellSelectionStyle.Blue;
 						if (p != null && p.Name != null)
-							cell.GenereLabel.Text = p.Name.StartsWith(prefixHoerbuecher) ? p.Name.Substring(prefixHoerbuecher.Length) : p.Name.StartsWith(prefixHoerspiele) ? p.Name.Substring(prefixHoerspiele.Length) : p.Name;					
+							cell.GenereLabel.Text = p.Name; // p.Name.StartsWith(prefixHoerbuecher) ? p.Name.Substring(prefixHoerbuecher.Length) : p.Name.StartsWith(prefixHoerspiele) ? p.Name.Substring(prefixHoerspiele.Length) : p.Name;					
 					}
 
-					LoadImage(cell.GenereImage, p, tippCell);
+					cell.GenereImage.LoadImage(p, tippCell);
 					if (tippCell) {						
 						cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 						cell.GenereImage.AddGestureRecognizer(new UITapGestureRecognizer(() => { this.genreViewController.PerformSegue("HB1",cell.GenereImage); }));
 						cell.GenereImage2.AddGestureRecognizer(new UITapGestureRecognizer(() => { this.genreViewController.PerformSegue("HB2",cell.GenereImage); }));
 						var p2 = Getplaylist(NSIndexPath.FromItemSection(indexPath.Item+1,indexPath.Section));
-						LoadImage(cell.GenereImage2, p2, tippCell);
+						cell.GenereImage2.LoadImage(p2, tippCell);
 					}
 				}
 			} catch (Exception ex) {
@@ -311,57 +435,17 @@ namespace Spookify
 		}
 		public override nfloat GetHeightForRow (UITableView tableView, NSIndexPath indexPath)
 		{
-			var p = Getplaylist(indexPath);
-			if (p != null) {
-				bool tippCell = p.Name.Contains (keyTippDerWoche);
-				return tippCell ? 180 : (indexPath.Row % 2 == 1 ? 125 : 90);
-			} else
-				return 88;
-		}
-		static void LoadImage(UIImageView imageView, UserPlaylist p, bool loadBookImage)
-		{
-			if (p != null) {
-				if (loadBookImage)
-					LoadImage (imageView, new NSUrl (p.Books.FirstOrDefault ().LargestCoverURL));
-				else
-					LoadImage (imageView, new NSUrl (p.SmallImageUrl));			
-			}
-		}
-		static void LoadImage(UIImageView imageView, PlaylistBook book)
-		{
-			LoadImage (imageView, new NSUrl (book.LargestCoverURL));
-		}
-		static void LoadImage(UIImageView imageView, NSUrl imageURL)
-		{
-			if (imageView != null) {
-				var nd = CurrentLRUCache.Current.CoverCache.GetItem(imageURL.AbsoluteString);
-				if (nd != null) {
-					imageView.Image = nd.Data.ToImage();
+			var tag = this.genreViewController.NavigationController.TabBarItem.Tag;
+			if (tag == 1 || tag == 2) {
+				var p = Getplaylist (indexPath);
+				if (p != null) {
+					bool tippCell = p.Name.Contains (keyTippDerWoche);
+					return tippCell ? 180 : (indexPath.Row % 2 == 1 ? 125 : 155); 
 				}
-				else {
-					var gloalQueue = DispatchQueue.GetGlobalQueue(DispatchQueuePriority.Default);
-					gloalQueue.DispatchAsync(() => 
-						{
-							NSError err = null;
-							UIImage image = null;
-							NSData imageData = NSData.FromUrl(imageURL, 0, out err);
-							if (imageData != null) {
-								CurrentLRUCache.Current.CoverCache.Insert(imageURL.AbsoluteString, imageData.ToByteArray());
-								image = UIImage.LoadFromData(imageData);
+			}
+			return 88;
+		}
 
-								DispatchQueue.MainQueue.DispatchAsync(() => 
-									{
-										imageView.Image = image;
-										if (image == null) {
-											System.Diagnostics.Debug.WriteLine("Could not load image with error: {0}",err);
-											return;
-										}
-									});
-							}
-						});
-				}
-			}
-		}
 		public override string TitleForHeader (UITableView tableView, nint section)
 		{
 			return null; //GetBarSectionList()[section];

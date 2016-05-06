@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Foundation;
 using UIKit;
 using CoreFoundation;
+using System.Collections;
 
 namespace Spookify
 {
@@ -39,8 +40,11 @@ namespace Spookify
 	}
 
 	[Serializable]
-	public class AudioBook 
+	public class AudioBook : IComparer
 	{
+		[NonSerializedAttribute]
+		public static AudioBook Empty = new AudioBook();
+
 		public AudioBookAlbum Album { get; set; }
 		public List<AudioBookTrack> Tracks { get; set; }
 		public List<AudioBookBookmark> Bookmarks { get; set; }
@@ -59,43 +63,24 @@ namespace Spookify
 
 		public void SetSmallImage(UIImageView imageView)
 		{
-			SetUIImage (imageView, this.SmallestCoverURL, SmallestCoverData, (val) => SmallestCoverData = val);
+			imageView.SetUIImage(this.SmallestCoverURL, SmallestCoverData, (val) => SmallestCoverData = val);
 		}
 		public void SetLargeImage(UIImageView imageView)
 		{
-			SetUIImage (imageView, this.LargestCoverURL, LargestCoverData, (val) => LargestCoverData = val);
+			imageView.SetUIImage( this.LargestCoverURL, LargestCoverData, (val) => LargestCoverData = val);
 		}
 
-		void SetUIImage(UIImageView imageView, string converUrl, NSData coverData, Action<NSData> coverDataSetter)
+		public int Compare (object x, object y)
 		{
-			if (imageView != null) {
-				if (coverData != null) {
-					imageView.Image = UIImage.LoadFromData (coverData);
-					if (imageView.Image != null)
-						imageView.Hidden = false;
-				} else if (converUrl != null) {
-					imageView.Image = null;
-					var gloalQueue = DispatchQueue.GetGlobalQueue (DispatchQueuePriority.Default);
-					gloalQueue.DispatchAsync (() => {
-						NSError err = null;
-						UIImage image = null;
-						coverData = NSData.FromUrl (new NSUrl (converUrl), 0, out err);
-						coverDataSetter(coverData);
-						if (coverData != null)
-							image = UIImage.LoadFromData (coverData);
-
-						DispatchQueue.MainQueue.DispatchAsync (() => {
-							imageView.Image = image;
-							if (image != null)
-								imageView.Hidden = false;
-							if (image == null) {
-								System.Diagnostics.Debug.WriteLine ("Could not load image with error: {0}", err);
-								return;
-							}
-						});
-					});
-				}	
-			}
+			var xb = x as AudioBook;
+			var yb = y as AudioBook;
+			if (xb == null && yb == null)
+				return 0;			
+			if (xb == null)
+				return -1;
+			if (yb == null)
+				return 1;
+			return string.Compare(xb.Uri, yb.Uri);
 		}
 	}
 
@@ -107,8 +92,11 @@ namespace Spookify
 	}
 
 	[Serializable]
-	public class PlaylistBook 
+	public class PlaylistBook : IComparer<PlaylistBook>
 	{		
+		[NonSerializedAttribute]
+		public static PlaylistBook Empty = new PlaylistBook();
+
 		public AudioBookAlbum Album { get; set; }
 		public List<AudioBookTrack> Tracks { get; set; }
 		public IEnumerable<string> Artists { get { return Authors != null ? Authors.Select (a => a.Name) : new string[0]; } }
@@ -116,6 +104,17 @@ namespace Spookify
 		public string SmallestCoverURL { get; set; }
 		public string LargestCoverURL { get; set; }
 		public string Uri { get; set; }
+
+		int IComparer<PlaylistBook>.Compare (PlaylistBook x, PlaylistBook y)
+		{			
+			if ((x == null && y == null) || ((x != null && x.Uri == null) && (y != null && y.Uri == null)))
+				return 0;			
+			if (x == null || x.Uri == null)
+				return -1;
+			if (y == null || y.Uri == null)
+				return 1;
+			return string.Compare(x.Uri, y.Uri);
+		}
 
 		public static explicit operator PlaylistBook(AudioBook ab)
 		{
@@ -156,7 +155,7 @@ namespace Spookify
 				});
 			}
 		}
-		public static void CreateFromFullAsync(SPTPartialPlaylist p, Action<IEnumerable<PlaylistBook>, bool> action, Action finished)
+		public static void CreateFromFullAsync(SPTPartialPlaylist p, Action<IEnumerable<PlaylistBook>, bool, SPTListPage> action, Action finished)
 		{
 			if (p == null || action == null) {
 				Console.WriteLine ("CreateFromFullAsync: Abbruch weil SPTPartialPlaylist oder action ungültig");
@@ -184,49 +183,68 @@ namespace Spookify
 				}
 			});
 		}
-		static void AddListPage(SPTAuth auth, SPTListPage firstTrackPage,  Action<IEnumerable<PlaylistBook>, bool> action, Action finished)
+		static void AddListPage(SPTAuth auth, SPTListPage firstTrackPage,  Action<IEnumerable<PlaylistBook>, bool, SPTListPage> action, Action finished)
 		{
 			if (firstTrackPage != null) {
 				if (firstTrackPage.Items != null && firstTrackPage.Items.Any ()) {
 					var books = CreatePlaylistBooks (firstTrackPage);
-					action (books, !firstTrackPage.HasNextPage);
+					action (books, !firstTrackPage.HasNextPage, firstTrackPage);
 				}
-				if (firstTrackPage.HasNextPage) {
-					// next page of this playlists books
-					NSError errorOut;
-					var nsUrlRequest = firstTrackPage.CreateRequestForNextPageWithAccessToken (auth.Session.AccessToken, out errorOut);
-					if (errorOut != null) {
-						Console.WriteLine ("AddListPage: Abbruch weil firstTrackPage.CreateRequestForNextPageWithAccessToken() Error: "+errorOut.LocalizedDescription);
-						if (finished != null)
-							finished ();
-						return;
-					}
-					if (nsUrlRequest != null) {
-						SPTRequestHandlerProtocol_Extensions.Callback (SPTRequest.SPTRequestHandlerProtocol, nsUrlRequest, (er, resp1, jsonData1) => {
-							if (er != null) {
-								Console.WriteLine ("AddListPage: Abbruch weil Callback() Error: "+er.LocalizedDescription);
-								if (finished != null)
-									finished ();
-								return;
-							}
-							var nextpage = SPTListPage.ListPageFromData (jsonData1, resp1, true, "", out errorOut);
-							if (errorOut != null) {
-								Console.WriteLine ("AddListPage: Abbruch weil SPTListPage.ListPageFromData() Error: "+errorOut.LocalizedDescription);
-								if (finished != null)
-									finished ();
-								return;
-							}
-							if (nextpage != null)
-								AddListPage (auth, nextpage, action, finished);
-						});
-					}
-				} else {
-					Console.WriteLine ("AddListPage: Abbruch weil firstTrackPage.HasNextPage == false");
-					if (finished != null)
-						finished ();
-				}
+				// AddNextPage (auth, firstTrackPage, action, finished);
+				Console.WriteLine ("AddListPage: Abbruch weil Continue in Breath");
+				if (finished != null)
+					finished ();
 			} else {
 				Console.WriteLine ("AddListPage: Abbruch weil firstTrackPage == null");
+				if (finished != null)
+					finished ();
+			}
+		}
+		public static void CreateRequestNextPage(SPTListPage firstTrackPage, Action<IEnumerable<PlaylistBook>, bool, SPTListPage> action, Action finished)
+		{
+			if (firstTrackPage == null || action == null) {
+				Console.WriteLine ("CreateFromFullAsync: Abbruch weil firstTrackPage oder action ungültig");
+				if (finished != null)
+					finished ();
+				return;
+			}
+
+			SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
+			AddNextPage (auth, firstTrackPage, action, finished);
+		}
+		static void AddNextPage(SPTAuth auth, SPTListPage firstTrackPage,  Action<IEnumerable<PlaylistBook>, bool, SPTListPage> action, Action finished)
+		{
+			if (firstTrackPage.HasNextPage) {
+				// next page of this playlists books
+				NSError errorOut;
+				var nsUrlRequest = firstTrackPage.CreateRequestForNextPageWithAccessToken (auth.Session.AccessToken, out errorOut);
+				if (errorOut != null) {
+					Console.WriteLine ("AddListPage: Abbruch weil firstTrackPage.CreateRequestForNextPageWithAccessToken() Error: "+errorOut.LocalizedDescription);
+					if (finished != null)
+						finished ();
+					return;
+				}
+				if (nsUrlRequest != null) {
+					SPTRequestHandlerProtocol_Extensions.Callback (SPTRequest.SPTRequestHandlerProtocol, nsUrlRequest, (er, resp1, jsonData1) => {
+						if (er != null) {
+							Console.WriteLine ("AddListPage: Abbruch weil Callback() Error: "+er.LocalizedDescription);
+							if (finished != null)
+								finished ();
+							return;
+						}
+						var nextpage = SPTListPage.ListPageFromData (jsonData1, resp1, true, "", out errorOut);
+						if (errorOut != null) {
+							Console.WriteLine ("AddListPage: Abbruch weil SPTListPage.ListPageFromData() Error: "+errorOut.LocalizedDescription);
+							if (finished != null)
+								finished ();
+							return;
+						}
+						if (nextpage != null)
+							AddListPage (auth, nextpage, action, finished);
+					});
+				}
+			} else {
+				Console.WriteLine ("AddListPage: Abbruch weil firstTrackPage.HasNextPage == false");
 				if (finished != null)
 					finished ();
 			}

@@ -7,8 +7,8 @@ namespace Spookify
 	[Serializable]
 	public class CurrentBase<TClass>  where  TClass : CurrentBase<TClass>, new()
 	{
-		static TClass Prototype = new TClass();
-		static TClass _currentState;
+		protected static TClass Prototype = new TClass();
+		protected static TClass _currentState;
 		public virtual string Filename()  { return typeof(TClass).Name; } 
 
 		public string StateFilename {

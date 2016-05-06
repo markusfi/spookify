@@ -186,26 +186,7 @@ namespace Spookify
 		void LoadCoverAsync()
 		{
 			if (Book != null) {
-				var imageView = this.AlbumImage;
-				if (imageView != null) {
-					imageView.Image = null;
-					var gloalQueue = DispatchQueue.GetGlobalQueue (DispatchQueuePriority.Default);
-					gloalQueue.DispatchAsync (() => {
-						NSError err = null;
-						UIImage image = null;
-						NSData imageData = NSData.FromUrl (new NSUrl (Book.LargestCoverURL), 0, out err);
-						if (imageData != null)
-							image = UIImage.LoadFromData (imageData);
-
-						DispatchQueue.MainQueue.DispatchAsync (() => {
-							imageView.Image = image;
-							if (image == null) {
-								System.Diagnostics.Debug.WriteLine ("Could not load image with error: {0}", err);
-								return;
-							}
-						});
-					});
-				}
+				this.AlbumImage.LoadImage (Book.LargestCoverURL, null, false);
 			}
 		}
 		string MakeSearchKey(string name)

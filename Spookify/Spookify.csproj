@@ -41,7 +41,8 @@
     <CodesignKey>iPhone Distribution: Markus Fischer (8LR9UZJY9J)</CodesignKey>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <CodesignProvision>c8eb0c92-1507-4e1d-9d67-310598fb8a2c</CodesignProvision>
-    <IpaPackageName></IpaPackageName>
+    <IpaPackageName>
+    </IpaPackageName>
     <MtouchExtraArgs>-gcc_flags "-ObjC" </MtouchExtraArgs>
     <MtouchUseLlvm>true</MtouchUseLlvm>
   </PropertyGroup>
@@ -75,7 +76,8 @@
     <MtouchDebug>true</MtouchDebug>
     <MtouchUseSGen>true</MtouchUseSGen>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
-    <IpaPackageName></IpaPackageName>
+    <IpaPackageName>
+    </IpaPackageName>
     <CodesignProvision>5e40fd7d-6971-44c6-9c9b-52d1bc89aebe</CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
@@ -173,6 +175,8 @@
     </Compile>
     <Compile Include="GenreCollectionViewCell.cs" />
     <Compile Include="GenreCollectionViewCell.designer.cs" />
+    <Compile Include="ResultsTableViewController.cs" />
+    <Compile Include="Helper\ImageHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -265,6 +269,7 @@
     <Folder Include="AudioBook\" />
     <Folder Include="LRU\" />
     <Folder Include="Util\" />
+    <Folder Include="Helper\" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork%402x" />

@@ -21,6 +21,10 @@ namespace Spookify
 			base.ViewDidLoad ();
 			this.MyWebView.Hidden = true;
 			this.MyWebView.Alpha = 0.01f;
+			this.NothingFoundLabel.Hidden = false;
+			this.NothingFoundLabel.Text = "ich google..."; 
+			this.Spinner.Hidden = false;
+			this.Spinner.StartAnimating ();
 			this.View.BackgroundColor = UIColor.Black;
 
 			try {
@@ -36,6 +40,10 @@ namespace Spookify
 			this.MyWebView.LoadFinished -= MyWebView_LoadFinished1;
 			this.MyWebView.Hidden = false;
 			this.MyWebView.Alpha = 1;
+
+			this.NothingFoundLabel.Hidden = true;
+			this.Spinner.Hidden = true;
+			this.Spinner.StopAnimating ();
 		}
 
 		void MyWebView_LoadFinished (object sender, EventArgs e)
@@ -52,11 +60,14 @@ namespace Spookify
 					var url = new NSUrl (a);
 					this.MyWebView.LoadRequest (new NSUrlRequest (url));
 					this.MyWebView.LoadFinished += MyWebView_LoadFinished1;
+					this.NothingFoundLabel.Text = "ich lade...";
 					return;
 				}
 			}
-			this.MyWebView.Hidden = false;
-			this.MyWebView.Alpha = 1;
+			this.NothingFoundLabel.Text = "Zu diesem Buch finde ich nichts..."; 
+			this.NothingFoundLabel.Hidden = false;
+			this.Spinner.Hidden = true;
+			this.Spinner.StopAnimating ();
 		}
 
 		public override void DidReceiveMemoryWarning ()

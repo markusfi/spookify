@@ -226,34 +226,7 @@ namespace Spookify
 				cell.CurrentPlaylistBook = currentBook;
 				cell.AlbumLabel.Text = currentBook.Album.Name;
 				cell.AuthorLabel.Text = currentBook.Artists.FirstOrDefault ();
-				var imageView = cell.AlbumImage;
-				if (imageView != null) {
-					imageView.Image = null;
-					var nd = CurrentLRUCache.Current.CoverCache.GetItem(currentBook.SmallestCoverURL);
-					if (nd != null) {
-						imageView.Image = nd.Data.ToImage();
-					}
-					else {
-						var gloalQueue = DispatchQueue.GetGlobalQueue (DispatchQueuePriority.Default);
-						gloalQueue.DispatchAsync (() => {
-							NSError err = null;
-							UIImage image = null;
-							NSData data = NSData.FromUrl( new NSUrl(currentBook.SmallestCoverURL), 0, out err);
-							if (data != null) {
-								CurrentLRUCache.Current.CoverCache.Insert(currentBook.SmallestCoverURL,data.ToByteArray());
-								image = UIImage.LoadFromData (data);
-
-								DispatchQueue.MainQueue.DispatchAsync (() => {
-									imageView.Image = image;
-									if (image == null) {
-										System.Diagnostics.Debug.WriteLine ("Could not load image with error: {0}", err);
-										return;
-									}
-								});
-							}
-						});
-					}
-				}
+				cell.AlbumImage.LoadImage (currentBook.SmallestCoverURL);
 			}
 			public override nint RowsInSection (UITableView tableview, nint section)
 			{
