@@ -70,11 +70,13 @@ namespace Spookify
 					auth.RenewSession (auth.Session, (error, session) => {
 						TriggerSessionRenew = null;
 						if (error == null) {
+							refreshErrorOccured = true;
 							auth.Session = session;
 							if (completionAction != null)
 								completionAction();
 						}
 						else  {
+							refreshErrorOccured = true;
 							new NSObject ().BeginInvokeOnMainThread (() => {
 								new UIAlertView ("Fehler", error.LocalizedDescription + error.Description, null, "OK").Show ();
 							});
@@ -105,11 +107,11 @@ namespace Spookify
 				return this.IsSessionValid && p != null && p.LoggedIn; 
 			}
 		}
-
+		bool refreshErrorOccured = false;
 		public bool CanRenewSession {
 			get {
-				SPTAuth auth = this.AuthPlayer;
-				return (auth.Session != null && !auth.Session.IsValid && auth.HasTokenRefreshService);
+				SPTAuth auth = this.AuthPlayer; // !string.IsNullOrEmpty(auth.Session.EncryptedRefreshToken) && 
+				return (auth.Session != null && !auth.Session.IsValid && auth.HasTokenRefreshService && !refreshErrorOccured);
 			}
 		}
 		public bool NeedToRenewSession {
@@ -189,14 +191,16 @@ namespace Spookify
 						}
 					}
 				} else {
-					TriggerPlayerLogin = null;
-					_player = null;
-					_authPlayer = null;
+					ResetPlayer ();
 				}
 				return _player;
 			}
 		}
-
+		public void ResetPlayer() {
+			_player = null;
+			_authPlayer = null;
+			TriggerPlayerLogin = null;
+		}
 		public int CurrentStartTrack;
 
 		public void PlayCurrentAudioBook()
@@ -335,7 +339,7 @@ namespace Spookify
 				Console.WriteLine(txt);
 				var p = this.viewController.Player;
 				if (p != null) {
-					Console.WriteLine ("Player.CurrentTrackIndex="+p.CurrentTrackIndex+", Player.CurrentPlaybackPosition"+p.CurrentPlaybackPosition+") CurrentStartTrack="+CurrentPlayer.Current.CurrentStartTrack);
+					Console.WriteLine ("Player.CurrentTrackIndex="+p.CurrentTrackIndex+", Player.CurrentPlaybackPosition: "+p.CurrentPlaybackPosition+") CurrentStartTrack="+CurrentPlayer.Current.CurrentStartTrack);
 				}
 				#endif
 			}

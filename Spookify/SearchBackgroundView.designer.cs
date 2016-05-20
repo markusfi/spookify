@@ -11,17 +11,22 @@ using UIKit;
 
 namespace Spookify
 {
-	[Register ("GenreCollectionViewCell")]
-	partial class GenreCollectionViewCell
+	[Register ("SearchBackgroundView")]
+	partial class SearchBackgroundView
 	{
 		[Outlet]
-		public UIKit.UIImageView ImageView { get; set; }
+		[GeneratedCode ("iOS Designer", "1.0")]
+		UIImageView LupeImageView { get; set; }
+
+		[Action ("OnShowGenres:")]
+		[GeneratedCode ("iOS Designer", "1.0")]
+		partial void OnShowGenres (UIButton sender);
 
 		void ReleaseDesignerOutlets ()
 		{
-			if (ImageView != null) {
-				ImageView.Dispose ();
-				ImageView = null;
+			if (LupeImageView != null) {
+				LupeImageView.Dispose ();
+				LupeImageView = null;
 			}
 		}
 	}

@@ -25,7 +25,7 @@ namespace Spookify
 			this.NothingFoundLabel.Text = "ich google..."; 
 			this.Spinner.Hidden = false;
 			this.Spinner.StartAnimating ();
-			this.View.BackgroundColor = UIColor.Black;
+			this.View.BackgroundColor = ConfigSpookify.BackgroundColor;
 
 			try {
 				var url = new NSUrl(Url);

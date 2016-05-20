@@ -322,19 +322,15 @@ namespace Spookify
 				CurrentState.Current.StoreCurrent();
 				CurrentPlayer.Current.PlayCurrentAudioBook();
 
+				/*
 				var tabBarController = this.TabBarController;
-
-				UIView  fromView = tabBarController.SelectedViewController.View;
-				UIView  toView = tabBarController.ViewControllers[1].View;
-
-				UIView.Transition(fromView,toView,0.5,UIViewAnimationOptions.CurveEaseInOut,() => { tabBarController.SelectedIndex = 1; });
-
 				var fromNavController = tabBarController.SelectedViewController as UINavigationController;
 				if (fromNavController != null && 
 					fromNavController.ViewControllers != null &&
 					fromNavController.ViewControllers.Length > 0 && 
 					fromNavController.ViewControllers[0].GetType() == typeof(ZuletztViewController))
 					this.NavigationController.PopToRootViewController (false);
+				*/
 			} 
 		}
 
@@ -346,7 +342,7 @@ namespace Spookify
 			    SPTRequestHandlerProtocol_Extensions.Callback(p, nsUrlRequest, (er1,resp1,jsonData1) => {
 					var nextpage = SPTListPage.ListPageFromData(jsonData1, resp1, true, "", out nsError);
 					if (nextpage != null) {
-						int kapitelNummer = newbook.Tracks.Max(t => t.Index) + 1;
+						int kapitelNummer = newbook.Tracks.Any() ? newbook.Tracks.Max(t => t.Index) + 1 : 0;
 						newbook.Tracks.AddRange(nextpage.Items
 							.Cast<SPTPartialTrack>()
 							.Where(pt => pt.IsPlayable)

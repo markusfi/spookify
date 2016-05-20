@@ -126,8 +126,6 @@
     <ImageAsset Include="Resources\Images.xcassets\Zuletzt.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Zuletzt.imageset\todo_list.png" />
     <ImageAsset Include="Resources\Images.xcassets\Anmelden.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Image.imageset\internal.png" />
-    <ImageAsset Include="Resources\Images.xcassets\Image.imageset\ratings.png" />
     <ImageAsset Include="Resources\Images.xcassets\Anmelden.imageset\internal.png" />
     <ImageAsset Include="Resources\Images.xcassets\NotLoggedIn.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\NotLoggedIn.imageset\spotify_copyrighted.png" />
@@ -151,14 +149,24 @@
     <ImageAsset Include="Resources\Images.xcassets\Spotify.imageset\log_in-mobile.png" />
     <ImageAsset Include="Resources\Images.xcassets\Genre.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Genre.imageset\theatre_mask.png" />
-    <ImageAsset Include="Resources\Images.xcassets\Image-1.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Hoerbuecher.imageset\literature.png" />
     <ImageAsset Include="Resources\Images.xcassets\Books.imageset\books-120.png" />
     <ImageAsset Include="Resources\Images.xcassets\Books.imageset\books-114.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Up.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Up.imageset\chevron_up_round.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Close.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Close.imageset\cancel.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Lupe.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Lupe.imageset\search.png" />
+    <ImageAsset Include="ConfigSpookify.xcassets\AppIcons.appiconset\Contents.json" />
+    <ImageAsset Include="ConfigSpookify.xcassets\LaunchImages.launchimage\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Spookify.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Spookify.imageset\Spookify.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
     <InterfaceDefinition Include="Main.storyboard" />
+    <InterfaceDefinition Include="SearchBackgroundview.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -178,6 +186,15 @@
     <Compile Include="ResultsTableViewController.cs" />
     <Compile Include="Helper\ImageHelper.cs" />
     <Compile Include="Helper\ApplicationHelper.cs" />
+    <Compile Include="MiniPlayerView.cs" />
+    <Compile Include="SearchBackgroundView.cs" />
+    <Compile Include="SearchBackgroundView.designer.cs">
+      <DependentUpon>SearchBackgroundView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigSpookify.cs" />
+    <Compile Include="ConfigListen.cs" />
+    <Compile Include="ResizeTabBarController.cs" />
+    <Compile Include="ISleepTimerController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

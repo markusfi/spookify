@@ -70,15 +70,15 @@ namespace Spookify
 				HoerbuchListeTableView.ScrollToRow(NSIndexPath.FromRowSection(0,0), UITableViewScrollPosition.Top, false);
 
 			searchController.ObscuresBackgroundDuringPresentation = true;
-			searchController.SearchBar.BackgroundColor = UIColor.FromRGB (25, 25, 25);
-			searchController.SearchBar.BarTintColor = UIColor.FromRGB (25, 25, 25);
-			searchController.SearchBar.TintColor = UIColor.White;
+			searchController.SearchBar.BackgroundColor = ConfigSpookify.BackgroundColor;
+			searchController.SearchBar.BarTintColor = ConfigSpookify.BackgroundColor;
+			searchController.SearchBar.TintColor = ConfigSpookify.BartTintColor;
 
 			resultsTableController.TableView.WeakDelegate = this;
 			searchController.SearchBar.WeakDelegate = this;
 
 			foreach (UIView subview in this.HoerbuchListeTableView.Subviews) {
-				subview.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+				subview.BackgroundColor = ConfigSpookify.BackgroundColor;
 			}
 
 			DefinesPresentationContext = true;
@@ -205,7 +205,7 @@ namespace Spookify
 		{
 			var view = new UIView (new CGRect (0, 0, tableView.Frame.Width, tableView.SectionHeaderHeight));
 			var label = new UILabel ();
-			view.BackgroundColor = label.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+			view.BackgroundColor = label.BackgroundColor = ConfigSpookify.BackgroundColor;
 			label.TextColor = UIColor.LightGray;
 			var prettyString = new NSMutableAttributedString (string.Format ("{0} ({1})", hoerbuchListeViewController.ThisAudioBookPlaylist.Name, hoerbuchListeViewController.ThisAudioBookPlaylist.TrackCount),
 				UIFont.FromName ("HelveticaNeue-Light", 15f));

@@ -1,11 +1,13 @@
 // WARNING
 //
-// This file has been generated automatically by Xamarin Studio to store outlets and
-// actions made in the UI designer. If it is removed, they will be lost.
-// Manual changes to this file may not be handled correctly.
+// This file has been generated automatically by Xamarin Studio from the outlets and
+// actions declared in your storyboard file.
+// Manual changes to this file will not be maintained.
 //
 using Foundation;
+using System;
 using System.CodeDom.Compiler;
+using UIKit;
 
 namespace Spookify
 {
@@ -54,85 +56,72 @@ namespace Spookify
 		[Outlet]
 		UIKit.UIButton SucheBuechertreffButton { get; set; }
 
-		[Action ("OnBuchSelektiert:")]
-		partial void OnBuchSelektiert (UIKit.UIButton sender);
-
 		[Action ("OnSucheAmazon:")]
 		partial void OnSucheAmazon (UIKit.UIButton sender);
 
 		[Action ("OnSucheBuechertreff:")]
 		partial void OnSucheBuechertreff (UIKit.UIButton sender);
-		
+
+		[Action ("OnBuchSelektiert:")]
+		partial void OnBuchSelektiert (UIKit.UIButton sender);
+
 		void ReleaseDesignerOutlets ()
 		{
 			if (AlbumImage != null) {
 				AlbumImage.Dispose ();
 				AlbumImage = null;
 			}
-
 			if (AlbumLabel != null) {
 				AlbumLabel.Dispose ();
 				AlbumLabel = null;
 			}
-
 			if (AuthorLabel != null) {
 				AuthorLabel.Dispose ();
 				AuthorLabel = null;
 			}
-
 			if (BuchSelektiertButton != null) {
 				BuchSelektiertButton.Dispose ();
 				BuchSelektiertButton = null;
 			}
-
-			if (ContainerView != null) {
-				ContainerView.Dispose ();
-				ContainerView = null;
-			}
-
-			if (DescriptionTextView != null) {
-				DescriptionTextView.Dispose ();
-				DescriptionTextView = null;
-			}
-
-			if (LengthLabel != null) {
-				LengthLabel.Dispose ();
-				LengthLabel = null;
-			}
-
-			if (MehrVomAutorButton != null) {
-				MehrVomAutorButton.Dispose ();
-				MehrVomAutorButton = null;
-			}
-
-			if (ScrollView != null) {
-				ScrollView.Dispose ();
-				ScrollView = null;
-			}
-
-			if (SucheAmazonButton != null) {
-				SucheAmazonButton.Dispose ();
-				SucheAmazonButton = null;
-			}
-
-			if (SucheBuechertreffButton != null) {
-				SucheBuechertreffButton.Dispose ();
-				SucheBuechertreffButton = null;
-			}
-
-			if (ContainerHeightLayoutConstraint != null) {
-				ContainerHeightLayoutConstraint.Dispose ();
-				ContainerHeightLayoutConstraint = null;
-			}
-
 			if (ContainerBottomLayoutConstraint != null) {
 				ContainerBottomLayoutConstraint.Dispose ();
 				ContainerBottomLayoutConstraint = null;
 			}
-
+			if (ContainerHeightLayoutConstraint != null) {
+				ContainerHeightLayoutConstraint.Dispose ();
+				ContainerHeightLayoutConstraint = null;
+			}
+			if (ContainerView != null) {
+				ContainerView.Dispose ();
+				ContainerView = null;
+			}
+			if (DescriptionTextView != null) {
+				DescriptionTextView.Dispose ();
+				DescriptionTextView = null;
+			}
 			if (DescriptionTextViewHeightLayoutConstraint != null) {
 				DescriptionTextViewHeightLayoutConstraint.Dispose ();
 				DescriptionTextViewHeightLayoutConstraint = null;
+			}
+			if (LengthLabel != null) {
+				LengthLabel.Dispose ();
+				LengthLabel = null;
+			}
+			if (MehrVomAutorButton != null) {
+				MehrVomAutorButton.Dispose ();
+				MehrVomAutorButton = null;
+			}
+			if (ScrollView != null) {
+				ScrollView.Dispose ();
+				ScrollView = null;
+			}
+			if (SucheAmazonButton != null) {
+				SucheAmazonButton.Dispose ();
+				SucheAmazonButton = null;
+			}
+			if (SucheBuechertreffButton != null) {
+				SucheBuechertreffButton.Dispose ();
+				SucheBuechertreffButton = null;
 			}
 		}
 	}

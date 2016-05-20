@@ -69,7 +69,12 @@ namespace Spookify
 		{
 			imageView.SetUIImage( this.LargestCoverURL, LargestCoverData, (val) => LargestCoverData = val);
 		}
-
+		public void AddBookmark(AudioBookBookmark b)
+		{
+			if (Bookmarks == null)
+				Bookmarks = new List<AudioBookBookmark> ();
+			Bookmarks.Add (b);
+		}
 		public int Compare (object x, object y)
 		{
 			var xb = x as AudioBook;
@@ -105,7 +110,10 @@ namespace Spookify
 		public string LargestCoverURL { get; set; }
 		public string Uri { get; set; }
 
-		int IComparer<PlaylistBook>.Compare (PlaylistBook x, PlaylistBook y)
+		int IComparer<PlaylistBook>.Compare (PlaylistBook x, PlaylistBook y) {
+			return PlaylistBook.CompareUri (x, y);
+		}
+		public static int CompareUri (PlaylistBook x, PlaylistBook y)
 		{			
 			if ((x == null && y == null) || ((x != null && x.Uri == null) && (y != null && y.Uri == null)))
 				return 0;			
@@ -114,6 +122,17 @@ namespace Spookify
 			if (y == null || y.Uri == null)
 				return 1;
 			return string.Compare(x.Uri, y.Uri);
+		}
+
+		public static int CompareName (PlaylistBook x, PlaylistBook y)
+		{			
+			if (x?.Album?.Name == null && y?.Album?.Name == null)
+				return 0;			
+			if (x?.Album?.Name == null)
+				return -1;
+			if (y?.Album?.Name == null)
+				return 1;
+			return string.Compare(x.Album.Name, y.Album.Name);
 		}
 
 		public static explicit operator PlaylistBook(AudioBook ab)
@@ -172,6 +191,7 @@ namespace Spookify
 					Console.WriteLine ("CreateFromFullAsync: Abbruch weil Error: "+er.LocalizedDescription);
 					if (finished != null)
 						finished ();
+					return;
 				}
 				var page = SPTPlaylistSnapshot.PlaylistSnapshotFromData (dat, resp, out errorOut);
 				if (page != null)
@@ -255,6 +275,8 @@ namespace Spookify
 		{
 			foreach (SPTPlaylistTrack track in firstTrackPage.Items) {
 				if (track != null && 
+					track.Album != null &&
+					track.Album.Name != null &&
 					!track.Album.Name.StartsWith("Anleitung zum Profil Hörbücher und den Playlists") &&
 					!track.Album.Name.StartsWith("Full Length Audiobooks: Here's how it works!")) {
 
@@ -266,8 +288,8 @@ namespace Spookify
 							Name = a.Name,
 							URI = a.Uri.AbsoluteString
 						}).ToList (),
-						SmallestCoverURL = track.Album.SmallestCover.ImageURL.AbsoluteString,
-						LargestCoverURL = track.Album.LargestCover.ImageURL.AbsoluteString,
+						SmallestCoverURL = track.Album.SmallestCover?.ImageURL?.AbsoluteString,
+						LargestCoverURL = track.Album.LargestCover?.ImageURL?.AbsoluteString,
 						Uri = track.Album.GetUri ().AbsoluteString
 					};
 				}

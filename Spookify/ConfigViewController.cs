@@ -16,26 +16,16 @@ namespace Spookify
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-
-			LoginButton.Layer.CornerRadius = 10; // this value vary as per your desire
-			LoginButton.ClipsToBounds = true;
-
-			RefreshButton.Layer.CornerRadius = 10; // this value vary as per your desire
-			RefreshButton.ClipsToBounds = true;
 		}
 
 		public override void ViewWillAppear (bool animated)
 		{
 			base.ViewWillAppear (animated);
 
-			this.SwapURLSwitch.On = CurrentSettings.Current.kTokenSwapService;
-			this.RefreshURLSwitch.On = CurrentSettings.Current.kTokenRefreshService;
-
 			var appVersionString = NSBundle.MainBundle.ObjectForInfoDictionary("CFBundleShortVersionString");
 			var appBuildString = NSBundle.MainBundle.ObjectForInfoDictionary("CFBundleVersion");
 
 			this.VersionLabel.Text = string.Format("© 2016 Markus Fischer, Version {0} ({1})",appVersionString,appBuildString);
-
 			UpdateStatus ();
 		}
 
@@ -60,27 +50,22 @@ namespace Spookify
 			}
 		}
 
-		partial void ValueChanged (Foundation.NSObject sender)
-		{
-			CurrentSettings.Current.kTokenSwapService = this.SwapURLSwitch.On;
-			CurrentSettings.Current.kTokenRefreshService = this.RefreshURLSwitch.On;
-			CurrentSettings.Current.StoreCurrent();
-			UpdateStatus ();
-		}
+		public string Info = @"Hörbücher bei Spotify finden und anhören.   Die Idee zu dieser App kam mir, als ich versuchte ein Hörbuch bei Spotify bei einer Schitour anzuhören - die Spotify iOS App hat die Kapitel geshuffelt und ich war oben völlig verwirrt. So konnte es nicht weiter gehen, eine Lösung musste her...hier ist sie...leider ohne offline Funktionaltität, denn dies bietet die API von Spotify nicht an.  Impressum: Fischer & Schaefers GbR
+Stollbergstrasse 6
+80539 München
+E-Mail: gbr @ consultdot.net 
 
-		partial void LoginClicked (UIKit.UIButton sender)
-		{
-			var c = CurrentPlayer.Current;
-			c.CreateNewSPTAuth();
-			c.OpenLoginPage(this);
-			UpdateStatus ();
-		}
+Geschäftsführende Gesellschafter:
+Bernhard Schaefers, Markus Fischer
 
-		partial void RenewSessionClicked (UIKit.UIButton sender)
-		{
-			var c = CurrentPlayer.Current;
-			c.RenewSession();
-			UpdateStatus ();
-		}
+Fischer & Schaefers GbR ist eine Gesellschaft bürgerlichen Rechts mit Sitz in München
+
+Umsatzsteuer-ID-Nr.: DE243564719  Haftungsbeschränkung: 
+Die Inhalte der App wurden mit größtmöglicher Sorgfalt und nach bestem Gewissen erstellt. Dennoch übernimmt der Anbieter der App keine Gewähr für die Aktualität, Vollständigkeit und Richtigkeit der bereitgestellten Inhalte.
+
+Die meisten Inhalte dieser App, insbesondere Texte, Bilder und Audioinhalte, stammen von Spotify, Inhaltsangaben der Bücher stammen von google.  Für die Inhalte und Richtigkeit der bereitgestellten Informationen ist der jeweilige Anbieter der Daten verantwortlich.  Externe Links: 
+Die App enthält sog. „externe Links“ (Verlinkungen) zu anderen Webseiten, auf deren Inhalt der Anbieter der Webseite keinen Einfluss hat. Aus diesem Grund kann der Anbieter für diese Inhalte auch keine Gewähr übernehmen.
+Für die Inhalte und Richtigkeit der bereitgestellten Informationen ist der jeweilige Anbieter der verlinkten Webseite verantwortlich. Zum Zeitpunkt der Verlinkung waren keine Rechtsverstöße erkennbar. Bei Bekanntwerden einer solchen Rechtsverletzung wird der Link umgehend entfernen.  Urheberrecht/Leistungsschutzrecht: 
+Die auf dieser Webseite veröffentlichten Inhalte, Werke und bereitgestellten Informationen unterliegen dem deutschen Urheberrecht und Leistungsschutzrecht. Jede Art der Vervielfältigung, Bearbeitung, Verbreitung, Einspeicherung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen schriftlichen Zustimmung des jeweiligen Rechteinhabers. ";
 	}
 }

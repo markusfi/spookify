@@ -74,7 +74,7 @@ namespace Spookify
 			{
 				var view = new UIView (new CGRect (0, 0, tableView.Frame.Width, tableView.SectionHeaderHeight));
 				var label = new UILabel ();
-				view.BackgroundColor = label.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+				view.BackgroundColor = label.BackgroundColor = ConfigSpookify.BackgroundColor;
 				label.TextColor = UIColor.LightGray;
 				if (this.AutorViewController != null && this.AutorViewController.NewBook != null) {
 					var prettyString = new NSMutableAttributedString (string.Format("{0} ({1})",
@@ -169,6 +169,7 @@ namespace Spookify
 											Authors = new List<Author> () { author }
 										});
 									}
+									ThisAudioBookPlaylist.Books.Sort(PlaylistBook.CompareName);
 								}
 								if (page.HasNextPage) {
 									LoadNextPage (page, author);

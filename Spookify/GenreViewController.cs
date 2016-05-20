@@ -16,6 +16,7 @@ namespace Spookify
 		UISearchController searchController;
 		bool searchControllerWasActive;
 		bool searchControllerSearchFieldWasFirstResponder;
+		public bool doNotDisplayList = false;
 
 		public GenreViewController (IntPtr handle) : base (handle)
 		{
@@ -34,9 +35,9 @@ namespace Spookify
 			this.NavigationController.NavigationBar.TopItem.Title = this.NavigationController.TabBarItem.Title;
 
 			this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
-			this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB (25, 25, 25);
+			this.NavigationController.NavigationBar.BarTintColor = ConfigSpookify.BackgroundColor;
 			this.NavigationController.NavigationBar.Translucent = false;
-			this.NavigationController.NavigationBar.TintColor = UIColor.White;
+			this.NavigationController.NavigationBar.TintColor = ConfigSpookify.BartTintColor;
 
 			// Perform any additional setup after loading the view, typically from a nib.
 			var ds = new HoerbuecherSource (this);
@@ -49,8 +50,20 @@ namespace Spookify
 			HoerbuchTableView.TableFooterView = new UIView (CGRect.Empty);
 
 			SetupSearch ();
-
-			this.TabBarController.SwitchToPlayWhenNoSession();
+			var tag = this.NavigationController.TabBarItem.Tag;
+			if (tag == 3) {
+				this.doNotDisplayList = true;
+				this.HoerbuchTableView.Subviews [1].BackgroundColor = UIColor.Clear;
+				this.HoerbuchTableView.BackgroundColor = UIColor.Clear;
+				var bv = SearchBackgroundView.Create ();
+				bv.Frame = this.HoerbuchTableView.Bounds;
+				bv.BackgroundColor = ConfigSpookify.BackgroundColor;
+				this.HoerbuchTableView.BackgroundView = bv;
+				bv.ShowGengres += (object sender, EventArgs e) => {
+					this.doNotDisplayList = false;
+					this.HoerbuchTableView.ReloadData();
+				};
+			}
 		}
 
 		void SetupSearch()
@@ -78,19 +91,18 @@ namespace Spookify
 						HoerbuchTableView.ScrollToRow (NSIndexPath.FromRowSection (0, 0), UITableViewScrollPosition.Top, false);
 				}
 				searchController.ObscuresBackgroundDuringPresentation = true;
-				searchController.SearchBar.BackgroundColor = UIColor.FromRGB (25, 25, 25);
-				searchController.SearchBar.BarTintColor = UIColor.FromRGB (25, 25, 25);
-				searchController.SearchBar.TintColor = UIColor.White;
+				searchController.SearchBar.BackgroundColor = ConfigSpookify.BackgroundColor;
+				searchController.SearchBar.BarTintColor = ConfigSpookify.BackgroundColor;
+				searchController.SearchBar.TintColor = ConfigSpookify.BartTintColor;
 
 				resultsTableController.TableView.WeakDelegate = this;
 				searchController.SearchBar.WeakDelegate = this;
 
+				DefinesPresentationContext = true;
 
 				foreach (UIView subview in this.HoerbuchTableView.Subviews) {
-					subview.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+					subview.BackgroundColor = ConfigSpookify.BackgroundColor ;
 				}
-
-				DefinesPresentationContext = true;
 
 				if (searchControllerWasActive) {
 					searchController.Active = searchControllerWasActive;
@@ -116,6 +128,11 @@ namespace Spookify
 		[Export ("updateSearchResultsForSearchController:")]
 		public virtual void UpdateSearchResultsForSearchController (UISearchController searchController)
 		{
+			if (!this.doNotDisplayList) {
+				this.doNotDisplayList = true;
+				this.HoerbuchTableView.ReloadData ();
+			}
+
 			var tableController = (ResultsTableViewController)searchController.SearchResultsController;
 			tableController.HoerbuchListeViewController = null;
 			tableController.GenreViewController = this;
@@ -170,7 +187,6 @@ namespace Spookify
 		public override void ViewDidAppear (bool animated)
 		{
 			base.ViewDidAppear (animated);
-			this.TabBarController.SwitchToPlayWhenNoSession();
 
 			if (!CurrentPlayer.Current.IsSessionValid && CurrentPlayer.Current.CanRenewSession) {
 				CurrentPlayer.Current.RenewSession (() => {
@@ -335,6 +351,8 @@ namespace Spookify
 
 		public IEnumerable<UserPlaylist>GetSublist(nint section)
 		{
+			if (this.genreViewController.doNotDisplayList)
+				return new UserPlaylist[0];
 			if (this.PlaylistLists != null) {
 				if (section == 0) {
 					return this.PlaylistLists.Where (p => p.Name.Contains (keyTippDerWoche));
@@ -476,7 +494,7 @@ namespace Spookify
 		{
 			var view = new UIView (new CGRect (0, 0, tableView.Frame.Width, tableView.SectionHeaderHeight));
 			var label = new UILabel ();
-			view.BackgroundColor = label.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+			view.BackgroundColor = label.BackgroundColor = ConfigSpookify.BackgroundColor;
 			label.TextColor = UIColor.LightGray;
 			var trackCount = this.GetBarSublist (section).Sum (x => (int)x.TrackCount);
 			var prettyString = new NSMutableAttributedString (section == 0 

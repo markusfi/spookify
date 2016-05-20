@@ -1,16 +1,17 @@
 ﻿using System;
 using UIKit;
 using System.Threading.Tasks;
+using Foundation;
 
 namespace Spookify
 {
-	public class PlayerViewSleepTimer
+	public class PlayerViewSleepTimer : NSObject
 	{
-		PlayerViewController _playerViewController;
+		ISleepTimerController _sleepTimerController;
 
-		public PlayerViewSleepTimer (PlayerViewController playerViewController)
+		public PlayerViewSleepTimer (ISleepTimerController sleepTimerController)
 		{
-			_playerViewController = playerViewController;
+			_sleepTimerController = sleepTimerController;
 		}
 
 		UILabel SleepTimerLabel { get; set; }
@@ -31,20 +32,20 @@ namespace Spookify
 					if (CurrentPlayer.Current.NeedToRenewSession)
 						CurrentPlayer.Current.RenewSession ();
 
-					_playerViewController.InvokeOnMainThread (async () => {
-						_playerViewController.DisplayAlbum ();
-						if (_playerViewController.SleepTimerStartTime == DateTime.MinValue) {
+					this.InvokeOnMainThread (async () => {
+						_sleepTimerController.DisplayAlbum ();
+						if (_sleepTimerController.SleepTimerStartTime == DateTime.MinValue) {
 							if (SleepTimerLabel != null) {
 								SleepTimerLabel.RemoveFromSuperview ();
 								SleepTimerLabel.Dispose ();
 								SleepTimerLabel = null;
 							}
 
-						} else if (_playerViewController.SleepTimerStartTime == DateTime.MaxValue) {
+						} else if (_sleepTimerController.SleepTimerStartTime == DateTime.MaxValue) {
 
 						} else {
-							if (_playerViewController.SleepTimerStartTime > DateTime.MinValue) {
-								if (_playerViewController.SleepTimerStartTime > DateTime.Now) {
+							if (_sleepTimerController.SleepTimerStartTime > DateTime.MinValue) {
+								if (_sleepTimerController.SleepTimerStartTime > DateTime.Now) {
 									if (SleepTimerLabel == null) {
 										SleepTimerLabel = new UILabel ();
 										SleepTimerLabel.TranslatesAutoresizingMaskIntoConstraints = false;
@@ -57,17 +58,18 @@ namespace Spookify
 										SleepTimerLabel.TintColor = UIColor.Black;
 										SleepTimerLabel.TextColor = UIColor.Black;
 
-										_playerViewController.View.AddSubview (SleepTimerLabel);
-										_playerViewController.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.Width, NSLayoutRelation.Equal, _playerViewController.View, NSLayoutAttribute.Width, 0.5f, 0));
-										_playerViewController.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.Height, NSLayoutRelation.Equal, null, NSLayoutAttribute.Height, 0f, 28f));
-										_playerViewController.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.CenterX, NSLayoutRelation.Equal, _playerViewController.View, NSLayoutAttribute.CenterX, 1f, 0));
-										_playerViewController.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, _playerViewController.View, NSLayoutAttribute.CenterY, 1f, 90f));
+										_sleepTimerController.View.AddSubview (SleepTimerLabel);
+										_sleepTimerController.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.Width, NSLayoutRelation.Equal, _sleepTimerController.View, NSLayoutAttribute.Width, 0.5f, 0));
+										_sleepTimerController.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.Height, NSLayoutRelation.Equal, null, NSLayoutAttribute.Height, 0f, 28f));
+										_sleepTimerController.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.CenterX, NSLayoutRelation.Equal, _sleepTimerController.View, NSLayoutAttribute.CenterX, 1f, 0));
+										_sleepTimerController.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, _sleepTimerController.View, NSLayoutAttribute.CenterY, 1f, 90f));
 
 									}
-									SleepTimerLabel.Text = string.Format ("Sleep Timer {0:mm\\:ss}", _playerViewController.SleepTimerStartTime.Subtract (DateTime.Now));
+									SleepTimerLabel.Text = string.Format ("Sleep Timer {0:mm\\:ss}", _sleepTimerController.SleepTimerStartTime.Subtract (DateTime.Now));
 								}
-								if (_playerViewController.SleepTimerStartTime < DateTime.Now) {
-									_playerViewController.SleepTimerStartTime = DateTime.MinValue;
+								if (_sleepTimerController.SleepTimerStartTime < DateTime.Now) {
+									_sleepTimerController.SleepTimerStartTime = DateTime.MinValue;
+									_sleepTimerController.SleepTimerOpion = 0;
 									CurrentPlayer.Current.SavePosition(true);
 									if (CurrentPlayer.Current.Player != null) {
 										var origVol = CurrentPlayer.Current.Player.Volume;

@@ -52,7 +52,7 @@ namespace Spookify
 			if (_changed != null)
 				_changed (sender, args);
 		}
-		public override string Filename()  { return "Audiobooks"; } 
+		public override string Filename()  { return "Audiobooks5"; } 
 
 		PlaylistOwner _user;
 		public PlaylistOwner User { 
@@ -174,14 +174,23 @@ namespace Spookify
 							}
 						}
 						OnChanged(this, new PlaylistChangedEventArgs(newUserPlaylist?.Name));
+						ordered = false;
 					});
+				}
+				if (_playlists != null) {
+					if (!ordered) {
+						_playlists.Sort (ConfigListen.Comparison);
+						ordered = true;
+					}
 				}
 				return _playlists;
 			}
 		}
+		bool ordered = false;
+
 		void AddWithoutDups(List<UserPlaylist> master, UserPlaylist playlist, UserPlaylist newSublist)
 		{
-			string[] noDups = { "Bestseller", "Gemeintips" };
+			string[] noDups = { "Bestseller", "Geheimtipps" };
 			bool doNotAllowDups = noDups.Any(s => playlist.Name.Contains(s));
 			var sortedList = doNotAllowDups 
 				? master.SelectMany (p => p?.Books ?? new List<PlaylistBook> ()).OrderBy (b => b?.Uri).ToList ()
@@ -285,8 +294,8 @@ namespace Spookify
 					completionHandler(new UserPlaylist() {
 						Name = playlist.Name,
 						TrackCount = (uint) playlist.TrackCount,
-						LargeImageUrl = playlist.LargestImage.ImageURL.AbsoluteString,
-						SmallImageUrl = playlist.SmallestImage.ImageURL.AbsoluteString,
+						LargeImageUrl = playlist.LargestImage?.ImageURL?.AbsoluteString,
+						SmallImageUrl = playlist.SmallestImage?.ImageURL?.AbsoluteString,
 						Books = playlistBooks.ToList(),
 					}, isComplete);
 				}

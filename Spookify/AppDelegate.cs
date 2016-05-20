@@ -95,7 +95,7 @@ namespace Spookify
 			CurrentPlaylistsCache.Current.StoreCurrent();
 			CurrentLRUCache.Current.StoreCurrent();
 
-			if (CurrentAudiobooks.Current.IsComplete && CurrentAudiobooks.Current.HasPlaylists)
+			if (CurrentAudiobooks.Current.IsComplete && CurrentAudiobooks.Current.HasPlaylists && CurrentAudiobooks.Current.User.Playlists.Count > 10)
 				CurrentAudiobooks.Current.StoreCurrent ();
 		}
 

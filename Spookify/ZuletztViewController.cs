@@ -23,9 +23,9 @@ namespace Spookify
 			base.ViewDidLoad ();
 
 			this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
-			this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB (25, 25, 25);
+			this.NavigationController.NavigationBar.BarTintColor = ConfigSpookify.BackgroundColor;
 			this.NavigationController.NavigationBar.Translucent = false;
-			this.NavigationController.NavigationBar.TintColor = UIColor.White;
+			this.NavigationController.NavigationBar.TintColor = ConfigSpookify.BartTintColor;
 
 			// Perform any additional setup after loading the view, typically from a nib.
 			this.HoerbuchListeTableView.Delegate = new ZuletztListeDelegate() { zuletztViewController = this };
@@ -35,8 +35,6 @@ namespace Spookify
 				this.HoerbuchListeTableView.ReloadData();
 			};
 			this.HoerbuchListeTableView.TableFooterView = new UIView (CGRect.Empty);
-
-			this.TabBarController.SwitchToPlayWhenNoSession();
 		}
 		public override void PrepareForSegue (UIStoryboardSegue segue, NSObject sender)
 		{
@@ -55,8 +53,10 @@ namespace Spookify
 		{
 			base.ViewDidAppear (animated);
 			this.HoerbuchListeTableView.ReloadData ();
-			this.TabBarController.SwitchToPlayWhenNoSession();
+			if (miniPlayerView == null)
+				miniPlayerView = new MiniPlayerView (this.View, this);
 		}
+		MiniPlayerView miniPlayerView = null;
 
 		public class ZuletztListeDelegate : UITableViewDelegate
 		{

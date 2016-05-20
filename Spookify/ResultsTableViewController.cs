@@ -18,11 +18,11 @@ namespace Spookify
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-			this.TableView.SeparatorColor = UIColor.FromRGB (50, 50, 50);
+			this.TableView.SeparatorColor = ConfigSpookify.TableSeparatorColor;
 			this.TableView.SeparatorStyle = UITableViewCellSeparatorStyle.SingleLine;
 			this.TableView.SeparatorInset = new UIEdgeInsets (0, 0, 0, 0);
 
-			this.TableView.BackgroundColor = UIColor.FromRGB (25, 25, 25);
+			this.TableView.BackgroundColor = ConfigSpookify.BackgroundColor;
 			this.TableView.TableFooterView = new UIView (CGRect.Empty);
 		}
 		public override nint RowsInSection (UITableView tableview, nint section)

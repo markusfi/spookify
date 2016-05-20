@@ -1,11 +1,13 @@
 // WARNING
 //
-// This file has been generated automatically by Xamarin Studio to store outlets and
-// actions made in the UI designer. If it is removed, they will be lost.
-// Manual changes to this file may not be handled correctly.
+// This file has been generated automatically by Xamarin Studio from the outlets and
+// actions declared in your storyboard file.
+// Manual changes to this file will not be maintained.
 //
 using Foundation;
+using System;
 using System.CodeDom.Compiler;
+using UIKit;
 
 namespace Spookify
 {
@@ -22,7 +24,7 @@ namespace Spookify
 		UIKit.UIView Airplay { get; set; }
 
 		[Outlet]
-		UIKit.UIImageView AlbumImage { get; set; }
+		public UIKit.UIImageView AlbumImage { get; set; }
 
 		[Outlet]
 		UIKit.UILabel AlbumLabel { get; set; }
@@ -75,124 +77,93 @@ namespace Spookify
 		[Action ("OnAddBookmark:")]
 		partial void OnAddBookmark (UIKit.UIButton sender);
 
-		[Action ("OnBackTime:")]
-		partial void OnBackTime (UIKit.UIButton sender);
-
-		[Action ("OnForwardTime:")]
-		partial void OnForwardTime (UIKit.UIButton sender);
-
-		[Action ("OnNextTrack:")]
-		partial void OnNextTrack (UIKit.UIButton sender);
-
 		[Action ("OnPlay:")]
 		partial void OnPlay (UIKit.UIButton sender);
 
 		[Action ("OnPrevTrack:")]
 		partial void OnPrevTrack (UIKit.UIButton sender);
 
+		[Action ("OnNextTrack:")]
+		partial void OnNextTrack (UIKit.UIButton sender);
+
+		[Action ("OnBackTime:")]
+		partial void OnBackTime (UIKit.UIButton sender);
+
+		[Action ("OnForwardTime:")]
+		partial void OnForwardTime (UIKit.UIButton sender);
+
 		[Action ("OnSleeptimer:")]
 		partial void OnSleeptimer (UIKit.UIButton sender);
-		
+
 		void ReleaseDesignerOutlets ()
 		{
-			if (Airplay != null) {
-				Airplay.Dispose ();
-				Airplay = null;
+			if (ActivityIndicatorBackgroundView != null) {
+				ActivityIndicatorBackgroundView.Dispose ();
+				ActivityIndicatorBackgroundView = null;
 			}
-
-			if (AlbumImage != null) {
-				AlbumImage.Dispose ();
-				AlbumImage = null;
-			}
-
-			if (AlbumLabel != null) {
-				AlbumLabel.Dispose ();
-				AlbumLabel = null;
-			}
-
-			if (AuthorLabel != null) {
-				AuthorLabel.Dispose ();
-				AuthorLabel = null;
-			}
-
-			if (bisEndeBuchLabel != null) {
-				bisEndeBuchLabel.Dispose ();
-				bisEndeBuchLabel = null;
-			}
-
-			if (bisEndeKapitelLabel != null) {
-				bisEndeKapitelLabel.Dispose ();
-				bisEndeKapitelLabel = null;
-			}
-
-			if (KapitelButton != null) {
-				KapitelButton.Dispose ();
-				KapitelButton = null;
-			}
-
-			if (kapitelLabel != null) {
-				kapitelLabel.Dispose ();
-				kapitelLabel = null;
-			}
-
-			if (LesezeichenButton != null) {
-				LesezeichenButton.Dispose ();
-				LesezeichenButton = null;
-			}
-
-			if (NextTrack != null) {
-				NextTrack.Dispose ();
-				NextTrack = null;
-			}
-
-			if (PlayButton != null) {
-				PlayButton.Dispose ();
-				PlayButton = null;
-			}
-
-			if (PrevTrack != null) {
-				PrevTrack.Dispose ();
-				PrevTrack = null;
-			}
-
-			if (ProgressBar != null) {
-				ProgressBar.Dispose ();
-				ProgressBar = null;
-			}
-
-			if (seitStartKapitelLabel != null) {
-				seitStartKapitelLabel.Dispose ();
-				seitStartKapitelLabel = null;
-			}
-
-			if (SkipBackward != null) {
-				SkipBackward.Dispose ();
-				SkipBackward = null;
-			}
-
-			if (SkipForward != null) {
-				SkipForward.Dispose ();
-				SkipForward = null;
-			}
-
-			if (SleepButton != null) {
-				SleepButton.Dispose ();
-				SleepButton = null;
-			}
-
-			if (TrackLabel != null) {
-				TrackLabel.Dispose ();
-				TrackLabel = null;
-			}
-
 			if (ActivityIndicatorView != null) {
 				ActivityIndicatorView.Dispose ();
 				ActivityIndicatorView = null;
 			}
-
-			if (ActivityIndicatorBackgroundView != null) {
-				ActivityIndicatorBackgroundView.Dispose ();
-				ActivityIndicatorBackgroundView = null;
+			if (Airplay != null) {
+				Airplay.Dispose ();
+				Airplay = null;
+			}
+			if (AlbumImage != null) {
+				AlbumImage.Dispose ();
+				AlbumImage = null;
+			}
+			if (AlbumLabel != null) {
+				AlbumLabel.Dispose ();
+				AlbumLabel = null;
+			}
+			if (AuthorLabel != null) {
+				AuthorLabel.Dispose ();
+				AuthorLabel = null;
+			}
+			if (bisEndeBuchLabel != null) {
+				bisEndeBuchLabel.Dispose ();
+				bisEndeBuchLabel = null;
+			}
+			if (bisEndeKapitelLabel != null) {
+				bisEndeKapitelLabel.Dispose ();
+				bisEndeKapitelLabel = null;
+			}
+			if (kapitelLabel != null) {
+				kapitelLabel.Dispose ();
+				kapitelLabel = null;
+			}
+			if (LesezeichenButton != null) {
+				LesezeichenButton.Dispose ();
+				LesezeichenButton = null;
+			}
+			if (NextTrack != null) {
+				NextTrack.Dispose ();
+				NextTrack = null;
+			}
+			if (PlayButton != null) {
+				PlayButton.Dispose ();
+				PlayButton = null;
+			}
+			if (PrevTrack != null) {
+				PrevTrack.Dispose ();
+				PrevTrack = null;
+			}
+			if (ProgressBar != null) {
+				ProgressBar.Dispose ();
+				ProgressBar = null;
+			}
+			if (seitStartKapitelLabel != null) {
+				seitStartKapitelLabel.Dispose ();
+				seitStartKapitelLabel = null;
+			}
+			if (SkipBackward != null) {
+				SkipBackward.Dispose ();
+				SkipBackward = null;
+			}
+			if (SkipForward != null) {
+				SkipForward.Dispose ();
+				SkipForward = null;
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -448,10 +449,10 @@
             </objects>
             <point key="canvasLocation" x="2605" y="-1327"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Resize Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
             <objects>
-                <tabBarController id="49e-Tb-3d3" sceneMemberID="viewController">
+                <tabBarController id="49e-Tb-3d3" customClass="ResizeTabBarController" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" barStyle="black" translucent="NO" id="W28-zg-YXA">
                         <rect key="frame" x="0.0" y="551" width="600" height="49"/>
@@ -468,10 +469,10 @@
                     </tabBar>
                     <connections>
                         <segue destination="v9q-Se-LmC" kind="relationship" relationship="viewControllers" id="9kC-eo-E7Z"/>
-                        <segue destination="cC1-op-hXN" kind="relationship" relationship="viewControllers" id="hFZ-ts-now"/>
                         <segue destination="pHm-jw-exb" kind="relationship" relationship="viewControllers" id="lzU-1b-eKA"/>
                         <segue destination="tuE-m4-AjH" kind="relationship" relationship="viewControllers" id="05k-uz-Zqg"/>
                         <segue destination="gYz-gF-ITz" kind="relationship" relationship="viewControllers" id="NbB-kK-fNI"/>
+                        <segue destination="APb-xh-tQQ" kind="relationship" relationship="viewControllers" id="j4c-Vn-lue"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
@@ -487,163 +488,106 @@
                         <viewControllerLayoutGuide type="bottom" id="cAj-7n-KHU"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="dvy-Ip-yrw">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Token Refresh Service" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OFW-fC-lA2">
-                                <rect key="frame" x="30" y="180" width="145" height="17"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G9K-cF-Rv3">
+                                <rect key="frame" x="20" y="103" width="560" height="329"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="beE-BX-WCv">
+                                        <rect key="frame" x="0.0" y="0.0" width="560" height="777"/>
+                                        <mutableString key="text">Hörbücher bei Spotify finden und anhören.   Die Idee zu dieser App kam mir, als ich versuchte ein Hörbuch bei Spotify bei einer Schitour anzuhören - die Spotify iOS App hat die Kapitel ge-shuffelt und ich war am Gifpel angekommen völlig verwirrt. So konnte es nicht weiter gehen, eine Lösung musste her...hier ist die erste Version...leider ohne offline Funktionaltität, denn dies bietet die API von Spotify nicht an.  Impressum: Fischer &amp; Schaefers GbR
+Stollbergstrasse 6
+80539 München
+E-Mail: gbr @ consultdot.net 
+
+Geschäftsführende Gesellschafter:
+Bernhard Schaefers, Markus Fischer
+
+Fischer &amp; Schaefers GbR ist eine Gesellschaft bürgerlichen Rechts mit Sitz in München
+
+Umsatzsteuer-ID-Nr.: DE243564719  Haftungsbeschränkung: 
+Die Inhalte der App wurden mit größtmöglicher Sorgfalt und nach bestem Gewissen erstellt. Dennoch übernimmt der Anbieter der App keine Gewähr für die Aktualität, Vollständigkeit und Richtigkeit der bereitgestellten Inhalte.
+
+Die meisten Inhalte dieser App, insbesondere Texte, Bilder und Audioinhalte, stammen von Spotify, Inhaltsangaben der Bücher stammen von google.  Für die Inhalte und Richtigkeit der bereitgestellten Informationen ist der jeweilige Anbieter der Daten verantwortlich.  Externe Links: 
+Die App enthält sog. „externe Links“ (Verlinkungen) zu anderen Webseiten, auf deren Inhalt der Anbieter der App keinen Einfluss hat. Aus diesem Grund kann der Anbieter für diese Inhalte auch keine Gewähr übernehmen.
+Für die Inhalte und Richtigkeit der bereitgestellten Informationen ist der jeweilige Anbieter der verlinkten Webseite verantwortlich. Zum Zeitpunkt der Verlinkung waren keine Rechtsverstöße erkennbar. Bei Bekanntwerden einer solchen Rechtsverletzung wird der Link umgehend entfernen.  Urheberrecht/Leistungsschutzrecht: 
+Die auf dieser Webseite veröffentlichten Inhalte, Werke und bereitgestellten Informationen unterliegen dem deutschen Urheberrecht und Leistungsschutzrecht. Jede Art der Vervielfältigung, Bearbeitung, Verbreitung, Einspeicherung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen schriftlichen Zustimmung des jeweiligen Rechteinhabers. </mutableString>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                        <string key="userLabel">Hörbücher bei Spotify finden und anhören.   Die Idee zu dieser App kam mir, als ich versuchte ein Hörbuch bei Spotify bei einer Schitour anzuhören - die Spotify iOS App hat die Kapitel geshuffelt und ich war oben völlig verwirrt. So konnte es nicht weiter gehen, eine Lösung musste her...hier ist sie...leider ohne offline Funktionaltität, denn dies bietet die API von Spotify nicht an.  Impressum: Fischer &amp; Schaefers GbR Stollbergstrasse 6 80539 München E-Mail: gbr @ consultdot.net   Geschäftsführende Gesellschafter: Bernhard Schaefers, Markus Fischer  Fischer &amp; Schaefers GbR ist eine Gesellschaft bürgerlichen Rechts mit Sitz in München  Umsatzsteuer-ID-Nr.: DE243564719  Haftungsbeschränkung:  Die Inhalte der App wurden mit größtmöglicher Sorgfalt und nach bestem Gewissen erstellt. Dennoch übernimmt der Anbieter der App keine Gewähr für die Aktualität, Vollständigkeit und Richtigkeit der bereitgestellten Inhalte.  Die meisten Inhalte dieser App, insbesondere Texte, Bilder und Audioinhalte, stammen von Spotify, Inhaltsangaben der Bücher stammen von google.  Für die Inhalte und Richtigkeit der bereitgestellten Informationen ist der jeweilige Anbieter der Daten verantwortlich.  Externe Links:  Die App enthält sog. „externe Links“ (Verlinkungen) zu anderen Webseiten, auf deren Inhalt der Anbieter der Webseite keinen Einfluss hat. Aus diesem Grund kann der Anbieter für diese Inhalte auch keine Gewähr übernehmen. Für die Inhalte und Richtigkeit der bereitgestellten Informationen ist der jeweilige Anbieter der verlinkten Webseite verantwortlich. Zum Zeitpunkt der Verlinkung waren keine Rechtsverstöße erkennbar. Bei Bekanntwerden einer solchen Rechtsverletzung wird der Link umgehend entfernen.  Urheberrecht/Leistungsschutzrecht:  Die auf dieser Webseite veröffentlichten Inhalte, Werke und bereitgestellten Informationen unterliegen dem deutschen Urheberrecht und Leistungsschutzrecht. Jede Art der Vervielfältigung, Bearbeitung, Verbreitung, Einspeicherung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen schriftlichen Zustimmung des jeweiligen Rechteinhabers.</string>
+                                    </label>
+                                </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="145" id="uHM-6u-40c"/>
+                                    <constraint firstItem="beE-BX-WCv" firstAttribute="top" secondItem="G9K-cF-Rv3" secondAttribute="top" id="17j-jm-UvS"/>
+                                    <constraint firstItem="beE-BX-WCv" firstAttribute="leading" secondItem="G9K-cF-Rv3" secondAttribute="leading" id="Sbz-dC-SAM"/>
+                                    <constraint firstAttribute="trailing" secondItem="beE-BX-WCv" secondAttribute="trailing" id="auY-nA-8LM"/>
+                                    <constraint firstAttribute="bottom" secondItem="beE-BX-WCv" secondAttribute="bottom" id="uF4-JI-nSV"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            </scrollView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status: Last refresh" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HkV-A9-GUG">
+                                <rect key="frame" x="246" y="491" width="109" height="16"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="13"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aZF-Aw-a30">
-                                <rect key="frame" x="190" y="209" width="51" height="31"/>
-                                <connections>
-                                    <action selector="ValueChanged:" destination="APb-xh-tQQ" eventType="valueChanged" id="ClG-Gi-cWc"/>
-                                </connections>
-                            </switch>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eEA-NW-NGT">
-                                <rect key="frame" x="190" y="173" width="51" height="31"/>
-                                <connections>
-                                    <action selector="ValueChanged:" destination="APb-xh-tQQ" eventType="valueChanged" id="uzq-Xs-g4K"/>
-                                </connections>
-                            </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Folgende Einstellungen betreffen den Zugriff auf Spotify Services mit Ihrem Spotify Premium Account" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="beE-BX-WCv">
-                                <rect key="frame" x="30" y="110" width="540" height="34"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status: Last swap" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BII-8R-l4A">
+                                <rect key="frame" x="250" y="469" width="101" height="16"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="13"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Spookify Einstellungen" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="25e-PA-q1r">
-                                <rect key="frame" x="179" y="50" width="243" height="28"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="24"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8h9-EL-dMn">
-                                <rect key="frame" x="200" y="251" width="200" height="50"/>
-                                <color key="backgroundColor" red="0.88235294119999996" green="0.89019607840000003" blue="0.8980392157" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="7Tg-hv-1Gv"/>
-                                    <constraint firstAttribute="height" constant="50" id="zjW-WE-N4T"/>
-                                </constraints>
-                                <state key="normal" title="Login to Spotify...">
-                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="LoginClicked:" destination="APb-xh-tQQ" eventType="touchUpInside" id="4AJ-Kv-Tha"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Token Swap" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qmx-mU-6un">
-                                <rect key="frame" x="30" y="216" width="145" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="145" id="6X2-Ek-FL7"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vsv-Xf-Ycx">
-                                <rect key="frame" x="200" y="313" width="200" height="50"/>
-                                <color key="backgroundColor" red="0.88235294119999996" green="0.89019607840000003" blue="0.8980392157" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="Cu4-KY-x8w"/>
-                                    <constraint firstAttribute="width" constant="200" id="jOz-Bg-8De"/>
-                                </constraints>
-                                <state key="normal" title="Renew Session">
-                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="RenewSessionClicked:" destination="APb-xh-tQQ" eventType="touchUpInside" id="8hH-bf-h9e"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Status: Last refresh" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HkV-A9-GUG">
-                                <rect key="frame" x="241" y="468" width="119" height="16"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Status: Last swap" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BII-8R-l4A">
-                                <rect key="frame" x="243" y="436" width="114" height="17"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Spookify Version X, Markus Fischer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9zG-SC-ePw">
-                                <rect key="frame" x="243" y="436" width="114" height="17"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Spookify Version X, Markus Fischer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9zG-SC-ePw">
+                                <rect key="frame" x="202" y="447" width="197" height="16"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="13"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                                 <variation key="widthClass=compact" misplaced="YES">
                                     <rect key="frame" x="148" y="412" width="107" height="16"/>
                                 </variation>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" canCancelContentTouches="NO" bouncesZoom="NO" editable="NO" text="App Icons by https://icons8.com" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="s4T-Ne-NXu">
-                                <rect key="frame" x="150" y="545" width="300" height="26"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <rect key="frame" x="150" y="513" width="300" height="26"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="300" id="CUQ-Jm-m7E"/>
                                     <constraint firstAttribute="height" constant="26" id="oow-fe-Knn"/>
                                 </constraints>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="13"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <dataDetectorType key="dataDetectorTypes" link="YES" calendarEvent="YES"/>
                             </textView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Spookify" translatesAutoresizingMaskIntoConstraints="NO" id="ukU-Ug-N65">
+                                <rect key="frame" x="232" y="28" width="137" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="137" id="RiF-YT-R2F"/>
+                                    <constraint firstAttribute="height" constant="60" id="cJ0-Bv-WMb"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.098039215686274508" green="0.098039215686274508" blue="0.098039215686274508" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="HkV-A9-GUG" firstAttribute="top" secondItem="BII-8R-l4A" secondAttribute="bottom" constant="12" id="1Ep-E2-ihb"/>
-                            <constraint firstItem="8h9-EL-dMn" firstAttribute="top" secondItem="aZF-Aw-a30" secondAttribute="bottom" constant="11" id="3IP-nY-RZA"/>
-                            <constraint firstItem="beE-BX-WCv" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="3ZF-Fe-ayH"/>
-                            <constraint firstItem="aZF-Aw-a30" firstAttribute="centerY" secondItem="qmx-mU-6un" secondAttribute="centerY" id="8fI-j7-zSw"/>
-                            <constraint firstItem="eEA-NW-NGT" firstAttribute="leading" secondItem="aZF-Aw-a30" secondAttribute="leading" id="DnQ-So-4Ct"/>
-                            <constraint firstAttribute="centerX" secondItem="25e-PA-q1r" secondAttribute="centerX" id="E0o-47-ct6"/>
-                            <constraint firstItem="qmx-mU-6un" firstAttribute="leading" secondItem="OFW-fC-lA2" secondAttribute="leading" id="FOI-yy-ate"/>
-                            <constraint firstItem="vsv-Xf-Ycx" firstAttribute="top" secondItem="8h9-EL-dMn" secondAttribute="bottom" constant="12" id="FZP-Al-lfR"/>
+                            <constraint firstItem="HkV-A9-GUG" firstAttribute="top" secondItem="BII-8R-l4A" secondAttribute="bottom" constant="6" id="1Ep-E2-ihb"/>
+                            <constraint firstItem="beE-BX-WCv" firstAttribute="width" secondItem="dvy-Ip-yrw" secondAttribute="width" constant="-40" id="5br-qP-3w7"/>
+                            <constraint firstItem="9zG-SC-ePw" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="C51-1o-HHd"/>
                             <constraint firstItem="BII-8R-l4A" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="GGW-J9-zzX"/>
-                            <constraint firstItem="BII-8R-l4A" firstAttribute="top" secondItem="9zG-SC-ePw" secondAttribute="bottom" constant="12" id="Htu-bN-Y0j"/>
-                            <constraint firstItem="beE-BX-WCv" firstAttribute="top" secondItem="nsU-qo-Sdv" secondAttribute="bottom" constant="90" id="JxP-rw-lLI"/>
-                            <constraint firstItem="9zG-SC-ePw" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="LFr-2W-jzh"/>
-                            <constraint firstItem="25e-PA-q1r" firstAttribute="top" secondItem="nsU-qo-Sdv" secondAttribute="bottom" constant="30" id="TDo-qZ-nus"/>
-                            <constraint firstItem="beE-BX-WCv" firstAttribute="leading" secondItem="dvy-Ip-yrw" secondAttribute="leadingMargin" constant="10" id="ZYO-Op-5BC"/>
-                            <constraint firstItem="cAj-7n-KHU" firstAttribute="top" secondItem="s4T-Ne-NXu" secondAttribute="bottom" constant="29" id="e5e-wv-ZaT"/>
-                            <constraint firstItem="aZF-Aw-a30" firstAttribute="top" secondItem="eEA-NW-NGT" secondAttribute="bottom" constant="5" id="efX-SP-vhr"/>
+                            <constraint firstItem="G9K-cF-Rv3" firstAttribute="leading" secondItem="dvy-Ip-yrw" secondAttribute="leading" constant="20" id="Hor-h1-1dq"/>
+                            <constraint firstItem="BII-8R-l4A" firstAttribute="top" secondItem="9zG-SC-ePw" secondAttribute="bottom" constant="6" id="Htu-bN-Y0j"/>
+                            <constraint firstItem="9zG-SC-ePw" firstAttribute="top" secondItem="G9K-cF-Rv3" secondAttribute="bottom" constant="15" id="JVf-S6-TaG"/>
+                            <constraint firstItem="cAj-7n-KHU" firstAttribute="top" secondItem="s4T-Ne-NXu" secondAttribute="bottom" constant="12" id="e5e-wv-ZaT"/>
+                            <constraint firstItem="G9K-cF-Rv3" firstAttribute="top" secondItem="ukU-Ug-N65" secondAttribute="bottom" constant="15" id="f2n-Bh-Mfa"/>
+                            <constraint firstItem="ukU-Ug-N65" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="fhz-lH-3ya"/>
                             <constraint firstItem="HkV-A9-GUG" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="lE8-3a-v3Q"/>
-                            <constraint firstItem="8h9-EL-dMn" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="o71-f6-6LA"/>
-                            <constraint firstItem="OFW-fC-lA2" firstAttribute="leading" secondItem="beE-BX-WCv" secondAttribute="leading" id="pH3-jy-6Wj"/>
-                            <constraint firstItem="s4T-Ne-NXu" firstAttribute="top" secondItem="HkV-A9-GUG" secondAttribute="bottom" constant="10" id="pOi-OA-NG7"/>
-                            <constraint firstItem="vsv-Xf-Ycx" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="pTJ-Ni-5CN"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="beE-BX-WCv" secondAttribute="trailing" constant="10" id="sps-9f-rIB"/>
-                            <constraint firstItem="eEA-NW-NGT" firstAttribute="leading" secondItem="OFW-fC-lA2" secondAttribute="trailing" constant="15" id="t8M-fr-AvC"/>
-                            <constraint firstItem="qmx-mU-6un" firstAttribute="leading" secondItem="OFW-fC-lA2" secondAttribute="leading" id="tc9-OP-cFO"/>
-                            <constraint firstItem="OFW-fC-lA2" firstAttribute="top" secondItem="nsU-qo-Sdv" secondAttribute="bottom" constant="160" id="yJl-5K-xN7"/>
+                            <constraint firstAttribute="trailing" secondItem="G9K-cF-Rv3" secondAttribute="trailing" constant="20" id="mMJ-5m-YeD"/>
+                            <constraint firstItem="s4T-Ne-NXu" firstAttribute="top" secondItem="HkV-A9-GUG" secondAttribute="bottom" constant="6" id="pOi-OA-NG7"/>
+                            <constraint firstItem="ukU-Ug-N65" firstAttribute="top" secondItem="nsU-qo-Sdv" secondAttribute="bottom" constant="8" id="vEX-4r-bND"/>
                             <constraint firstItem="s4T-Ne-NXu" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="yTL-pM-nPy"/>
-                            <constraint firstItem="eEA-NW-NGT" firstAttribute="centerY" secondItem="OFW-fC-lA2" secondAttribute="centerY" id="ywQ-TC-ZmA"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="LFr-2W-jzh"/>
-                            </mask>
-                        </variation>
-                        <variation key="widthClass=compact">
-                            <mask key="constraints">
-                                <include reference="LFr-2W-jzh"/>
-                            </mask>
-                        </variation>
                     </view>
                     <tabBarItem key="tabBarItem" title="Einstellungen" image="Settings" selectedImage="Settings" id="pAZ-ne-45T"/>
                     <connections>
-                        <outlet property="LoginButton" destination="8h9-EL-dMn" id="Ume-vu-dfL"/>
-                        <outlet property="RefreshButton" destination="vsv-Xf-Ycx" id="tM1-sV-3aF"/>
-                        <outlet property="RefreshURLSwitch" destination="eEA-NW-NGT" id="qYw-5W-LCN"/>
-                        <outlet property="RefreshwitchLabel" destination="OFW-fC-lA2" id="3kc-az-Jrr"/>
-                        <outlet property="SwapSwitchLabel" destination="qmx-mU-6un" id="GQh-DT-90s"/>
-                        <outlet property="SwapURLSwitch" destination="aZF-Aw-a30" id="Prn-Wf-Qme"/>
                         <outlet property="VersionLabel" destination="9zG-SC-ePw" id="jA8-TO-kDk"/>
                         <outlet property="_StatusRefreshLabel" destination="HkV-A9-GUG" id="gRQ-AV-HIW"/>
                         <outlet property="_StatusSwapLabel" destination="BII-8R-l4A" id="VuU-He-CnM"/>
@@ -651,7 +595,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tgH-Je-Oz7" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1012" y="733"/>
+            <point key="canvasLocation" x="1494" y="731"/>
         </scene>
         <!--Ich höre-->
         <scene sceneID="oFo-Si-d2C">
@@ -662,7 +606,7 @@
                         <viewControllerLayoutGuide type="bottom" id="wUV-wf-26d"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="iga-SE-Rdw">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Titel" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nbo-lR-5zo">
@@ -1405,10 +1349,10 @@
             </objects>
             <point key="canvasLocation" x="989" y="-896"/>
         </scene>
-        <!--Zuletzt gehört-->
+        <!--Merkliste-->
         <scene sceneID="xIQ-no-GkN">
             <objects>
-                <viewController title="Zuletzt gehört" id="zUO-B7-ltS" customClass="ZuletztViewController" sceneMemberID="viewController">
+                <viewController title="Merkliste" id="zUO-B7-ltS" customClass="ZuletztViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="DkA-Fv-tBu"/>
                         <viewControllerLayoutGuide type="bottom" id="m8g-gc-wcd"/>
@@ -1503,50 +1447,25 @@
                                     <constraint firstItem="bLG-gC-wLn" firstAttribute="top" secondItem="HWz-T8-p9f" secondAttribute="top" id="hZV-Gy-g4D"/>
                                     <constraint firstAttribute="bottom" secondItem="bLG-gC-wLn" secondAttribute="bottom" id="pen-A7-3QK"/>
                                 </constraints>
-                                <variation key="heightClass=regular-widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="9GK-kn-Qo6"/>
-                                        <include reference="Fcn-bS-gYI"/>
-                                        <include reference="hZV-Gy-g4D"/>
-                                        <include reference="pen-A7-3QK"/>
-                                    </mask>
-                                </variation>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="HWz-T8-p9f" firstAttribute="bottom" secondItem="m8g-gc-wcd" secondAttribute="top" id="0ko-XD-KT3"/>
-                            <constraint firstItem="HWz-T8-p9f" firstAttribute="leading" secondItem="S0B-3c-W3Z" secondAttribute="leading" id="88y-0Y-YgE"/>
+                            <constraint firstItem="HWz-T8-p9f" firstAttribute="bottom" secondItem="m8g-gc-wcd" secondAttribute="top" identifier="bottomSpacerMerkliste" id="0ko-XD-KT3"/>
                             <constraint firstItem="HWz-T8-p9f" firstAttribute="top" secondItem="S0B-3c-W3Z" secondAttribute="top" id="8Zd-Sg-re5"/>
-                            <constraint firstItem="HWz-T8-p9f" firstAttribute="bottom" secondItem="m8g-gc-wcd" secondAttribute="top" id="HOg-xc-8vp"/>
                             <constraint firstItem="HWz-T8-p9f" firstAttribute="leading" secondItem="S0B-3c-W3Z" secondAttribute="leading" id="HVp-uN-UCr"/>
-                            <constraint firstAttribute="trailing" secondItem="HWz-T8-p9f" secondAttribute="trailing" id="I8Y-of-Q1l"/>
                             <constraint firstAttribute="trailing" secondItem="HWz-T8-p9f" secondAttribute="trailing" id="TVP-UH-00G"/>
-                            <constraint firstItem="HWz-T8-p9f" firstAttribute="top" secondItem="S0B-3c-W3Z" secondAttribute="top" id="yEO-Al-IRA"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="88y-0Y-YgE"/>
-                                <exclude reference="8Zd-Sg-re5"/>
-                                <exclude reference="I8Y-of-Q1l"/>
-                            </mask>
-                        </variation>
-                        <variation key="widthClass=compact">
-                            <mask key="constraints">
-                                <include reference="88y-0Y-YgE"/>
-                                <include reference="8Zd-Sg-re5"/>
-                                <include reference="I8Y-of-Q1l"/>
-                            </mask>
-                        </variation>
                     </view>
                     <navigationItem key="navigationItem" title="Merkliste" id="pQt-Po-Ige"/>
                     <connections>
                         <outlet property="HoerbuchListeTableView" destination="bLG-gC-wLn" id="Goe-yU-Vzc"/>
+                        <outlet property="bottomConstraint" destination="0ko-XD-KT3" id="NNu-Kw-Sc0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="P7S-hJ-yso" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3115.5" y="732"/>
+            <point key="canvasLocation" x="3115" y="732"/>
         </scene>
         <!--Zuletzt gehört-->
         <scene sceneID="jxW-jZ-RLu">
@@ -1570,7 +1489,7 @@
         <!--Ich höre-->
         <scene sceneID="0pt-Ba-A7A">
             <objects>
-                <navigationController title="Ich höre" automaticallyAdjustsScrollViewInsets="NO" id="cC1-op-hXN" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="Player" title="Ich höre" automaticallyAdjustsScrollViewInsets="NO" id="cC1-op-hXN" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Ich höre..." image="Ich" selectedImage="Ich" id="476-3R-mow"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="xl4-27-D4a">
@@ -1758,6 +1677,7 @@
         <image name="Play" width="24" height="24"/>
         <image name="Prev" width="25" height="25"/>
         <image name="Settings" width="50" height="50"/>
+        <image name="Spookify" width="274" height="121"/>
         <image name="Suche" width="50" height="50"/>
         <image name="Zuletzt" width="50" height="50"/>
     </resources>

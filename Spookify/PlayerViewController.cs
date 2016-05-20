@@ -16,13 +16,15 @@ namespace Spookify
 {
 	public partial class PlayerViewController : UIViewController
 	{
-		PlayerViewSleepTimer _playerViewSleepTimer;
 		public bool IsSessionValid { get { return CurrentPlayer.Current.IsSessionValid; } }
 		public bool CanRenewSession { get { return CurrentPlayer.Current.CanRenewSession; } }
 		public bool IsPlayerCreated { get {	return CurrentPlayer.Current.IsPlayerCreated; } }
 		public SPTAudioStreamingController Player { get { return CurrentPlayer.Current.Player; } }
 		public void PlayCurrentAudioBook() { CurrentPlayer.Current.PlayCurrentAudioBook (); }
 		bool SavePosition(bool store = true) { return CurrentPlayer.Current.SavePosition(store); }
+
+		public MiniPlayerView MiniPlayer { get; set; }
+		public bool HasCloseButton { get { return MiniPlayer != null; } }
 
 		public PlayerViewController (IntPtr handle) : base (handle)
 		{
@@ -58,19 +60,24 @@ namespace Spookify
 				}
 			}
 			
-			SetupRemoteControl ();
-
-
 			UIBarButtonItem rightButton = new UIBarButtonItem ();
 			rightButton.Image = UIImage.FromBundle ("Kaset");
 			rightButton.Clicked += PlaySettingsClicked;
 
 			this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
-			this.NavigationController.NavigationBar.BarTintColor = UIColor.FromRGB (25, 25, 25);
+			this.NavigationController.NavigationBar.BarTintColor = ConfigSpookify.BackgroundColor;
 			this.NavigationController.NavigationBar.Translucent = false;
-			this.NavigationController.NavigationBar.TintColor = UIColor.White;
+			this.NavigationController.NavigationBar.TintColor = ConfigSpookify.BartTintColor;
 
 			this.NavigationItem.SetRightBarButtonItem (rightButton, false);
+
+			if (HasCloseButton) {
+				UIBarButtonItem leftButton = new UIBarButtonItem ();
+				leftButton.Image = UIImage.FromBundle ("Close");
+				leftButton.Clicked += DismissHandler;
+				this.NavigationItem.SetLeftBarButtonItem (leftButton, false);
+			}
+				
 
 			CurrentPlayer.Current.CreateSPTAudioStreamingDelegate (this);
 
@@ -79,11 +86,11 @@ namespace Spookify
 			tapRecognizer.NumberOfTapsRequired = 1;
 			this.AlbumImage.UserInteractionEnabled = true;
 			this.AlbumImage.AddGestureRecognizer (tapRecognizer);
+		}
 
-
-			if (_playerViewSleepTimer == null)
-				_playerViewSleepTimer = new PlayerViewSleepTimer (this);
-			_playerViewSleepTimer.StartTimer ();
+		void DismissHandler (object sender, EventArgs e)
+		{
+			this.DismissViewController (true, null);
 		}
 	
 		void HandleTouchInImage()
@@ -105,7 +112,6 @@ namespace Spookify
 		{
 			base.ViewDidUnload ();
 			SavePosition ();
-			_playerViewSleepTimer.StopTimer ();
 		}
 			
 		void SkipTrack(int step)
@@ -145,36 +151,7 @@ namespace Spookify
 		AudioBook displayedAudioBook = null; 
 
 
-		private static string CommonPrefix(string[] ss)
-		{
-			if (ss.Length == 0)
-				return "";
-			if (ss.Length == 1)
-				return ss[0];
 
-			int prefixLength = 0;
-
-			foreach (char c in ss[0]) {
-				foreach (string s in ss) {
-					if (s.Length <= prefixLength || s[prefixLength] != c) {
-						return ss[0].Substring(0, prefixLength);
-					}
-				}
-				prefixLength++;
-			}
-			return ss[0]; // all strings identical
-		}
-		private static string RemoveDelimiter(string s)
-		{
-			if (string.IsNullOrEmpty (s))
-				return s;
-			int delimiterLength = 0; 
-			while (delimiterLength < s.Length &&
-			       ((char.IsPunctuation (s [delimiterLength]) || char.IsWhiteSpace (s [delimiterLength])))) {
-				delimiterLength++;
-			}
-			return delimiterLength > 0 ? s.Substring (delimiterLength) : s;
-		}
 
 		void ShowNoConnection() {
 			this.AlbumLabel.Text = "Keine Internetverbindung\nStreaming nicht möglich";
@@ -226,47 +203,31 @@ namespace Spookify
 		void DisplayCurrentAudiobook(AudioBook ab) {
 			this.ActivityIndicatorBackgroundView.Hidden = true;
 			this.ActivityIndicatorView.StopAnimating ();
-			this.PlayButton.SetImage (UIImage.FromBundle (this.Player.IsPlaying ? "Pause" : "Play").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
+			this.PlayButton.SetImage (this.Player.CurrentPlayButtonImage(), UIControlState.Normal);
 			this.PlayButton.Hidden = false;
 
-			var c = CurrentState.Current;
-			if (c.CurrentAudioBook != null &&
-				c.CurrentAudioBook.CurrentPosition != null &&
-				ab.Tracks.Count () > c.CurrentAudioBook.CurrentPosition.TrackIndex) 
+			if (ab != null &&
+				ab.CurrentPosition != null &&
+				ab.Tracks.Count () > ab.CurrentPosition.TrackIndex) 
 			{
-				var track = ab.Tracks.ElementAt (c.CurrentAudioBook.CurrentPosition.TrackIndex);
-
-				string displayString = ab.Album.Name;
-				var prefix = CommonPrefix (new [] { track.Name, ab.Album.Name} );
-				if (prefix != null && prefix.Length == ab.Album.Name.Length) {
-					displayString = track.Name;
-				} else if (prefix != null && prefix.Length > 5 && track.Name.Length > (prefix.Length + 1)) {
-					displayString = ab.Album.Name + " - " + RemoveDelimiter(track.Name.Substring (prefix.Length));
-				} else
-					displayString = ab.Album.Name + " - " + track.Name;
-				this.AlbumLabel.Text = displayString;
+				var track = ab.Tracks.ElementAt (ab.CurrentPosition.TrackIndex);
+				this.AlbumLabel.Text = ab.ToAlbumName ();
 
 				// this.TrackLabel.Text = track.Name;
 				this.ProgressBar.Hidden = track.Duration == 0.0;
 				if (track.Duration != 0.0)
-					this.ProgressBar.Progress = (float)(c.CurrentAudioBook.CurrentPosition.PlaybackPosition / track.Duration);
+					this.ProgressBar.Progress = (float)(ab.CurrentPosition.PlaybackPosition / track.Duration);
 
-				var gesamtBisEnde = ab.Tracks.Skip(c.CurrentAudioBook.CurrentPosition.TrackIndex).Sum (t => t.Duration) - c.CurrentAudioBook.CurrentPosition.PlaybackPosition;
+				var gesamtBisEnde = ab.Tracks.Skip(ab.CurrentPosition.TrackIndex).Sum (t => t.Duration) - ab.CurrentPosition.PlaybackPosition;
 				var tsBisEnde = TimeSpan.FromSeconds (gesamtBisEnde);
-				var gesamtSeitAnfang = ab.Tracks.Take (c.CurrentAudioBook.CurrentPosition.TrackIndex - 1).Sum (t => t.Duration) + c.CurrentAudioBook.CurrentPosition.PlaybackPosition;
+				var gesamtSeitAnfang = ab.Tracks.Take (ab.CurrentPosition.TrackIndex - 1).Sum (t => t.Duration) + ab.CurrentPosition.PlaybackPosition;
 				var tsSeitAnfang = TimeSpan.FromSeconds (gesamtSeitAnfang);
-
-				if (Math.Truncate(tsBisEnde.TotalHours) > 1.0)
-					this.bisEndeBuchLabel.Text = string.Format ("{0} Stunden {1:00} Minuten verbleiben", Math.Truncate (tsBisEnde.TotalHours), tsBisEnde.Minutes);
-				else if (Math.Truncate(tsBisEnde.TotalHours) > 0.0)
-					this.bisEndeBuchLabel.Text = string.Format ("{0} Stunde {1:00} Minuten verbleiben", Math.Truncate (tsBisEnde.TotalHours), tsBisEnde.Minutes);
-				else 
-					this.bisEndeBuchLabel.Text = string.Format ("{0} Minuten {1:00} Sekunden verbleiben",  Math.Truncate(tsBisEnde.TotalMinutes), tsBisEnde.Seconds);
-				this.kapitelLabel.Text = string.Format ("Kapitel {0} von {1}", c.CurrentAudioBook.CurrentPosition.TrackIndex+1, ab.Tracks.Count);
-				var ts = TimeSpan.FromSeconds (c.CurrentAudioBook.CurrentPosition.PlaybackPosition);
-				this.seitStartKapitelLabel.Text = string.Format ("{0:00}:{1:00}", Math.Truncate(ts.TotalMinutes), ts.Seconds);
+				this.bisEndeBuchLabel.Text = tsBisEnde.ToLongTimeText () + " verbleiben";
+				this.kapitelLabel.Text = string.Format ("Kapitel {0} von {1}", ab.CurrentPosition.TrackIndex+1, ab.Tracks.Count);
+				var ts = TimeSpan.FromSeconds (ab.CurrentPosition.PlaybackPosition);
+				this.seitStartKapitelLabel.Text = ts.ToMinutesText ();
 				var tsToEnd = TimeSpan.FromSeconds (track.Duration).Subtract (ts);
-				this.bisEndeKapitelLabel.Text = string.Format ("{0:00}:{1:00}", Math.Truncate(tsToEnd.TotalMinutes), tsToEnd.Seconds);
+				this.bisEndeKapitelLabel.Text = tsToEnd.ToMinutesText ();
 			} else {
 				this.bisEndeKapitelLabel.Text = "";
 				this.bisEndeBuchLabel.Text = "";
@@ -274,16 +235,16 @@ namespace Spookify
 				this.seitStartKapitelLabel.Text = "";
 			}
 			if (ab != displayedAudioBook) { 
-				this.AuthorLabel.Text = ab.Artists.FirstOrDefault ();
+				this.AuthorLabel.Text = ab.ToAuthorName ();
 				ab.SetLargeImage (this.AlbumImage);
 				displayedAudioBook = ab;
 			} 
 		}
 		public void DisplayAlbum()
 		{
-			if (!CurrentPlayer.Current.TriggerWaitingForPlayUri)
-				SavePosition ();
-
+			if (!this.IsViewLoaded || this.View.Superview == null)
+				return;
+			
 			var ab = CurrentState.Current.CurrentAudioBook;
 
 			bool hasConnection = Reachability.RemoteHostStatus () != NetworkStatus.NotReachable;
@@ -318,10 +279,8 @@ namespace Spookify
 				else if (!this.IsPlayerCreated) {
 					if (this.IsSessionValid) {
 						ShowPendingLogin ();
-						var dummy = this.Player;
 					} else if (this.CanRenewSession) {
 						ShowPendingRenewSession ();
-						CurrentPlayer.Current.RenewSession ();
 					} else {
 						ShowLoginToSpotify();
 					}
@@ -332,7 +291,6 @@ namespace Spookify
 			else 
 			{
 				DisplayCurrentAudiobook (ab);
-				SetupNowPlaying ();
 			}
 		}
 		public override bool CanBecomeFirstResponder {
@@ -343,6 +301,7 @@ namespace Spookify
 		public override void RemoteControlReceived (UIEvent theEvent)
 		{
 			UIEventSubtype rc = theEvent.Subtype;
+			/*
 			if (rc == UIEventSubtype.RemoteControlTogglePlayPause) {
 				this.TogglePlaying ();
 			} else if (rc == UIEventSubtype.RemoteControlPlay) {
@@ -354,151 +313,8 @@ namespace Spookify
 					this.Player.SetIsPlaying (false, (error) => {
 				});
 			}
+			*/
 		}
-		void SetupRemoteControl()
-		{
-			AVAudioSession sharedInstance = AVAudioSession.SharedInstance();
-			sharedInstance.SetCategory (AVAudioSessionCategory.Playback);
-			sharedInstance.SetActive (true);
-			this.BecomeFirstResponder ();
-			UIApplication.SharedApplication.BeginReceivingRemoteControlEvents ();
-			MPRemoteCommandCenter commandCenter = MPRemoteCommandCenter.Shared;
-
-			MPSkipIntervalCommand skipBackwardIntervalCommand = commandCenter.SkipBackwardCommand;
-			skipBackwardIntervalCommand.Enabled = true;
-			skipBackwardIntervalCommand.PreferredIntervals = new [] { 30.0 };
-			skipBackwardIntervalCommand.AddTarget( (remoteCommand) => 
-				{ 
-					if (this.IsPlayerCreated) {
-						this.OnBackTime(null);
-						return MPRemoteCommandHandlerStatus.Success;
-					} else 
-						return MPRemoteCommandHandlerStatus.CommandFailed;
-				});
-			MPSkipIntervalCommand skipForwardIntervalCommand = commandCenter.SkipForwardCommand;
-			skipForwardIntervalCommand.Enabled = true;
-			skipForwardIntervalCommand.PreferredIntervals = new [] { 30.0 };
-			skipForwardIntervalCommand.AddTarget( (remoteCommand) => 
-				{ 
-					if (this.IsPlayerCreated) {
-						this.OnForwardTime(null);
-						return MPRemoteCommandHandlerStatus.Success;
-					} else 
-						return MPRemoteCommandHandlerStatus.CommandFailed;
-				});
-			commandCenter.TogglePlayPauseCommand.Enabled = true;
-			commandCenter.TogglePlayPauseCommand.AddTarget( (remoteCommand) => 
-				{ 
-					if (this.IsPlayerCreated) {
-						this.TogglePlaying();
-						return MPRemoteCommandHandlerStatus.Success;
-					} else 
-						return MPRemoteCommandHandlerStatus.CommandFailed;
-				});
-			commandCenter.PlayCommand.Enabled = true;
-			commandCenter.PlayCommand.AddTarget( (remoteCommand) => 
-				{ 
-					if (this.IsPlayerCreated) {
-						this.Player.SetIsPlaying(true, (error) => { });
-						return MPRemoteCommandHandlerStatus.Success;
-					} else 
-						return MPRemoteCommandHandlerStatus.CommandFailed;
-				});
-			commandCenter.StopCommand.Enabled = true;
-			commandCenter.StopCommand.AddTarget( (remoteCommand) => 
-				{ 
-					if (this.IsPlayerCreated) {
-						this.Player.SetIsPlaying(false, (error) => { });
-						return MPRemoteCommandHandlerStatus.Success;
-					} else 
-						return MPRemoteCommandHandlerStatus.CommandFailed;
-				});
-			commandCenter.PauseCommand.Enabled = true;
-			commandCenter.PauseCommand.AddTarget( (remoteCommand) => 
-				{ 
-					if (this.IsPlayerCreated) {
-						this.Player.SetIsPlaying(false, (error) => { });
-						return MPRemoteCommandHandlerStatus.Success;
-					} else 
-						return MPRemoteCommandHandlerStatus.CommandFailed;
-				});
-			commandCenter.SkipForwardCommand.Enabled = true;
-			commandCenter.SkipForwardCommand.AddTarget( (remoteCommand) => 
-			{ 
-				if (this.IsPlayerCreated) {
-					this.OnForwardTime(null);
-					return MPRemoteCommandHandlerStatus.Success;
-				} else 
-					return MPRemoteCommandHandlerStatus.CommandFailed;
-			});			
-			commandCenter.SkipBackwardCommand.Enabled = true;
-			commandCenter.SkipBackwardCommand.AddTarget( (remoteCommand) => 
-			{ 
-				if (this.IsPlayerCreated) {
-					this.OnBackTime(null);
-					return MPRemoteCommandHandlerStatus.Success;
-				} else 
-					return MPRemoteCommandHandlerStatus.CommandFailed;
-			});
-			commandCenter.NextTrackCommand.Enabled = true;
-			commandCenter.NextTrackCommand.AddTarget( (remoteCommand) => 
-			{ 
-				if (this.IsPlayerCreated) {
-					this.OnNextTrack(null);
-					return MPRemoteCommandHandlerStatus.Success;
-				} else 
-					return MPRemoteCommandHandlerStatus.CommandFailed;
-			});			
-			commandCenter.PreviousTrackCommand.Enabled = true;
-			commandCenter.PreviousTrackCommand.AddTarget( (remoteCommand) => 
-			{ 
-				if (this.IsPlayerCreated) {
-					this.OnPrevTrack(null);
-					return MPRemoteCommandHandlerStatus.Success;
-				} else 
-					return MPRemoteCommandHandlerStatus.CommandFailed;
-			});
-		}
-
-		void SetupNowPlaying()
-		{
-			var ab = CurrentState.Current.CurrentAudioBook;
-			if (ab != null) {
-				MPNowPlayingInfoCenter info = MPNowPlayingInfoCenter.DefaultCenter;
-
-				var nowPlaying = new MPNowPlayingInfo ();
-				if (nowPlaying != null) {
-					nowPlaying.DiscCount = 1;
-					nowPlaying.DiscNumber = 0;
-					nowPlaying.PlaybackRate = 1.0;
-					nowPlaying.AlbumTitle = ab.Album.Name;
-					nowPlaying.Artist = ab.Artists.FirstOrDefault ();
-
-					nowPlaying.AlbumTrackNumber = 0;
-					nowPlaying.ElapsedPlaybackTime = 0;
-
-					if (ab.Tracks != null) {
-						nowPlaying.AlbumTrackCount = ab.Tracks.Count;
-						if (ab.CurrentPosition != null && 
-							ab.Tracks != null && 
-							ab.CurrentPosition.TrackIndex < ab.Tracks.Count) {
-							var track = ab.Tracks.ElementAt (ab.CurrentPosition.TrackIndex);
-							nowPlaying.Title = track.Name;
-							nowPlaying.AlbumTrackNumber = ab.CurrentPosition.TrackIndex+1;
-							nowPlaying.ElapsedPlaybackTime = ab.CurrentPosition.PlaybackPosition;
-							nowPlaying.PlaybackDuration = track.Duration;
-						}
-					}
-
-					if (this.AlbumImage.Image != null) 
-						nowPlaying.Artwork = new MPMediaItemArtwork (this.AlbumImage.Image);
-					info.NowPlaying = nowPlaying;
-				}
-			}
-		}
-			
-		public DateTime SleepTimerStartTime { get; set; } = DateTime.MinValue;
-		public int SleepTimerOpion = 0;
 
 		partial void OnAddBookmark (UIKit.UIButton sender)
 		{
@@ -509,9 +325,7 @@ namespace Spookify
 					alertView.Show();
 					alertView.Clicked += (object sender1, UIButtonEventArgs e) => {
 						if (e.ButtonIndex == 1) {;	
-							if (ab.Bookmarks == null)
-								ab.Bookmarks = new List<AudioBookBookmark>();
-							ab.Bookmarks.Add(new AudioBookBookmark(ab.CurrentPosition));
+							ab.AddBookmark(new AudioBookBookmark(ab.CurrentPosition));
 							CurrentState.Current.StoreCurrent();
 						}
 					};
@@ -520,7 +334,7 @@ namespace Spookify
 		}
 		void PlaySettingsClicked(object sender, EventArgs args) 
 		{
-			new PlayerViewSettings(this).PlaySettingsClicked(sender, args);
+			new PlayerViewSettings(this, this.MiniPlayer).PlaySettingsClicked(sender, args);
 		}
 		partial void OnPlay (UIKit.UIButton sender)
 		{
@@ -558,16 +372,9 @@ namespace Spookify
 
 		public void SwitchTab(int tab)
 		{
-			var tabBarController = this.TabBarController;
-
-			UIView fromView = tabBarController.SelectedViewController.View;
-			UIView toView = tabBarController.ViewControllers [tab].View;
-
-			if (fromView != toView) {
-				UIView.Transition (fromView, toView, 0.5, UIViewAnimationOptions.CurveEaseInOut, () => {
-					tabBarController.SelectedIndex = tab;
-				});
-			}
+			this.TabBarController.SwitchToTab (tab);
+			if (this.HasCloseButton)
+				DismissHandler (this, EventArgs.Empty);
 		}
 
 		public override void DidReceiveMemoryWarning ()
