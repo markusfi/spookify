@@ -271,7 +271,9 @@ namespace Spookify
 		public event RowSelectedEventHandler Selected;
 		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
-			OnRowSelected (tableView, indexPath);
+			var tag = this.genreViewController?.NavigationController?.TabBarItem?.Tag;
+			if (tag != 2 || indexPath.Row != 0 || indexPath.Section != 0)
+				OnRowSelected (tableView, indexPath);
 		}
 		private void OnRowSelected(UITableView tableView, NSIndexPath indexPath)
 		{

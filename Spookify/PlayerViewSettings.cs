@@ -79,7 +79,7 @@ namespace Spookify
 			sleepTimerSection.Add(new CLickableRadioElement(_sleepTimerController, 6, "Ende des Kapitels",TimeSpan.FromDays(1)));
 			var root = new RootElement ("Einstellungen") {
 				new Section () {
-					new RootElement("Kapitel",0,ab.CurrentPosition != null ? ab.CurrentPosition.TrackIndex : 0) {
+					new RootElement("Kapitel",0,ab?.CurrentPosition != null ? ab.CurrentPosition.TrackIndex : 0) {
 						kapitelSection	
 					},
 					new RootElement("Lesezeichen",0,lesezeichenSection.Count-1) {
