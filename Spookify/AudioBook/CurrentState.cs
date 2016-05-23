@@ -32,12 +32,18 @@ namespace Spookify
 		public string CurrentTrackURI
 		{
 			get {
+				return CurrentTrack?.Url;
+			}
+		}
+		public AudioBookTrack CurrentTrack
+		{
+			get {
 				if (CurrentAudioBook != null &&
-				    CurrentAudioBook.Tracks != null &&
-				    CurrentAudioBook.CurrentPosition != null &&
-				    CurrentAudioBook.Tracks.Count > CurrentAudioBook.CurrentPosition.TrackIndex) 
+					CurrentAudioBook.Tracks != null &&
+					CurrentAudioBook.CurrentPosition != null &&
+					CurrentAudioBook.Tracks.Count > CurrentAudioBook.CurrentPosition.TrackIndex) 
 				{
-					return CurrentAudioBook.Tracks [CurrentAudioBook.CurrentPosition.TrackIndex].Url;
+					return CurrentAudioBook.Tracks [CurrentAudioBook.CurrentPosition.TrackIndex];
 				}
 				return null;
 			}

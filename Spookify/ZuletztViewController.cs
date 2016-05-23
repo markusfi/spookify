@@ -136,14 +136,33 @@ namespace Spookify
 
 						var gesamtSeitAnfang = currentBook.Tracks.Sum (t => t.Duration);
 						var tsSeitAnfang = TimeSpan.FromSeconds (gesamtSeitAnfang);
+						if (!currentBook.Started && !currentBook.Finished) {
+							cell.progressBar.Hidden = true;
+							cell.DauerLabel.Hidden = true;
+							cell.ZeitLabel.Hidden = false;
+							cell.DauerLabel.Text = "";
+							cell.ZeitLabel.Text = tsSeitAnfang.ToLongTimeText ();
+						} else if(currentBook.Finished) {
+							cell.ZeitLabel.Text = "Beendet";
+							cell.progressBar.Hidden = true;
+							cell.DauerLabel.Hidden = true;
+							cell.ZeitLabel.Hidden = false;
+						} else if (currentBook.CurrentPosition != null) {
+							var position = currentBook.Tracks.Take (currentBook.CurrentPosition.TrackIndex).Sum (t => t.Duration) + currentBook.CurrentPosition.PlaybackPosition;
+							cell.progressBar.Progress = (float)(position / gesamtSeitAnfang);
+							cell.progressBar.Hidden = false;
+							cell.DauerLabel.Hidden = false;
+							cell.DauerLabel.Text = "noch " + TimeSpan.FromSeconds (gesamtSeitAnfang - position).ToTimeText ();
+							cell.ZeitLabel.Text = "";
+							cell.ZeitLabel.Hidden = true;
+						} else {
+							cell.progressBar.Hidden = true;
+							cell.DauerLabel.Hidden = true;
+							cell.ZeitLabel.Hidden = false;
+							cell.DauerLabel.Text = "";
+							cell.ZeitLabel.Text = tsSeitAnfang.ToLongTimeText ();
+						}
 
-						if (Math.Truncate(tsSeitAnfang.TotalHours) > 1.0)
-							cell.ZeitLabel.Text = string.Format ("{0} Stunden {1:00} Minuten", Math.Truncate (tsSeitAnfang.TotalHours), tsSeitAnfang.Minutes);
-						else if (Math.Truncate(tsSeitAnfang.TotalHours) > 0.0)
-							cell.ZeitLabel.Text = string.Format ("{0} Stunde {1:00} Minuten", Math.Truncate (tsSeitAnfang.TotalHours), tsSeitAnfang.Minutes);
-						else 
-							cell.ZeitLabel.Text = string.Format ("{0} Minuten {1:00} Sekunden",  Math.Truncate(tsSeitAnfang.TotalMinutes), tsSeitAnfang.Seconds);
-						
 						cell.AuthorLabel.Text = currentBook.Artists.FirstOrDefault ();
 
 						currentBook.SetSmallImage (cell.AlbumImage);

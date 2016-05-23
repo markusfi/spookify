@@ -133,9 +133,16 @@ namespace Spookify
 			playImage.AddGestureRecognizer (new UITapGestureRecognizer (TogglePlaying));
 			touchPlayView.AddGestureRecognizer (new UITapGestureRecognizer (TogglePlaying));
 			touchView.AddGestureRecognizer (new UITapGestureRecognizer (ShowBigPlayer));
+			this.TranslatesAutoresizingMaskIntoConstraints = false;
 			tabview.AddSubview (this);
 
 			var c = new NSLayoutConstraint[] {
+				NSLayoutConstraint.Create(this, NSLayoutAttribute.Leading, NSLayoutRelation.Equal, tabBar, NSLayoutAttribute.Leading, 1, 0),
+		//		NSLayoutConstraint.Create(this, NSLayoutAttribute.Top, NSLayoutRelation.Equal, tabview, NSLayoutAttribute.Bottom, 1, -100),
+				NSLayoutConstraint.Create(this, NSLayoutAttribute.Bottom, NSLayoutRelation.Equal, tabBar, NSLayoutAttribute.Top, 1, 0),
+				NSLayoutConstraint.Create(this, NSLayoutAttribute.Trailing, NSLayoutRelation.Equal, tabBar, NSLayoutAttribute.Trailing, 1, 0),
+				NSLayoutConstraint.Create(this, NSLayoutAttribute.Height, NSLayoutRelation.Equal, null, NSLayoutAttribute.NoAttribute, 1, 50),
+
 				NSLayoutConstraint.Create(centerLabel, NSLayoutAttribute.Leading, NSLayoutRelation.Equal, this, NSLayoutAttribute.Leading, 1, 55),
 				NSLayoutConstraint.Create(centerLabel, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, this, NSLayoutAttribute.CenterY, 1, 0),
 				NSLayoutConstraint.Create(centerLabel, NSLayoutAttribute.Trailing, NSLayoutRelation.Equal, this, NSLayoutAttribute.Trailing, 1, -55),
@@ -235,9 +242,21 @@ namespace Spookify
 				centerLabel.Text = "";
 				activityIndicatorView.StopAnimating ();
 				playImage.Hidden = false;
-				albumNameLabel.Text = ab?.ToAlbumName ();
-				authorNameLabel.Text = ab?.ToAuthorName () + " - " + ab?.TimeToEnd() + " verbleiben";
 				playImage.Image = Player.CurrentPlayButtonImage ();
+				albumNameLabel.Text = ab?.ToAlbumName ();
+				if (ab != null) {
+					var gesamtSeitAnfang = ab.Tracks.Sum (t => t.Duration);
+					var tsSeitAnfang = TimeSpan.FromSeconds (gesamtSeitAnfang);
+					if (!ab.Started && !ab.Finished) {
+						authorNameLabel.Text = ab?.ToAuthorName () + " - " + ab?.TimeToEnd ();
+					} else if (ab.Finished) {
+						authorNameLabel.Text = ab?.ToAuthorName () + " - Beendet";
+					} else if (ab.CurrentPosition != null) {
+						authorNameLabel.Text = ab?.ToAuthorName () + " - " + ab?.TimeToEnd () + " verbleiben";
+					} else {
+						authorNameLabel.Text = ab?.ToAuthorName () + " - " + ab?.TimeToEnd ();
+					}
+				}
 
 				SetupNowPlaying ();
 			}

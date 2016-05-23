@@ -1,13 +1,11 @@
 // WARNING
 //
-// This file has been generated automatically by Xamarin Studio from the outlets and
-// actions declared in your storyboard file.
-// Manual changes to this file will not be maintained.
+// This file has been generated automatically by Xamarin Studio Professional to store outlets and
+// actions made in the UI designer. If it is removed, they will be lost.
+// Manual changes to this file may not be handled correctly.
 //
 using Foundation;
-using System;
 using System.CodeDom.Compiler;
-using UIKit;
 
 namespace Spookify
 {
@@ -24,25 +22,44 @@ namespace Spookify
 		public UIKit.UILabel AuthorLabel { get; private set; }
 
 		[Outlet]
-		public UIKit.UILabel ZeitLabel { get; set; }
+		public UIKit.UILabel DauerLabel { get; set; }
 
+		[Outlet]
+		public UIKit.UIProgressView progressBar { get; set; }
+
+		[Outlet]
+		public UIKit.UILabel ZeitLabel { get; private set; }
+		
 		void ReleaseDesignerOutlets ()
 		{
 			if (AlbumImage != null) {
 				AlbumImage.Dispose ();
 				AlbumImage = null;
 			}
+
 			if (AlbumLabel != null) {
 				AlbumLabel.Dispose ();
 				AlbumLabel = null;
 			}
+
 			if (AuthorLabel != null) {
 				AuthorLabel.Dispose ();
 				AuthorLabel = null;
 			}
+
 			if (ZeitLabel != null) {
 				ZeitLabel.Dispose ();
 				ZeitLabel = null;
+			}
+
+			if (DauerLabel != null) {
+				DauerLabel.Dispose ();
+				DauerLabel = null;
+			}
+
+			if (progressBar != null) {
+				progressBar.Dispose ();
+				progressBar = null;
 			}
 		}
 	}

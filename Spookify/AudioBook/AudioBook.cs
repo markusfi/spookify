@@ -61,6 +61,9 @@ namespace Spookify
 	
 		public AudioBookBookmark CurrentPosition { get; set; }
 
+		public bool Started { get; set; }
+		public bool Finished { get; set; }
+
 		public void SetSmallImage(UIImageView imageView)
 		{
 			imageView.SetUIImage(this.SmallestCoverURL, SmallestCoverData, (val) => SmallestCoverData = val);

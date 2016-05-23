@@ -4,6 +4,7 @@ using CoreFoundation;
 using CoreGraphics;
 using System.Linq;
 using SpotifySDK;
+using Foundation;
 
 namespace Spookify
 {
@@ -112,7 +113,7 @@ namespace Spookify
 		{
 			if (ab == null || ab.Album == null)
 				return "";
-			if (ab.CurrentPosition == null || ab.Tracks == null || ab.Tracks.Count >= ab.CurrentPosition.TrackIndex)
+			if (ab.CurrentPosition == null || ab.Tracks == null || ab.Tracks.Count <= ab.CurrentPosition.TrackIndex)
 				return ab.Album.Name;
 			
 			var track = ab.Tracks.ElementAt (ab.CurrentPosition.TrackIndex);
@@ -139,6 +140,14 @@ namespace Spookify
 		public static UIImage CurrentPlayButtonImage(this SPTAudioStreamingController player)
 		{
 			return UIImage.FromBundle (player != null && player.IsPlaying ? "Pause" : "Play").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+		}
+
+		public static DateTime NSDateToDateTime(this Foundation.NSDate date)
+		{
+			DateTime reference = new DateTime(2001, 1, 1, 0, 0, 0);
+			DateTime currentDate = reference.AddSeconds(date.SecondsSinceReferenceDate);
+			DateTime localDate = currentDate.ToLocalTime ();
+			return localDate;
 		}
 	}
 }

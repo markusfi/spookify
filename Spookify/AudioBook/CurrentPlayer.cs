@@ -70,7 +70,7 @@ namespace Spookify
 					auth.RenewSession (auth.Session, (error, session) => {
 						TriggerSessionRenew = null;
 						if (error == null) {
-							refreshErrorOccured = true;
+							refreshErrorOccured = false;
 							auth.Session = session;
 							if (completionAction != null)
 								completionAction();
@@ -78,7 +78,12 @@ namespace Spookify
 						else  {
 							refreshErrorOccured = true;
 							new NSObject ().BeginInvokeOnMainThread (() => {
-								new UIAlertView ("Fehler", error.LocalizedDescription + error.Description, null, "OK").Show ();
+								var av = new UIAlertView ("Fehler", error.LocalizedDescription, null, "OK");
+								av.Show();
+								av.Dismissed += (object sender, UIButtonEventArgs e) => {
+									refreshErrorOccured = false;
+									av.Dispose();
+								};
 							});
 						}			
 					});
@@ -97,6 +102,7 @@ namespace Spookify
 				SPTAuth auth = this.AuthPlayer;
 				return auth.Session != null &&
 					auth.Session.IsValid &&
+					auth.Session.ExpirationDate.NSDateToDateTime() > DateTime.Now && 
 					_authPlayer.RequestedScopes.Any (sc => (NSString)sc == Constants.SPTAuthStreamingScope);
 			}
 		}
@@ -181,10 +187,11 @@ namespace Spookify
 							if (HasConnection) {
 								SPTAuth auth = this.AuthPlayer;
 								_player.LoginWithSession (auth.Session, error => {
-
-									// login failed.
-									Console.WriteLine (error);
-									TriggerPlayerLogin = null;
+									if (error != null) {
+										// login failed.
+										Console.WriteLine ("_player.LoginWithSession failed: " + error);
+										TriggerPlayerLogin = null;
+									}
 								});
 								TriggerPlayerLogin = DateTime.Now;
 							}
@@ -253,6 +260,16 @@ namespace Spookify
 							PlaybackPosition = p.CurrentPlaybackPosition,
 							TrackIndex = playerTrack
 						};
+						ab.Started = ab.Tracks != null && 
+							CurrentState.Current.CurrentTrack != null &&
+							p.CurrentPlaybackPosition > 2.0;
+						if (ab.Started) {
+							ab.Finished = ab.Tracks == null || CurrentState.Current.CurrentTrack == null ||
+							((playerTrack == ab.Tracks.Count - 1 &&
+							(CurrentState.Current.CurrentTrack.Duration - p.CurrentPlaybackPosition) < 5.0));
+							if (ab.Finished)
+								ab.Started = false;
+						}
 						if (store) {
 							CurrentState.Current.StoreCurrent ();
 						}
@@ -387,6 +404,21 @@ namespace Spookify
 			public override void AudioStreamingDidStopPlayingTrack (SPTAudioStreamingController audioStreaming, NSUrl trackUri)
 			{
 				LogState ("AudioStreamingDidStopPlayingTrack (trackUri="+trackUri.AbsoluteString+")");
+				viewController.DisplayAlbum();
+			}
+			public override void AudioStreamingDidBecomeInactivePlaybackDevice (SPTAudioStreamingController audioStreaming)
+			{
+				LogState ("AudioStreamingDidBecomeInactivePlaybackDevice");
+				viewController.DisplayAlbum();
+			}
+			public override void AudioStreamingDidBecomeActivePlaybackDevice (SPTAudioStreamingController audioStreaming)
+			{
+				LogState ("AudioStreamingDidBecomeActivePlaybackDevice");
+				viewController.DisplayAlbum();
+			}
+			public override void AudioStreamingDidPopQueue (SPTAudioStreamingController audioStreaming)
+			{
+				LogState ("AudioStreamingDidPopQueue");
 				viewController.DisplayAlbum();
 			}
 		}

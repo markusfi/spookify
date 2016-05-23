@@ -496,7 +496,7 @@
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="beE-BX-WCv">
                                         <rect key="frame" x="0.0" y="0.0" width="560" height="777"/>
-                                        <mutableString key="text">Hörbücher bei Spotify finden und anhören.   Die Idee zu dieser App kam mir, als ich versuchte ein Hörbuch bei Spotify bei einer Schitour anzuhören - die Spotify iOS App hat die Kapitel ge-shuffelt und ich war am Gifpel angekommen völlig verwirrt. So konnte es nicht weiter gehen, eine Lösung musste her...hier ist die erste Version...leider ohne offline Funktionaltität, denn dies bietet die API von Spotify nicht an.  Impressum: Fischer &amp; Schaefers GbR
+                                        <string key="text">Hörbücher bei Spotify finden und anhören.   Die Idee zu dieser App kam mir, als ich versuchte ein Hörbuch bei Spotify bei einer Schitour anzuhören - die Spotify iOS App hat die Kapitel ge-shuffelt und ich war am Gifpel angekommen völlig verwirrt. So konnte es nicht weiter gehen, eine Lösung musste her...hier ist die erste Version...leider ohne offline Funktionaltität, denn dies bietet die API von Spotify nicht an.  Impressum: Fischer &amp; Schaefers GbR
 Stollbergstrasse 6
 80539 München
 E-Mail: gbr @ consultdot.net 
@@ -512,7 +512,7 @@ Die Inhalte der App wurden mit größtmöglicher Sorgfalt und nach bestem Gewiss
 Die meisten Inhalte dieser App, insbesondere Texte, Bilder und Audioinhalte, stammen von Spotify, Inhaltsangaben der Bücher stammen von google.  Für die Inhalte und Richtigkeit der bereitgestellten Informationen ist der jeweilige Anbieter der Daten verantwortlich.  Externe Links: 
 Die App enthält sog. „externe Links“ (Verlinkungen) zu anderen Webseiten, auf deren Inhalt der Anbieter der App keinen Einfluss hat. Aus diesem Grund kann der Anbieter für diese Inhalte auch keine Gewähr übernehmen.
 Für die Inhalte und Richtigkeit der bereitgestellten Informationen ist der jeweilige Anbieter der verlinkten Webseite verantwortlich. Zum Zeitpunkt der Verlinkung waren keine Rechtsverstöße erkennbar. Bei Bekanntwerden einer solchen Rechtsverletzung wird der Link umgehend entfernen.  Urheberrecht/Leistungsschutzrecht: 
-Die auf dieser Webseite veröffentlichten Inhalte, Werke und bereitgestellten Informationen unterliegen dem deutschen Urheberrecht und Leistungsschutzrecht. Jede Art der Vervielfältigung, Bearbeitung, Verbreitung, Einspeicherung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen schriftlichen Zustimmung des jeweiligen Rechteinhabers. </mutableString>
+Die auf dieser Webseite veröffentlichten Inhalte, Werke und bereitgestellten Informationen unterliegen dem deutschen Urheberrecht und Leistungsschutzrecht. Jede Art der Vervielfältigung, Bearbeitung, Verbreitung, Einspeicherung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen schriftlichen Zustimmung des jeweiligen Rechteinhabers. </string>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -1384,29 +1384,41 @@ Die auf dieser Webseite veröffentlichten Inhalte, Werke und bereitgestellten In
                                                                 <constraint firstAttribute="width" constant="84" id="m3f-XJ-qug"/>
                                                             </constraints>
                                                         </imageView>
-                                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="waa-Ld-Qcl">
-                                                            <rect key="frame" x="96" y="6" width="458" height="20"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="waa-Ld-Qcl">
+                                                            <rect key="frame" x="96" y="5" width="458" height="22"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="20" id="FbN-QC-vJJ"/>
+                                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="10" id="FbN-QC-vJJ"/>
                                                             </constraints>
-                                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YSD-ga-7nP">
-                                                            <rect key="frame" x="96" y="31" width="458" height="17"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YSD-ga-7nP">
+                                                            <rect key="frame" x="96" y="31" width="458" height="31"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="17" id="a9P-sa-5sR"/>
+                                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="10" id="a9P-sa-5sR"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fpk-Bl-rG2">
-                                                            <rect key="frame" x="96" y="53" width="458" height="17"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fpk-Bl-rG2">
+                                                            <rect key="frame" x="96" y="45" width="113" height="10"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="17" id="xvU-9m-GsD"/>
+                                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="10" id="EjX-JG-czf"/>
                                                             </constraints>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" misplaced="YES" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="6DL-8j-2dj">
+                                                            <rect key="frame" x="219" y="49" width="325" height="2"/>
+                                                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <color key="progressTintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <color key="trackTintColor" red="0.37254901959999998" green="0.0" blue="0.078431372550000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                        </progressView>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Ee-vm-JN4">
+                                                            <rect key="frame" x="556" y="71" width="0.0" height="0.0"/>
                                                             <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <nil key="highlightedColor"/>
@@ -1416,15 +1428,20 @@ Die auf dieser Webseite veröffentlichten Inhalte, Werke und bereitgestellten In
                                                         <constraint firstItem="YSD-ga-7nP" firstAttribute="leading" secondItem="waa-Ld-Qcl" secondAttribute="leading" id="1j1-8h-Yxv"/>
                                                         <constraint firstItem="3k9-fK-VB6" firstAttribute="centerY" secondItem="waa-Ld-Qcl" secondAttribute="centerY" priority="750" constant="28" id="3Cx-hg-NlV"/>
                                                         <constraint firstItem="3k9-fK-VB6" firstAttribute="leading" secondItem="q3Z-2i-cGZ" secondAttribute="leading" constant="2" id="3Sb-RP-sb0"/>
-                                                        <constraint firstItem="waa-Ld-Qcl" firstAttribute="top" relation="greaterThanOrEqual" secondItem="q3Z-2i-cGZ" secondAttribute="top" constant="5" id="5qH-zC-1I1"/>
-                                                        <constraint firstAttribute="trailingMargin" secondItem="Fpk-Bl-rG2" secondAttribute="trailing" constant="5" id="7sg-Za-amR"/>
-                                                        <constraint firstItem="Fpk-Bl-rG2" firstAttribute="top" secondItem="YSD-ga-7nP" secondAttribute="bottom" constant="5" id="CcN-5U-Rk4"/>
+                                                        <constraint firstItem="waa-Ld-Qcl" firstAttribute="top" secondItem="q3Z-2i-cGZ" secondAttribute="top" constant="5" id="5qH-zC-1I1"/>
+                                                        <constraint firstItem="Fpk-Bl-rG2" firstAttribute="top" relation="greaterThanOrEqual" secondItem="YSD-ga-7nP" secondAttribute="bottom" constant="2" id="CcN-5U-Rk4"/>
                                                         <constraint firstAttribute="trailingMargin" secondItem="YSD-ga-7nP" secondAttribute="trailing" constant="5" id="Ciz-cX-tic"/>
+                                                        <constraint firstItem="2Ee-vm-JN4" firstAttribute="centerY" secondItem="Fpk-Bl-rG2" secondAttribute="centerY" id="E7q-0N-kE2"/>
+                                                        <constraint firstAttribute="trailingMargin" secondItem="2Ee-vm-JN4" secondAttribute="trailing" constant="3" id="JC4-ra-hCn"/>
                                                         <constraint firstItem="waa-Ld-Qcl" firstAttribute="leading" secondItem="3k9-fK-VB6" secondAttribute="trailing" constant="10" id="Kan-ft-Wp6"/>
+                                                        <constraint firstItem="2Ee-vm-JN4" firstAttribute="leading" secondItem="6DL-8j-2dj" secondAttribute="trailing" constant="12" id="LfT-vG-W4e"/>
+                                                        <constraint firstItem="6DL-8j-2dj" firstAttribute="centerY" secondItem="Fpk-Bl-rG2" secondAttribute="centerY" id="P1c-9L-TD5"/>
                                                         <constraint firstItem="3k9-fK-VB6" firstAttribute="top" secondItem="q3Z-2i-cGZ" secondAttribute="top" constant="2" id="Qqw-rZ-8Os"/>
+                                                        <constraint firstAttribute="bottomMargin" secondItem="Fpk-Bl-rG2" secondAttribute="bottom" constant="3" id="W1Y-hw-NMa"/>
                                                         <constraint firstItem="3k9-fK-VB6" firstAttribute="centerY" secondItem="q3Z-2i-cGZ" secondAttribute="centerY" id="WkU-rA-BiN"/>
+                                                        <constraint firstItem="6DL-8j-2dj" firstAttribute="leading" secondItem="Fpk-Bl-rG2" secondAttribute="leading" id="jXM-yg-MJ4"/>
                                                         <constraint firstItem="Fpk-Bl-rG2" firstAttribute="leading" secondItem="YSD-ga-7nP" secondAttribute="leading" id="oHm-ih-3Tw"/>
-                                                        <constraint firstItem="YSD-ga-7nP" firstAttribute="top" secondItem="waa-Ld-Qcl" secondAttribute="bottom" constant="5" id="raq-SF-gnC"/>
+                                                        <constraint firstItem="YSD-ga-7nP" firstAttribute="top" secondItem="waa-Ld-Qcl" secondAttribute="bottom" constant="4" id="raq-SF-gnC"/>
                                                         <constraint firstAttribute="trailingMargin" secondItem="waa-Ld-Qcl" secondAttribute="trailing" constant="5" id="rx8-SY-SRB"/>
                                                     </constraints>
                                                 </tableViewCellContentView>
@@ -1433,7 +1450,9 @@ Die auf dieser Webseite veröffentlichten Inhalte, Werke und bereitgestellten In
                                                     <outlet property="AlbumImage" destination="3k9-fK-VB6" id="b70-hn-Wuv"/>
                                                     <outlet property="AlbumLabel" destination="waa-Ld-Qcl" id="EMV-fV-8lL"/>
                                                     <outlet property="AuthorLabel" destination="YSD-ga-7nP" id="7Ul-t6-YeO"/>
+                                                    <outlet property="DauerLabel" destination="2Ee-vm-JN4" id="sE0-dc-cbC"/>
                                                     <outlet property="ZeitLabel" destination="Fpk-Bl-rG2" id="Il3-xh-yU2"/>
+                                                    <outlet property="progressBar" destination="6DL-8j-2dj" id="9D4-0M-sKi"/>
                                                     <segue destination="MJR-vP-EN2" kind="show" id="56X-5S-id3"/>
                                                 </connections>
                                             </tableViewCell>
@@ -1682,7 +1701,7 @@ Die auf dieser Webseite veröffentlichten Inhalte, Werke und bereitgestellten In
         <image name="Zuletzt" width="50" height="50"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="56X-5S-id3"/>
         <segue reference="1Fp-sa-eDN"/>
-        <segue reference="Mpq-Dr-I1G"/>
     </inferredMetricsTieBreakers>
 </document>
