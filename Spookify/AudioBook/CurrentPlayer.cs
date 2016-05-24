@@ -23,10 +23,10 @@ namespace Spookify
 			} 
 		}
 
-		MySPTAudioStreamingDelegate _mySPTAudioStreamingDelegate;
+		MySPTAudioStreamingPlaybackDelegate _mySPTAudioStreamingDelegate;
 		public void CreateSPTAudioStreamingDelegate(PlayerViewController vc)
 		{
-			_mySPTAudioStreamingDelegate = new MySPTAudioStreamingDelegate (vc);
+			_mySPTAudioStreamingDelegate = new MySPTAudioStreamingPlaybackDelegate (vc);
 			if (this.Player != null)
 				this.Player.PlaybackDelegate = _mySPTAudioStreamingDelegate;
 		}
@@ -172,6 +172,7 @@ namespace Spookify
 						var ca = new SPTCoreAudioController ();
 						_player = new SPTAudioStreamingController (auth.ClientID, ca);
 						_player.PlaybackDelegate = _mySPTAudioStreamingDelegate;
+						_player.Delegate = new MySPTAudioStreamingDelegate ();
 						_player.DiskCache = new SPTDiskCache(1024 * 1024 * 64);
 					} 
 					if (_player.LoggedIn) {
@@ -191,6 +192,7 @@ namespace Spookify
 										// login failed.
 										Console.WriteLine ("_player.LoginWithSession failed: " + error);
 										TriggerPlayerLogin = null;
+										var dummy = this.Player;
 									}
 								});
 								TriggerPlayerLogin = DateTime.Now;
@@ -295,131 +297,6 @@ namespace Spookify
 				vc.DefinesPresentationContext = true;
 
 				vc.PresentViewController (this.authViewController, false, null);
-			}
-		}
-
-		public class MySPTAuthViewDelegate : SPTAuthViewDelegate {
-			UIViewController viewController = null;
-			public MySPTAuthViewDelegate(UIViewController vc)  {
-				this.viewController = vc;
-			}
-
-			#region implemented abstract members of SPTAuthViewDelegate
-
-			public override void AuthenticationViewControllerDidCancelLogin (SPTAuthViewController authenticationViewController)
-			{
-				BeginInvokeOnMainThread (() => {
-					new UIAlertView("Fehler","Login abgebrochen",null,"OK").Show();
-				});
-			}
-
-			public override void AuthenticationViewControllerFail (SPTAuthViewController authenticationViewController, NSError error)
-			{
-				BeginInvokeOnMainThread (() => {
-					new UIAlertView("Fehler",error.LocalizedDescription + error.Description,null,"OK").Show();
-				});
-			}
-
-			public override void AuthenticationViewControllerLogin (SPTAuthViewController authenticationViewController, SPTSession session)
-			{
-				if (this.viewController != null) {
-					if (this.viewController is PlayerViewController) {
-						var playerViewController = this.viewController as PlayerViewController;
-						playerViewController.DisplayAlbum ();
-
-						if (CurrentState.Current.Audiobooks.Count == 0) {
-							playerViewController.SwitchTab (2); // liste der Bücher in Playlists
-						} else if (CurrentState.Current.CurrentAudioBook == null) {
-							playerViewController.SwitchTab (0); // Liste der gewählten Bücher
-						} else {
-							playerViewController.SwitchTab (1);
-							playerViewController.PlayCurrentAudioBook ();
-						}
-					} else {
-						new UIAlertView("Spookify","Login erfolgreich",null,"OK").Show();
-					}
-				}
-			}
-
-			#endregion
-		}
-
-		public class MySPTAudioStreamingDelegate : SPTAudioStreamingPlaybackDelegate {
-			PlayerViewController viewController = null;
-		
-			public MySPTAudioStreamingDelegate(PlayerViewController vc) {
-				this.viewController = vc;
-			}
-			void LogState(string txt)
-			{
-				#if DEBUG
-				Console.WriteLine(txt);
-				var p = this.viewController.Player;
-				if (p != null) {
-					Console.WriteLine ("Player.CurrentTrackIndex="+p.CurrentTrackIndex+", Player.CurrentPlaybackPosition: "+p.CurrentPlaybackPosition+") CurrentStartTrack="+CurrentPlayer.Current.CurrentStartTrack);
-				}
-				#endif
-			}
-				
-			public override void AudioStreaming (SPTAudioStreamingController audioStreaming, bool isPlaying)
-			{
-				LogState ("AudioStreaming (isPlaying = " + isPlaying + ")");
-				viewController.DisplayAlbum();
-			}
-			public override void AudioStreaming (SPTAudioStreamingController audioStreaming, double offset)
-			{
-				LogState ("AudioStreaming (double offset = " + offset + ")");
-				viewController.DisplayAlbum();
-			}
-			public override void AudioStreaming (SPTAudioStreamingController audioStreaming, NSDictionary trackMetadata)
-			{
-				LogState ("AudioStreaming (trackMetadata)");
-				viewController.DisplayAlbum();
-			}
-			public override void AudioStreamingDidFailToPlayTrack (SPTAudioStreamingController audioStreaming, NSUrl trackUri)
-			{
-				LogState ("AudioStreamingDidFailToPlayTrack (NSUrl trackUri)");
-				viewController.DisplayAlbum();
-			}
-			public override void AudioStreamingDidLosePermissionForPlayback (SPTAudioStreamingController audioStreaming)
-			{
-				LogState ("AudioStreamingDidLosePermissionForPlayback ()");
-				viewController.DisplayAlbum();
-			}
-			public override void AudioStreamingDidSkipToNextTrack (SPTAudioStreamingController audioStreaming)
-			{
-				LogState ("AudioStreamingDidSkipToNextTrack ()");
-				viewController.DisplayAlbum();
-			}
-			public override void AudioStreamingDidSkipToPreviousTrack (SPTAudioStreamingController audioStreaming)
-			{
-				LogState ("AudioStreamingDidSkipToPreviousTrack ()");
-				viewController.DisplayAlbum();
-			}
-			public override void AudioStreamingDidStartPlayingTrack (SPTAudioStreamingController audioStreaming, NSUrl trackUri)
-			{
-				LogState ("AudioStreamingDidStartPlayingTrack (trackUri="+trackUri.AbsoluteString+")");
-				viewController.DisplayAlbum();
-			}
-			public override void AudioStreamingDidStopPlayingTrack (SPTAudioStreamingController audioStreaming, NSUrl trackUri)
-			{
-				LogState ("AudioStreamingDidStopPlayingTrack (trackUri="+trackUri.AbsoluteString+")");
-				viewController.DisplayAlbum();
-			}
-			public override void AudioStreamingDidBecomeInactivePlaybackDevice (SPTAudioStreamingController audioStreaming)
-			{
-				LogState ("AudioStreamingDidBecomeInactivePlaybackDevice");
-				viewController.DisplayAlbum();
-			}
-			public override void AudioStreamingDidBecomeActivePlaybackDevice (SPTAudioStreamingController audioStreaming)
-			{
-				LogState ("AudioStreamingDidBecomeActivePlaybackDevice");
-				viewController.DisplayAlbum();
-			}
-			public override void AudioStreamingDidPopQueue (SPTAudioStreamingController audioStreaming)
-			{
-				LogState ("AudioStreamingDidPopQueue");
-				viewController.DisplayAlbum();
 			}
 		}
 	}

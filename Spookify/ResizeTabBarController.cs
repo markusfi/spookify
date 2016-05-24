@@ -23,7 +23,8 @@ namespace Spookify
 			// this.TabBar.Frame = new CoreGraphics.CGRect (tabFrame.Left, tabFrame.Top, tabFrame.Width, tabFrame.Height);
 
 			var transitionView = this.View.Subviews [0];
-			transitionView.Frame = new CoreGraphics.CGRect (transitionView.Frame.Left, transitionView.Frame.Top, transitionView.Frame.Width, transitionView.Frame.Height - 50);
+			var refercentView = this.View;
+			transitionView.Frame = new CoreGraphics.CGRect (refercentView.Frame.Left, refercentView.Frame.Top, refercentView.Frame.Width, refercentView.Frame.Height - 50);
 		}
 	}
 }

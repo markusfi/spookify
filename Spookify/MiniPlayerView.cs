@@ -138,7 +138,6 @@ namespace Spookify
 
 			var c = new NSLayoutConstraint[] {
 				NSLayoutConstraint.Create(this, NSLayoutAttribute.Leading, NSLayoutRelation.Equal, tabBar, NSLayoutAttribute.Leading, 1, 0),
-		//		NSLayoutConstraint.Create(this, NSLayoutAttribute.Top, NSLayoutRelation.Equal, tabview, NSLayoutAttribute.Bottom, 1, -100),
 				NSLayoutConstraint.Create(this, NSLayoutAttribute.Bottom, NSLayoutRelation.Equal, tabBar, NSLayoutAttribute.Top, 1, 0),
 				NSLayoutConstraint.Create(this, NSLayoutAttribute.Trailing, NSLayoutRelation.Equal, tabBar, NSLayoutAttribute.Trailing, 1, 0),
 				NSLayoutConstraint.Create(this, NSLayoutAttribute.Height, NSLayoutRelation.Equal, null, NSLayoutAttribute.NoAttribute, 1, 50),

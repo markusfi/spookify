@@ -128,27 +128,20 @@ namespace Spookify
 		[Export ("updateSearchResultsForSearchController:")]
 		public virtual void UpdateSearchResultsForSearchController (UISearchController searchController)
 		{
-			if (!this.doNotDisplayList) {
+			var tag = this.NavigationController.TabBarItem.Tag;
+			if (tag == 3 && !this.doNotDisplayList) {
 				this.doNotDisplayList = true;
 				this.HoerbuchTableView.ReloadData ();
 			}
 
-			var tableController = (ResultsTableViewController)searchController.SearchResultsController;
-			tableController.HoerbuchListeViewController = null;
-			tableController.GenreViewController = this;
+			var resultTableViewController = (ResultsTableViewController)searchController.SearchResultsController;
+			resultTableViewController.HoerbuchListeViewController = null;
+			resultTableViewController.GenreViewController = this;
 			var newResult = PerformSearch (searchController.SearchBar.Text);
-			if (!newResult.SequenceEqual (tableController.FilteredPlaylist)) {
-				tableController.FilteredPlaylist = newResult;
-				tableController.TableView.ReloadData ();
+			if (!newResult.SequenceEqual (resultTableViewController.FilteredPlaylist)) {
+				resultTableViewController.FilteredPlaylist = newResult;
+				resultTableViewController.TableView.ReloadData ();
 			} 
-
-			if (!CurrentAudiobooks.Current.IsComplete) {
-				
-			}
-			else if (tableController.LoadMoreCell) 
-			{
-				tableController.TableView.ReloadData ();
-			}
 		}
 		List<PlaylistBook> PerformSearch(string searchString)
 		{

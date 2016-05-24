@@ -195,6 +195,9 @@
     <Compile Include="ConfigListen.cs" />
     <Compile Include="ResizeTabBarController.cs" />
     <Compile Include="ISleepTimerController.cs" />
+    <Compile Include="AudioBook\MySPTAuthViewDelegate.cs" />
+    <Compile Include="AudioBook\MySPTAudioStreamingPlaybackDelegate.cs" />
+    <Compile Include="AudioBook\MySPTAudioStreamingDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
