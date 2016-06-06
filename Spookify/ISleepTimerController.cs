@@ -11,6 +11,7 @@ namespace Spookify
 		DateTime SleepTimerStartTime { get; set; }
 		int SleepTimerOpion { get; set; }
 		UIView View { get; }
+		UIViewController CurrentViewController { get; }
 	}
 	
 }

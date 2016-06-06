@@ -25,6 +25,7 @@ namespace Spookify
 			// Xamarin.Calabash.Start();
 			#endif
 
+			/*
 			// Set up shared authentication information
 			SPTAuth auth = SPTAuth.GetDefaultInstance();
 
@@ -38,6 +39,7 @@ namespace Spookify
 			if (!string.IsNullOrEmpty(ConfigSpotify.kTokenRefreshServiceURL))
 				auth.TokenRefreshURL = new NSUrl(ConfigSpotify.kTokenRefreshServiceURL);
 			auth.SessionUserDefaultsKey = ConfigSpotify.kSessionUserDefaultsKey;
+			*/
 
 			UINavigationBar.Appearance.SetTitleTextAttributes(new UITextAttributes() {
 				TextColor = UIColor.White,
@@ -55,7 +57,7 @@ namespace Spookify
 
 		public override bool OpenUrl (UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
 		{
-			SPTAuth auth = SPTAuth.DefaultInstance;
+			SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
 
 			SPTAuthCallback authCallback = (NSError error, SPTSession session) => {
 

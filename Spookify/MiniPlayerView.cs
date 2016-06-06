@@ -5,12 +5,14 @@ using System.Linq;
 using SpotifySDK;
 using MediaPlayer;
 using AVFoundation;
+using CoreAnimation;
 
 
 namespace Spookify
 {
 	public class MiniPlayerView : UIView, ISleepTimerController
 	{
+		public bool KeepTabBarInvisible { get; private set; } = false;
 		public bool IsSessionValid { get { return CurrentPlayer.Current.IsSessionValid; } }
 		public bool CanRenewSession { get { return CurrentPlayer.Current.CanRenewSession; } }
 		public bool IsPlayerCreated { get {	return CurrentPlayer.Current.IsPlayerCreated; } }
@@ -60,6 +62,25 @@ namespace Spookify
 			}
 		}
 
+		UIViewController ISleepTimerController.CurrentViewController {
+			get {
+				return _tabbarController.SelectedViewController;
+			}
+		}
+
+		public override UIView HitTest (CGPoint point, UIEvent uievent)
+		{
+			var timeoutView = this.Subviews.FirstOrDefault (sv => sv.Tag == 100 && sv is UILabel);
+			if (timeoutView != null) {
+				CGPoint pointForTargetView = timeoutView.ConvertPointFromView (point, this);
+				if (timeoutView.Bounds.Contains(pointForTargetView))
+
+					// The target view may have its view hierarchy,
+					// so call its hitTest method to return the right hit-test view
+					return timeoutView.HitTest(pointForTargetView, uievent);
+			}
+			return base.HitTest (point, uievent);
+		}
 		#endregion
 
 		public MiniPlayerView (UIView superView, UIViewController viewController)
@@ -105,7 +126,7 @@ namespace Spookify
 				LineBreakMode = UILineBreakMode.WordWrap
 			});
 			authorNameLabel.SetContentCompressionResistancePriority (751,UILayoutConstraintAxis.Vertical);
-			this.AddSubview (showImage = new UIImageView (new CGRect (15, 15, 20, 20)) {
+			this.AddSubview (showImage = new UIImageView (new CGRect (15, 15, 25, 25)) {
 				Image = UIImage.FromBundle ("Up").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate),
 				TintColor = UIColor.White,
 				UserInteractionEnabled = true,
@@ -157,13 +178,13 @@ namespace Spookify
 
 				NSLayoutConstraint.Create(showImage, NSLayoutAttribute.Leading, NSLayoutRelation.Equal, this, NSLayoutAttribute.Leading, 1, 15),
 				NSLayoutConstraint.Create(showImage, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, this, NSLayoutAttribute.CenterY, 1, 0),
-				NSLayoutConstraint.Create(showImage, NSLayoutAttribute.Width, NSLayoutRelation.Equal, null, NSLayoutAttribute.NoAttribute, 1, 20),
-				NSLayoutConstraint.Create(showImage, NSLayoutAttribute.Height, NSLayoutRelation.Equal, null, NSLayoutAttribute.NoAttribute, 1, 20),
+				NSLayoutConstraint.Create(showImage, NSLayoutAttribute.Width, NSLayoutRelation.Equal, null, NSLayoutAttribute.NoAttribute, 1, 25),
+				NSLayoutConstraint.Create(showImage, NSLayoutAttribute.Height, NSLayoutRelation.Equal, null, NSLayoutAttribute.NoAttribute, 1, 25),
 
 				NSLayoutConstraint.Create(playImage, NSLayoutAttribute.Trailing, NSLayoutRelation.Equal, this, NSLayoutAttribute.Trailing, 1, -15),
 				NSLayoutConstraint.Create(playImage, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, this, NSLayoutAttribute.CenterY, 1, 0),
-				NSLayoutConstraint.Create(playImage, NSLayoutAttribute.Width, NSLayoutRelation.Equal, null, NSLayoutAttribute.NoAttribute, 1, 20),
-				NSLayoutConstraint.Create(playImage, NSLayoutAttribute.Height, NSLayoutRelation.Equal, null, NSLayoutAttribute.NoAttribute, 1, 20),
+				NSLayoutConstraint.Create(playImage, NSLayoutAttribute.Width, NSLayoutRelation.Equal, null, NSLayoutAttribute.NoAttribute, 1, 25),
+				NSLayoutConstraint.Create(playImage, NSLayoutAttribute.Height, NSLayoutRelation.Equal, null, NSLayoutAttribute.NoAttribute, 1, 25),
 			};
 
 			tabview.AddConstraints (c);
@@ -231,6 +252,11 @@ namespace Spookify
 						CurrentPlayer.Current.RenewSession ();
 					} else {
 						ShowLoginToSpotify();
+						if (this.BigPlayer != null && !this.BigPlayer.IsViewLoaded && !this.KeepTabBarInvisible) {
+							this.ShowBigPlayer (false);
+							this._tabbarController.SwitchToTab (4);
+							this.KeepTabBarInvisible = true;
+						}
 					}
 				} else {
 					ShowSelectAudiobook();
@@ -244,8 +270,6 @@ namespace Spookify
 				playImage.Image = Player.CurrentPlayButtonImage ();
 				albumNameLabel.Text = ab?.ToAlbumName ();
 				if (ab != null) {
-					var gesamtSeitAnfang = ab.Tracks.Sum (t => t.Duration);
-					var tsSeitAnfang = TimeSpan.FromSeconds (gesamtSeitAnfang);
 					if (!ab.Started && !ab.Finished) {
 						authorNameLabel.Text = ab?.ToAuthorName () + " - " + ab?.TimeToEnd ();
 					} else if (ab.Finished) {
@@ -284,10 +308,6 @@ namespace Spookify
 
 					if (ab.Tracks != null) {
 
-						// var gesamtBisEnde = ab.Tracks.Skip(ab.CurrentPosition?.TrackIndex ?? 0).Sum (t => t.Duration) - (ab.CurrentPosition?.PlaybackPosition ?? 0.0);
-						var gesamtSeitAnfang = ab.Tracks.Take ((ab.CurrentPosition?.TrackIndex ?? 1) - 1).Sum (t => t.Duration) + (ab.CurrentPosition?.PlaybackPosition ?? 0.0);
-						var gesamtBisEnde = ab.Tracks.Sum (t => t.Duration) - gesamtSeitAnfang;
-
 						nowPlaying.AlbumTrackCount = 1; // ab.Tracks.Count;
 						if (ab.CurrentPosition != null && 
 							ab.Tracks != null && 
@@ -296,8 +316,8 @@ namespace Spookify
 							var track = ab.Tracks.ElementAt (ab.CurrentPosition.TrackIndex);
 							nowPlaying.Title = track.Name;
 							nowPlaying.AlbumTrackNumber = 1; // ab.CurrentPosition.TrackIndex+1;
-							nowPlaying.ElapsedPlaybackTime = gesamtSeitAnfang; //ab.CurrentPosition.PlaybackPosition;
-							nowPlaying.PlaybackDuration = gesamtBisEnde; // track.Duration;
+							nowPlaying.ElapsedPlaybackTime = ab.GesamtSeitAnfang; //ab.CurrentPosition.PlaybackPosition;
+							nowPlaying.PlaybackDuration = ab.GesamtBisEnde; // track.Duration;
 						}
 					}
 
@@ -368,27 +388,39 @@ namespace Spookify
 			*/
 		}
 
-		UINavigationController _navCon = null;
+		PlayerViewController _playerViewController = null;
 		PlayerViewController BigPlayer {
 			get {
-				if (_navCon == null)
-					_navCon = _tabbarController.SelectedViewController.Storyboard.InstantiateViewController("Player") as UINavigationController;
-				if (_navCon != null) 
-					return _navCon.TopViewController as PlayerViewController;
-				return null;
+				if (_playerViewController == null)
+					_playerViewController = _tabbarController.SelectedViewController.Storyboard.InstantiateViewController("PopupPlayer") as PlayerViewController;
+				return _playerViewController;
 			}
 		}
-		void ShowBigPlayer()
+		void ShowBigPlayer() {
+			ShowBigPlayer (true);
+		}
+		void ShowBigPlayer(bool animated)
 		{
 			{
 				var vc = BigPlayer;
 				if (vc != null) {
 					vc.MiniPlayer = this;
-					_tabbarController.SelectedViewController.PresentViewController (_navCon, true, () => {
+					if (animated) {
+						_playerViewController.UpdateGUI ();
+					}
+					_tabbarController.SelectedViewController.PresentViewController (_playerViewController, animated, () => {
 						
 					});
 				}
 			}		
+		}
+		public void DisposeBigPlayer()
+		{
+			if (KeepTabBarInvisible) {
+				if (_playerViewController != null)
+					_playerViewController.Dispose ();
+				_playerViewController = null;
+			}
 		}
 
 		bool EnsurePlayer()

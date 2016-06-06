@@ -15,7 +15,7 @@ namespace Spookify
 		public override void AuthenticationViewControllerDidCancelLogin (SPTAuthViewController authenticationViewController)
 		{
 			BeginInvokeOnMainThread (() => {
-				new UIAlertView("Fehler","Login abgebrochen",null,"OK").Show();
+				new UIAlertView("Anmeldung","Die Anmeldung wurde abgerochen.",null,"OK").Show();
 			});
 		}
 
@@ -29,8 +29,12 @@ namespace Spookify
 		public override void AuthenticationViewControllerLogin (SPTAuthViewController authenticationViewController, SPTSession session)
 		{
 			if (this.viewController != null) {
-				if (this.viewController is PlayerViewController) {
+				if (this.viewController is PlayerViewController) {					
 					var playerViewController = this.viewController as PlayerViewController;
+
+					// wir erlauben prinzipiell wieder das Anmelden am Player...
+					CurrentPlayer.Current.SessionDisabled = false;
+
 					playerViewController.DisplayAlbum ();
 
 					if (CurrentState.Current.Audiobooks.Count == 0) {

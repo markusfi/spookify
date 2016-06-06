@@ -153,7 +153,6 @@
     <ImageAsset Include="Resources\Images.xcassets\Books.imageset\books-120.png" />
     <ImageAsset Include="Resources\Images.xcassets\Books.imageset\books-114.png" />
     <ImageAsset Include="Resources\Images.xcassets\Up.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Up.imageset\chevron_up_round.png" />
     <ImageAsset Include="Resources\Images.xcassets\Close.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Close.imageset\cancel.png" />
     <ImageAsset Include="Resources\Images.xcassets\Lupe.imageset\Contents.json" />
@@ -162,6 +161,29 @@
     <ImageAsset Include="ConfigSpookify.xcassets\LaunchImages.launchimage\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Spookify.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Spookify.imageset\Spookify.png" />
+    <ImageAsset Include="Resources\Images.xcassets\moon.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\moon.imageset\bright_moon-25.png" />
+    <ImageAsset Include="Resources\Images.xcassets\moon.imageset\bright_moon-50.png" />
+    <ImageAsset Include="Resources\Images.xcassets\moon.imageset\bright_moon-75.png" />
+    <ImageAsset Include="Resources\Images.xcassets\upload.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\upload.imageset\upload-25.png" />
+    <ImageAsset Include="Resources\Images.xcassets\upload.imageset\upload-50.png" />
+    <ImageAsset Include="Resources\Images.xcassets\upload.imageset\upload-75.png" />
+    <ImageAsset Include="Resources\Images.xcassets\more.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\more.imageset\more-75.png" />
+    <ImageAsset Include="Resources\Images.xcassets\more.imageset\more-50.png" />
+    <ImageAsset Include="Resources\Images.xcassets\more.imageset\more-25.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Checkmark.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Checkmark.imageset\ok-75.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Checkmark.imageset\ok-50.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Checkmark.imageset\ok-25.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Up.imageset\up-25.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Up.imageset\up-50.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Up.imageset\up-75.png" />
+    <ImageAsset Include="Resources\Images.xcassets\down.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\down.imageset\down-75.png" />
+    <ImageAsset Include="Resources\Images.xcassets\down.imageset\down-50.png" />
+    <ImageAsset Include="Resources\Images.xcassets\down.imageset\down-25.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -278,12 +300,18 @@
     <BundleResource Include="Resources\Images\literature_filled.png" />
     <BundleResource Include="Resources\Images\search.png" />
     <BundleResource Include="Resources\.DS_Store" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SpotifySDK\SpotifySDK.csproj">
-      <Project>{357BA94C-A517-44EF-AC2D-39BE162901CE}</Project>
-      <Name>SpotifySDK</Name>
-    </ProjectReference>
+    <BundleResource Include="Resources\Images.xcassets\moon.imageset\bright_moon-26.png" />
+    <BundleResource Include="Resources\Images.xcassets\moon.imageset\bright_moon-51.png" />
+    <BundleResource Include="Resources\Images.xcassets\moon.imageset\bright_moon-52.png" />
+    <BundleResource Include="Resources\Images.xcassets\moon.imageset\bright_moon-76.png" />
+    <BundleResource Include="Resources\Images.xcassets\more.imageset\more-26.png" />
+    <BundleResource Include="Resources\Images.xcassets\more.imageset\more-51.png" />
+    <BundleResource Include="Resources\Images.xcassets\more.imageset\more-52.png" />
+    <BundleResource Include="Resources\Images.xcassets\more.imageset\more-76.png" />
+    <BundleResource Include="Resources\Images.xcassets\upload.imageset\upload-26.png" />
+    <BundleResource Include="Resources\Images.xcassets\upload.imageset\upload-51.png" />
+    <BundleResource Include="Resources\Images.xcassets\upload.imageset\upload-52.png" />
+    <BundleResource Include="Resources\Images.xcassets\upload.imageset\upload-76.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Images.xcassets\Anmelden.imageset\" />
@@ -301,5 +329,11 @@
       <Version>7.0.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Spotify\ios-sdk-beta-16\SpotifySDK-16\SpotifySDK-16\SpotifySDK-16.csproj">
+      <Project>{C4415AD9-F059-4024-9BDE-08F113BEB2D1}</Project>
+      <Name>SpotifySDK-16</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

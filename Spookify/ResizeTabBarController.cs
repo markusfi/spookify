@@ -14,6 +14,7 @@ namespace Spookify
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+			this.View.Hidden = true;
 			this.View.BackgroundColor = ConfigSpookify.BackgroundColor;
 		}
 		public override void ViewDidLayoutSubviews ()

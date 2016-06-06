@@ -10,6 +10,7 @@ namespace Spookify
 {
 	public partial class ZuletztViewController : UIViewController
 	{
+		MiniPlayerView miniPlayerView = null;
 		public ZuletztViewController (IntPtr handle) : base (handle)
 		{
 		}
@@ -21,7 +22,11 @@ namespace Spookify
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-
+			if (miniPlayerView == null) 
+				miniPlayerView = new MiniPlayerView (this.View, this);
+			if (!miniPlayerView.KeepTabBarInvisible)
+				this.TabBarController.View.Hidden = false;
+			
 			this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
 			this.NavigationController.NavigationBar.BarTintColor = ConfigSpookify.BackgroundColor;
 			this.NavigationController.NavigationBar.Translucent = false;
@@ -53,10 +58,7 @@ namespace Spookify
 		{
 			base.ViewDidAppear (animated);
 			this.HoerbuchListeTableView.ReloadData ();
-			if (miniPlayerView == null)
-				miniPlayerView = new MiniPlayerView (this.View, this);
 		}
-		MiniPlayerView miniPlayerView = null;
 
 		public class ZuletztListeDelegate : UITableViewDelegate
 		{

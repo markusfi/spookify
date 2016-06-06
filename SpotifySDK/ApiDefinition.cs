@@ -32,9 +32,9 @@ namespace SpotifySDK
 	interface ISPTTrackProvider : SPTTrackProvider {
 	}
 
-	// [Static]
+	[Static]
 	// [Verify (ConstantsInterfaceAssociation)]
-	partial interface Constants
+	partial interface ConstantsScope
 	{
 		// extern NSString *const SPTAuthStreamingScope;
 		[Field ("SPTAuthStreamingScope", "__Internal")]

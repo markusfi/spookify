@@ -133,7 +133,7 @@ namespace Spookify
 		{
 			if (ab == null || ab.Tracks == null)
 				return null;			
-			var gesamtBisEnde = ab.Tracks.Skip(ab.CurrentPosition?.TrackIndex ?? 0).Sum (t => t.Duration) - (ab.CurrentPosition?.PlaybackPosition ?? 0);
+			var gesamtBisEnde = ab.GesamtBisEnde - ab.GesamtSeitAnfang;
 			var tsBisEnde = TimeSpan.FromSeconds (gesamtBisEnde);
 			return tsBisEnde.ToTimeText ();
 		}

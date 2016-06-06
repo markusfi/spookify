@@ -14,6 +14,50 @@ namespace Spookify
 			_sleepTimerController = sleepTimerController;
 		}
 
+		static int[] SleepTimerOptions = new int[] { 0, 10, 15, 30, 45, 60, 24*60 };
+		public static void ShowSleepTimerConfiguration(UIViewController presentingViewController, ISleepTimerController sleepTimerController, Action okHandler = null, Action cancelHandler = null)
+		{
+			UIAlertController ac = UIAlertController.Create("Schlafmodus","Das Hörbuch wird nach Ablauf der eingestellten Zeit automatisch beendet",UIAlertControllerStyle.ActionSheet);
+			for (int i=0;i<SleepTimerOptions.Length;i++) {
+				ac.AddAction(CreateAlertOption(i, ac, sleepTimerController, okHandler));
+			}
+			var action = UIAlertAction.Create ("Abbrechen", UIAlertActionStyle.Cancel, (alertAction) => 
+				{
+					ac.Dispose ();
+					if (cancelHandler != null)
+						cancelHandler();
+				});
+			if (action != null)
+				ac.AddAction(action);
+			presentingViewController.PresentViewController(ac, true, null);			
+		}
+		static UIAlertAction CreateAlertOption(int i, UIAlertController ac, ISleepTimerController sleepTimerController, Action okHandler)
+		{
+			double time = SleepTimerOptions[i];
+			bool firstOption = i == 0;
+			bool lastOption = (i == SleepTimerOptions.Length - 1);
+			if (lastOption && !(CurrentState.Current.CurrentAudioBook != null && CurrentState.Current.CurrentAudioBook.CurrentPosition != null))
+				return null; // kein aktuelles Hörbuch --> keine Ende des Kapitels!
+			string actiontext = firstOption ? "Aus" : lastOption ? "Ende des Kapitels" : string.Format("{0} Minuten",time);
+			var alertOption = UIAlertAction.Create(
+				actiontext,
+				UIAlertActionStyle.Default, (alertAction) => { 
+					if (lastOption && CurrentState.Current.CurrentAudioBook != null && CurrentState.Current.CurrentAudioBook.CurrentPosition != null)
+						time = (CurrentState.Current.CurrentTrack.Duration - CurrentState.Current.CurrentAudioBook.CurrentPosition.PlaybackPosition) / 60.0;
+					sleepTimerController.SleepTimerOpion = i;	
+					sleepTimerController.SleepTimerStartTime = firstOption ? DateTime.MinValue : DateTime.Now.AddMinutes(time);
+					ac.Dispose();
+					if (okHandler != null)
+						okHandler();
+				});
+			if (sleepTimerController.SleepTimerOpion == i) {
+				var img = UIImage.FromBundle("Checkmark");
+				if (img != null)
+					alertOption.SetValueForKey(img,(NSString)"image");
+			}
+			return alertOption;
+		}
+
 		UILabel SleepTimerLabel { get; set; }
 
 		bool timerRunning;
@@ -55,6 +99,7 @@ namespace Spookify
 					if (_sleepTimerController.SleepTimerStartTime > DateTime.Now) {
 						if (SleepTimerLabel == null) {
 							SleepTimerLabel = new UILabel ();
+							SleepTimerLabel.Tag = 100;
 							SleepTimerLabel.TranslatesAutoresizingMaskIntoConstraints = false;
 							SleepTimerLabel.TextAlignment = UITextAlignment.Center;
 							SleepTimerLabel.Layer.CornerRadius = 5;
@@ -65,6 +110,10 @@ namespace Spookify
 							SleepTimerLabel.TintColor = UIColor.Black;
 							SleepTimerLabel.TextColor = UIColor.Black;
 							SleepTimerLabel.Font = UIFont.FromName ("HelveticaNeue-Light", 20f);
+							SleepTimerLabel.UserInteractionEnabled = true;
+							SleepTimerLabel.AddGestureRecognizer(new UITapGestureRecognizer(() => { 
+								ShowSleepTimerConfiguration(_sleepTimerController.CurrentViewController, _sleepTimerController);
+							}) { NumberOfTapsRequired = 1 });
 
 							_sleepTimerController.View.AddSubview (SleepTimerLabel);
 							_sleepTimerController.View.AddConstraint (NSLayoutConstraint.Create (SleepTimerLabel, NSLayoutAttribute.Width, NSLayoutRelation.Equal, _sleepTimerController.View, NSLayoutAttribute.Width, 0.6f, 0));

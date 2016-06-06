@@ -92,14 +92,7 @@ namespace Spookify
 			if (NewBook != null && NewBook.Tracks != null) {
 				var gesamtSeitAnfang = NewBook.Tracks.Sum (t => t.Duration);
 				var tsSeitAnfang = TimeSpan.FromSeconds (gesamtSeitAnfang);
-				string txt;
-				if (Math.Truncate(tsSeitAnfang.TotalHours) > 1.0)
-					txt = string.Format ("{0} Stunden {1:00} Minuten", Math.Truncate (tsSeitAnfang.TotalHours), tsSeitAnfang.Minutes);
-				else if (Math.Truncate(tsSeitAnfang.TotalHours) > 0.0)
-					txt = string.Format ("{0} Stunde {1:00} Minuten", Math.Truncate (tsSeitAnfang.TotalHours), tsSeitAnfang.Minutes);
-				else 
-					txt = string.Format ("{0} Minuten {1:00} Sekunden",  Math.Truncate(tsSeitAnfang.TotalMinutes), tsSeitAnfang.Seconds);
-
+				string txt = tsSeitAnfang.ToLongTimeText ();
 				DispatchQueue.MainQueue.DispatchAsync (() => {
 					this.LengthLabel.Text = txt;
 				});
@@ -314,10 +307,10 @@ namespace Spookify
 				var thisBook = CurrentState.Current.Audiobooks.FirstOrDefault(a => a.Album.Name == NewBook.Album.Name);
 				if (thisBook != null) {
 					CurrentState.Current.Audiobooks.Remove(thisBook);
-					NewBook.CurrentPosition = thisBook.CurrentPosition;
+					NewBook = thisBook;
 				}								
 
-				CurrentState.Current.Audiobooks.Add(NewBook);
+				CurrentState.Current.Audiobooks.Insert(0,NewBook);
 				CurrentState.Current.CurrentAudioBook = NewBook;
 				CurrentState.Current.StoreCurrent();
 				CurrentPlayer.Current.PlayCurrentAudioBook();

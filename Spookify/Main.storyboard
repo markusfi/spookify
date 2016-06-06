@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
@@ -466,11 +466,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G9K-cF-Rv3">
-                                <rect key="frame" x="20" y="103" width="560" height="329"/>
+                                <rect key="frame" x="20" y="103" width="560" height="305"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="beE-BX-WCv">
                                         <rect key="frame" x="0.0" y="0.0" width="560" height="793"/>
-                                        <mutableString key="text">Hörbücher bei Spotify finden und anhören.   Die Idee zu dieser App kam mir, als ich versuchte ein Hörbuch bei Spotify bei einer Schitour anzuhören - die Spotify iOS App hat die Kapitel ge-shuffelt und ich war am Gifpel angekommen völlig verwirrt. So konnte es nicht weiter gehen, eine Lösung musste her...hier ist die erste Version...leider ohne offline Funktionaltität, denn dies bietet die API von Spotify nicht an.  Impressum: Fischer &amp; Schaefers GbR
+                                        <string key="text">Hörbücher bei Spotify finden und anhören.   Die Idee zu dieser App kam mir, als ich versuchte ein Hörbuch bei Spotify bei einer Schitour anzuhören - die Spotify iOS App hat die Kapitel ge-shuffelt und ich war am Gifpel angekommen völlig verwirrt. So konnte es nicht weiter gehen, eine Lösung musste her...hier ist die erste Version...leider ohne offline Funktionaltität, denn dies bietet die API von Spotify nicht an.  Impressum: Fischer &amp; Schaefers GbR
 Stollbergstrasse 6
 80539 München
 E-Mail: gbr @ consultdot.net 
@@ -486,7 +486,7 @@ Die Inhalte der App wurden mit größtmöglicher Sorgfalt und nach bestem Gewiss
 Die meisten Inhalte dieser App, insbesondere Texte, Bilder und Audioinhalte, stammen von Spotify, Inhaltsangaben der Bücher stammen von google.  Für die Inhalte und Richtigkeit der bereitgestellten Informationen ist der jeweilige Anbieter der Daten verantwortlich.  Externe Links: 
 Die App enthält sog. „externe Links“ (Verlinkungen) zu anderen Webseiten, auf deren Inhalt der Anbieter der App keinen Einfluss hat. Aus diesem Grund kann der Anbieter für diese Inhalte auch keine Gewähr übernehmen.
 Für die Inhalte und Richtigkeit der bereitgestellten Informationen ist der jeweilige Anbieter der verlinkten Webseite verantwortlich. Zum Zeitpunkt der Verlinkung waren keine Rechtsverstöße erkennbar. Bei Bekanntwerden einer solchen Rechtsverletzung wird der Link umgehend entfernen.  Urheberrecht/Leistungsschutzrecht: 
-Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unterliegen dem Urheberrecht und Leistungsschutzrecht. Jede Art der Vervielfältigung, Bearbeitung, Verbreitung, Einspeicherung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen schriftlichen Zustimmung des jeweiligen Rechteinhabers. </mutableString>
+Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unterliegen dem Urheberrecht und Leistungsschutzrecht. Jede Art der Vervielfältigung, Bearbeitung, Verbreitung, Einspeicherung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen schriftlichen Zustimmung des jeweiligen Rechteinhabers. </string>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -501,19 +501,19 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                                 </constraints>
                             </scrollView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status: Last refresh" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HkV-A9-GUG">
-                                <rect key="frame" x="246" y="491" width="109" height="16"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="13"/>
+                                <rect key="frame" x="258" y="497" width="84" height="12"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="10"/>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status: Last swap" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BII-8R-l4A">
-                                <rect key="frame" x="250" y="469" width="101" height="16"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="13"/>
+                                <rect key="frame" x="261" y="479" width="78" height="12"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="10"/>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Spookify Version X, Markus Fischer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9zG-SC-ePw">
-                                <rect key="frame" x="202" y="447" width="197" height="16"/>
+                                <rect key="frame" x="202" y="423" width="197" height="16"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="13"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -541,6 +541,20 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                                     <constraint firstAttribute="height" constant="60" id="cJ0-Bv-WMb"/>
                                 </constraints>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1CZ-0V-u9k">
+                                <rect key="frame" x="210" y="449" width="180" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="180" id="BIa-Ia-k6H"/>
+                                    <constraint firstAttribute="height" constant="25" id="tyd-Hg-Lvc"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <state key="normal" title="Spotify  Konto Abmelden">
+                                    <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="LogoutClicked:" destination="APb-xh-tQQ" eventType="touchUpInside" id="yH6-Av-vgN"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.098039215686274508" green="0.098039215686274508" blue="0.098039215686274508" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -549,20 +563,23 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                             <constraint firstItem="9zG-SC-ePw" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="C51-1o-HHd"/>
                             <constraint firstItem="BII-8R-l4A" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="GGW-J9-zzX"/>
                             <constraint firstItem="G9K-cF-Rv3" firstAttribute="leading" secondItem="dvy-Ip-yrw" secondAttribute="leading" constant="20" id="Hor-h1-1dq"/>
-                            <constraint firstItem="BII-8R-l4A" firstAttribute="top" secondItem="9zG-SC-ePw" secondAttribute="bottom" constant="6" id="Htu-bN-Y0j"/>
                             <constraint firstItem="9zG-SC-ePw" firstAttribute="top" secondItem="G9K-cF-Rv3" secondAttribute="bottom" constant="15" id="JVf-S6-TaG"/>
+                            <constraint firstItem="1CZ-0V-u9k" firstAttribute="top" secondItem="9zG-SC-ePw" secondAttribute="bottom" constant="10" id="Tbf-GX-X9h"/>
                             <constraint firstItem="cAj-7n-KHU" firstAttribute="top" secondItem="s4T-Ne-NXu" secondAttribute="bottom" constant="12" id="e5e-wv-ZaT"/>
                             <constraint firstItem="G9K-cF-Rv3" firstAttribute="top" secondItem="ukU-Ug-N65" secondAttribute="bottom" constant="15" id="f2n-Bh-Mfa"/>
                             <constraint firstItem="ukU-Ug-N65" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="fhz-lH-3ya"/>
+                            <constraint firstItem="1CZ-0V-u9k" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="itp-Qf-MHL"/>
+                            <constraint firstItem="BII-8R-l4A" firstAttribute="top" secondItem="1CZ-0V-u9k" secondAttribute="bottom" constant="5" id="l9O-oQ-12g"/>
                             <constraint firstItem="HkV-A9-GUG" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="lE8-3a-v3Q"/>
                             <constraint firstAttribute="trailing" secondItem="G9K-cF-Rv3" secondAttribute="trailing" constant="20" id="mMJ-5m-YeD"/>
-                            <constraint firstItem="s4T-Ne-NXu" firstAttribute="top" secondItem="HkV-A9-GUG" secondAttribute="bottom" constant="6" id="pOi-OA-NG7"/>
+                            <constraint firstItem="s4T-Ne-NXu" firstAttribute="top" secondItem="HkV-A9-GUG" secondAttribute="bottom" constant="4" id="pOi-OA-NG7"/>
                             <constraint firstItem="ukU-Ug-N65" firstAttribute="top" secondItem="nsU-qo-Sdv" secondAttribute="bottom" constant="8" id="vEX-4r-bND"/>
                             <constraint firstItem="s4T-Ne-NXu" firstAttribute="centerX" secondItem="dvy-Ip-yrw" secondAttribute="centerX" id="yTL-pM-nPy"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Einstellungen" image="Settings" selectedImage="Settings" id="pAZ-ne-45T"/>
                     <connections>
+                        <outlet property="LogoutButton" destination="1CZ-0V-u9k" id="XoM-gc-0zo"/>
                         <outlet property="VersionLabel" destination="9zG-SC-ePw" id="jA8-TO-kDk"/>
                         <outlet property="_StatusRefreshLabel" destination="HkV-A9-GUG" id="gRQ-AV-HIW"/>
                         <outlet property="_StatusSwapLabel" destination="BII-8R-l4A" id="VuU-He-CnM"/>
@@ -722,9 +739,15 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                                     <constraint firstAttribute="height" constant="100" id="MYo-xY-rzD"/>
                                     <constraint firstAttribute="width" constant="100" id="uA7-E5-lUx"/>
                                 </constraints>
+                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="150" y="155" width="100" height="100"/>
+                                </variation>
                             </view>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="tsC-rR-PO1">
                                 <rect key="frame" x="282" y="215" width="37" height="37"/>
+                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="182" y="186" width="37" height="37"/>
+                                </variation>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
@@ -811,7 +834,7 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XS4-uM-16v" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="175.5" y="764"/>
+            <point key="canvasLocation" x="-141" y="523"/>
         </scene>
         <!--Hörbücher-->
         <scene sceneID="jQp-BP-6fZ">
@@ -995,10 +1018,10 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                         <viewControllerLayoutGuide type="bottom" id="JIm-h3-k6J"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="OQu-zg-CZ6">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tUi-e7-cmZ">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tUi-e7-cmZ">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" horizontalHuggingPriority="200" verticalHuggingPriority="200" horizontalCompressionResistancePriority="200" verticalCompressionResistancePriority="200" translatesAutoresizingMaskIntoConstraints="NO" id="hQk-s6-RVB">
@@ -1016,7 +1039,7 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                                                 <state key="normal" title="Anhören">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
-                                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
                                                     <rect key="frame" x="10" y="435" width="380" height="30"/>
                                                 </variation>
                                                 <connections>
@@ -1035,15 +1058,15 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                                                     </fragment>
                                                 </attributedString>
                                                 <nil key="highlightedColor"/>
+                                                <variation key="widthClass=compact" misplaced="YES">
+                                                    <rect key="frame" x="10" y="380" width="200" height="18"/>
+                                                </variation>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cIW-qY-LZ1">
                                                 <rect key="frame" x="10" y="566" width="580" height="17"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
-                                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES">
-                                                    <rect key="frame" x="10" y="408" width="380" height="17"/>
-                                                </variation>
                                             </label>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VVQ-Mq-JXS">
                                                 <rect key="frame" x="10" y="635" width="580" height="35"/>
@@ -1055,7 +1078,7 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
                                                     <rect key="frame" x="10" y="475" width="380" height="325"/>
                                                 </variation>
                                             </textView>
@@ -1064,9 +1087,6 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="7HM-00-Pov" secondAttribute="height" multiplier="1:1" id="T0d-DH-GT0"/>
                                                 </constraints>
-                                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES">
-                                                    <rect key="frame" x="40" y="42" width="320" height="320"/>
-                                                </variation>
                                             </imageView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RNZ-0k-ygv">
                                                 <rect key="frame" x="10" y="685" width="280" height="29"/>
@@ -1082,7 +1102,8 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                                                         <exclude reference="dlr-C6-qLR"/>
                                                     </mask>
                                                 </variation>
-                                                <variation key="widthClass=compact">
+                                                <variation key="widthClass=compact" misplaced="YES">
+                                                    <rect key="frame" x="10" y="685" width="280" height="21"/>
                                                     <mask key="constraints">
                                                         <include reference="dlr-C6-qLR"/>
                                                     </mask>
@@ -1105,7 +1126,8 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                                                         <exclude reference="pYH-s2-Qb5"/>
                                                     </mask>
                                                 </variation>
-                                                <variation key="widthClass=compact">
+                                                <variation key="widthClass=compact" misplaced="YES">
+                                                    <rect key="frame" x="310" y="685" width="280" height="21"/>
                                                     <mask key="constraints">
                                                         <include reference="pYH-s2-Qb5"/>
                                                     </mask>
@@ -1128,7 +1150,8 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                                                         <exclude reference="bJe-bL-6vM"/>
                                                     </mask>
                                                 </variation>
-                                                <variation key="widthClass=compact">
+                                                <variation key="widthClass=compact" misplaced="YES">
+                                                    <rect key="frame" x="342" y="540" width="248" height="21"/>
                                                     <mask key="constraints">
                                                         <include reference="bJe-bL-6vM"/>
                                                     </mask>
@@ -1143,6 +1166,9 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="10" id="7aU-GD-x6L"/>
                                                 </constraints>
+                                                <variation key="widthClass=compact" misplaced="YES">
+                                                    <rect key="frame" x="0.0" y="716" width="600" height="10"/>
+                                                </variation>
                                             </view>
                                         </subviews>
                                         <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
@@ -1179,6 +1205,9 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                                             <constraint firstItem="ejB-sj-Sb7" firstAttribute="top" secondItem="bX3-sg-43F" secondAttribute="bottom" constant="10" id="wwB-hQ-7Ez"/>
                                             <constraint firstItem="8Tm-Ft-6Ib" firstAttribute="leading" secondItem="zTj-ps-j6V" secondAttribute="leading" id="yyN-s8-cuw"/>
                                         </constraints>
+                                        <variation key="widthClass=compact" misplaced="YES">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="711"/>
+                                        </variation>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
@@ -1231,7 +1260,7 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                         <viewControllerLayoutGuide type="bottom" id="FqX-VW-Z8r"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="GPO-x6-gHG">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lkw-Ab-sN5">
@@ -1239,11 +1268,11 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="deviceRGB"/>
                             </webView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="cCS-hR-7gV">
-                                <rect key="frame" x="282" y="197" width="37" height="37"/>
+                                <rect key="frame" x="282" y="222" width="37" height="37"/>
                                 <color key="color" red="0.39215686274509803" green="0.5607843137254902" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </activityIndicatorView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Zu diesem Buch finde ich nichts..." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oRc-mo-hAJ">
-                                <rect key="frame" x="118" y="286" width="364" height="29"/>
+                                <rect key="frame" x="118" y="311" width="364" height="29"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="24"/>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -1475,7 +1504,7 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZZc-ip-bIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-742.5" y="764"/>
+            <point key="canvasLocation" x="-895" y="524"/>
         </scene>
         <!--Genres-->
         <scene sceneID="p6J-QL-bsY">
@@ -1503,21 +1532,21 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
                         <viewControllerLayoutGuide type="bottom" id="JLX-FG-jpZ"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="MeV-ig-DJb">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="XfV-5w-5jz">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="88" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="cbp-CJ-dh3">
-                                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                         <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                         <color key="separatorColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="calibratedRGB"/>
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <color key="sectionIndexBackgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="HoerbuchCell" id="7GR-Yk-y8m" customClass="HoerbuchTableViewCell">
-                                                <rect key="frame" x="0.0" y="92" width="600" height="88"/>
+                                                <rect key="frame" x="0.0" y="28" width="600" height="88"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7GR-Yk-y8m" id="K6n-H9-vcA">
                                                     <rect key="frame" x="0.0" y="0.0" width="567" height="87"/>
@@ -1637,6 +1666,315 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
             </objects>
             <point key="canvasLocation" x="992" y="-214"/>
         </scene>
+        <!--Ich höre-->
+        <scene sceneID="myo-eV-pfg">
+            <objects>
+                <viewController storyboardIdentifier="PopupPlayer" id="IiA-bG-hj9" customClass="PlayerViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="REj-wd-SDI"/>
+                        <viewControllerLayoutGuide type="bottom" id="F38-N4-NGQ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="5bb-wL-bpX">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hQ0-MQ-kr1" userLabel="View (Position Controls)">
+                                <rect key="frame" x="0.0" y="600" width="600" height="0.0"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="253" verticalCompressionResistancePriority="751" misplaced="YES" placeholderIntrinsicWidth="300" placeholderIntrinsicHeight="15" text="Autor" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Icx-iq-25b">
+                                <rect key="frame" x="50" y="473" width="500" height="15"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Titel" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ALk-uc-f2h">
+                                <rect key="frame" x="5" y="493" width="590" height="17"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="17" id="z0a-eW-rKw"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" tag="6" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8gC-He-mH4">
+                                <rect key="frame" x="426" y="520" width="25" height="25"/>
+                                <state key="normal" image="Next"/>
+                                <connections>
+                                    <action selector="OnNextTrack:" destination="IiA-bG-hj9" eventType="touchUpInside" id="0Wl-h2-OpD"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" tag="4" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RG5-Jg-dvh">
+                                <rect key="frame" x="150" y="520" width="25" height="25"/>
+                                <state key="normal" image="Prev"/>
+                                <connections>
+                                    <action selector="OnPrevTrack:" destination="IiA-bG-hj9" eventType="touchUpInside" id="TNA-Sk-4Mh"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" tag="3" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LKr-4i-4oK">
+                                <rect key="frame" x="20" y="520" width="25" height="25"/>
+                                <state key="normal" image="Backward"/>
+                                <connections>
+                                    <action selector="OnBackTime:" destination="IiA-bG-hj9" eventType="touchUpInside" id="v87-cC-g4t"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" tag="5" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a02-JW-VYK">
+                                <rect key="frame" x="283" y="515" width="35" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="35" id="Rb3-Dh-kMn"/>
+                                    <constraint firstAttribute="height" constant="35" id="w0v-DN-lXL"/>
+                                </constraints>
+                                <state key="normal" image="Play"/>
+                                <connections>
+                                    <action selector="OnPlay:" destination="IiA-bG-hj9" eventType="touchUpInside" id="wfC-Vd-zK1"/>
+                                </connections>
+                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="i1H-Os-mjB">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="i1H-Os-mjB" secondAttribute="height" multiplier="1:1" id="YKR-EC-dVw"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" tag="7" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LGr-Bo-bdc">
+                                <rect key="frame" x="555" y="520" width="25" height="25"/>
+                                <state key="normal" image="Forward"/>
+                                <connections>
+                                    <action selector="OnForwardTime:" destination="IiA-bG-hj9" eventType="touchUpInside" id="OJB-oe-wNa"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mig-Do-Wp7">
+                                <rect key="frame" x="275" y="555" width="50" height="15"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="15" id="Hia-tr-ENG"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="XoS-qr-ZXV"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="12"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="0:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IS8-Hh-C28">
+                                <rect key="frame" x="41" y="569" width="24" height="15"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="12"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" misplaced="YES" progressViewStyle="bar" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="9EF-wl-dDp">
+                                <rect key="frame" x="75" y="575" width="450" height="3"/>
+                                <color key="progressTintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="trackTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </progressView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O8z-iJ-tp3">
+                                <rect key="frame" x="275" y="582" width="50" height="15"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="N7e-KR-YBd"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="15" id="OdP-hm-1o3"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="12"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="0:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="02j-lu-nc4">
+                                <rect key="frame" x="535" y="569" width="24" height="15"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="12"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" tag="3" contentMode="scaleToFill" verticalHuggingPriority="252" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TY9-Xx-lw0">
+                                <rect key="frame" x="20" y="463" width="25" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="25" id="5RM-4a-TrM"/>
+                                    <constraint firstAttribute="height" constant="25" id="czf-gF-ICb"/>
+                                </constraints>
+                                <state key="normal" image="Bookmark"/>
+                                <connections>
+                                    <action selector="OnAddBookmark:" destination="IiA-bG-hj9" eventType="touchUpInside" id="lYw-ww-Faq"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S3X-is-gTa" userLabel="View (Airplay)">
+                                <rect key="frame" x="555" y="463" width="25" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="4Jt-B7-WgJ"/>
+                                    <constraint firstAttribute="width" constant="25" id="tVC-ut-z2F"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7dA-Uc-E3g">
+                                <rect key="frame" x="250" y="172" width="100" height="100"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="MpQ-js-ewi"/>
+                                    <constraint firstAttribute="width" constant="100" id="UWa-Dk-yET"/>
+                                </constraints>
+                            </view>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="cbC-DD-xyK">
+                                <rect key="frame" x="282" y="203" width="37" height="37"/>
+                            </activityIndicatorView>
+                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yKs-xV-LZD">
+                                <rect key="frame" x="0.0" y="0.0" width="62" height="25"/>
+                                <subviews>
+                                    <button opaque="NO" tag="9" contentMode="scaleToFill" verticalHuggingPriority="252" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e85-uv-Erc" userLabel="Button (Sleep Timer)">
+                                        <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="25" id="bLH-ct-cK1"/>
+                                            <constraint firstAttribute="width" constant="25" id="sww-H8-eAV"/>
+                                        </constraints>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <state key="normal" image="moon"/>
+                                        <connections>
+                                            <action selector="OnSleeptimer:" destination="IiA-bG-hj9" eventType="touchUpInside" id="J6D-LZ-dJ5"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="  00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pbU-Vz-Diq">
+                                        <rect key="frame" x="25" y="0.0" width="37" height="25"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="12"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                            <button opaque="NO" tag="8" contentMode="scaleToFill" verticalHuggingPriority="252" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l1n-Mg-SBs" userLabel="Button (senden)">
+                                <rect key="frame" x="20" y="20" width="25" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="25" id="9JN-gh-Vff"/>
+                                    <constraint firstAttribute="height" constant="25" id="aty-LS-U1X"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" image="upload"/>
+                                <connections>
+                                    <action selector="OnSendenButtonClicked:" destination="IiA-bG-hj9" eventType="touchUpInside" id="2vh-5h-rNJ"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" tag="1" contentMode="scaleToFill" verticalHuggingPriority="252" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TR0-ch-Ode" userLabel="Button (close)">
+                                <rect key="frame" x="20" y="20" width="25" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="bhO-Iq-EaL"/>
+                                    <constraint firstAttribute="width" constant="25" id="zsa-bg-9GQ"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" image="down"/>
+                                <connections>
+                                    <action selector="OnCloseButtonClicked:" destination="IiA-bG-hj9" eventType="touchUpInside" id="gbF-Gh-EJu"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" tag="10" contentMode="scaleToFill" verticalHuggingPriority="252" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vzo-HM-ion" userLabel="Button (more)">
+                                <rect key="frame" x="22" y="303" width="25" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="DjN-gr-rHI"/>
+                                    <constraint firstAttribute="width" constant="25" id="Pip-Wn-uJN"/>
+                                </constraints>
+                                <state key="normal" image="more"/>
+                                <connections>
+                                    <action selector="OnMoreButtonClicked:" destination="IiA-bG-hj9" eventType="touchUpInside" id="U6E-fA-5Ow"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" tag="2" contentMode="scaleToFill" verticalHuggingPriority="252" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tMF-ha-UAL" userLabel="Button (Kapitel)">
+                                <rect key="frame" x="20" y="20" width="25" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="AEx-Sy-OR2"/>
+                                    <constraint firstAttribute="width" constant="25" id="I3o-oZ-8Xs"/>
+                                </constraints>
+                                <state key="normal" image="Kaset"/>
+                                <connections>
+                                    <action selector="OnKapitelButtonClicked:" destination="IiA-bG-hj9" eventType="touchUpInside" id="Aha-rz-GpB"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="TY9-Xx-lw0" firstAttribute="top" secondItem="hQ0-MQ-kr1" secondAttribute="top" constant="20" id="05Y-Ey-56B"/>
+                            <constraint firstAttribute="trailing" secondItem="hQ0-MQ-kr1" secondAttribute="trailing" id="1Kv-gB-vzK"/>
+                            <constraint firstItem="9EF-wl-dDp" firstAttribute="leading" secondItem="IS8-Hh-C28" secondAttribute="trailing" constant="10" id="1eg-uX-ram"/>
+                            <constraint firstItem="l1n-Mg-SBs" firstAttribute="leading" secondItem="5bb-wL-bpX" secondAttribute="leadingMargin" id="2iW-u2-pQC"/>
+                            <constraint firstItem="Icx-iq-25b" firstAttribute="centerY" secondItem="TY9-Xx-lw0" secondAttribute="centerY" id="4YN-ZR-J9P"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ALk-uc-f2h" secondAttribute="trailing" id="7td-9f-IOI"/>
+                            <constraint firstItem="8gC-He-mH4" firstAttribute="centerX" secondItem="5bb-wL-bpX" secondAttribute="centerX" multiplier="1.5" id="8Oi-bH-Lgw"/>
+                            <constraint firstItem="yKs-xV-LZD" firstAttribute="centerY" secondItem="l1n-Mg-SBs" secondAttribute="centerY" id="8Sq-BL-V4K"/>
+                            <constraint firstItem="F38-N4-NGQ" firstAttribute="top" secondItem="hQ0-MQ-kr1" secondAttribute="bottom" id="Cqz-76-OZm"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="TY9-Xx-lw0" secondAttribute="leading" id="DKj-75-AX8"/>
+                            <constraint firstItem="O8z-iJ-tp3" firstAttribute="top" secondItem="9EF-wl-dDp" secondAttribute="bottom" constant="5" id="Fb2-MO-o0N"/>
+                            <constraint firstItem="Icx-iq-25b" firstAttribute="centerX" secondItem="5bb-wL-bpX" secondAttribute="centerX" id="GjO-67-mgk"/>
+                            <constraint firstItem="a02-JW-VYK" firstAttribute="centerX" secondItem="hQ0-MQ-kr1" secondAttribute="centerX" id="HbV-4v-Cgs"/>
+                            <constraint firstItem="Mig-Do-Wp7" firstAttribute="centerX" secondItem="5bb-wL-bpX" secondAttribute="centerX" id="IgR-oh-HpS"/>
+                            <constraint firstItem="02j-lu-nc4" firstAttribute="centerY" secondItem="IS8-Hh-C28" secondAttribute="centerY" id="JoS-ai-XW1"/>
+                            <constraint firstItem="7dA-Uc-E3g" firstAttribute="centerX" secondItem="i1H-Os-mjB" secondAttribute="centerX" id="Jst-ji-I43"/>
+                            <constraint firstItem="TR0-ch-Ode" firstAttribute="top" secondItem="tMF-ha-UAL" secondAttribute="top" id="K6p-Vd-ulU"/>
+                            <constraint firstItem="hQ0-MQ-kr1" firstAttribute="leading" secondItem="5bb-wL-bpX" secondAttribute="leading" id="L4K-el-b57"/>
+                            <constraint firstItem="F38-N4-NGQ" firstAttribute="top" secondItem="yKs-xV-LZD" secondAttribute="bottom" priority="750" constant="10" id="MRr-Xt-84b"/>
+                            <constraint firstItem="yKs-xV-LZD" firstAttribute="top" relation="greaterThanOrEqual" secondItem="O8z-iJ-tp3" secondAttribute="bottom" constant="5" id="Oih-ZJ-CEe"/>
+                            <constraint firstItem="yKs-xV-LZD" firstAttribute="centerX" secondItem="5bb-wL-bpX" secondAttribute="centerX" id="Puk-IA-JMS"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="tMF-ha-UAL" secondAttribute="trailing" id="RbY-Am-Ngz"/>
+                            <constraint firstItem="a02-JW-VYK" firstAttribute="centerY" secondItem="LKr-4i-4oK" secondAttribute="centerY" id="UAq-wm-wsi"/>
+                            <constraint firstItem="IS8-Hh-C28" firstAttribute="leading" secondItem="5bb-wL-bpX" secondAttribute="leadingMargin" id="Vqw-Q2-YtR"/>
+                            <constraint firstItem="RG5-Jg-dvh" firstAttribute="centerX" secondItem="5bb-wL-bpX" secondAttribute="centerX" multiplier="0.5" id="ZT4-44-Oum"/>
+                            <constraint firstItem="i1H-Os-mjB" firstAttribute="top" secondItem="5bb-wL-bpX" secondAttribute="top" id="aF3-sT-GvG"/>
+                            <constraint firstItem="ALk-uc-f2h" firstAttribute="leading" secondItem="5bb-wL-bpX" secondAttribute="leadingMargin" id="af4-5O-ddt"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Vzo-HM-ion" secondAttribute="trailing" id="blx-zY-fUF"/>
+                            <constraint firstItem="TR0-ch-Ode" firstAttribute="leading" secondItem="5bb-wL-bpX" secondAttribute="leadingMargin" constant="-4" id="cF8-Fk-9MR"/>
+                            <constraint firstItem="Mig-Do-Wp7" firstAttribute="top" secondItem="a02-JW-VYK" secondAttribute="bottom" constant="5" id="czQ-6A-OzO"/>
+                            <constraint firstItem="ALk-uc-f2h" firstAttribute="top" secondItem="Icx-iq-25b" secondAttribute="bottom" constant="8" id="e3Q-lE-KLN"/>
+                            <constraint firstItem="a02-JW-VYK" firstAttribute="centerY" secondItem="hQ0-MQ-kr1" secondAttribute="centerY" id="eK3-ul-8N2"/>
+                            <constraint firstItem="02j-lu-nc4" firstAttribute="leading" secondItem="9EF-wl-dDp" secondAttribute="trailing" constant="10" id="eoO-sG-7kb"/>
+                            <constraint firstItem="Vzo-HM-ion" firstAttribute="centerY" secondItem="l1n-Mg-SBs" secondAttribute="centerY" id="fBi-zA-1fR"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="S3X-is-gTa" secondAttribute="trailing" id="g9l-Ii-LqV"/>
+                            <constraint firstItem="TY9-Xx-lw0" firstAttribute="centerY" secondItem="S3X-is-gTa" secondAttribute="centerY" id="gMG-B8-nc0"/>
+                            <constraint firstItem="i1H-Os-mjB" firstAttribute="leading" secondItem="5bb-wL-bpX" secondAttribute="leading" id="iyC-V1-azy"/>
+                            <constraint firstItem="TR0-ch-Ode" firstAttribute="top" secondItem="REj-wd-SDI" secondAttribute="bottom" id="lE7-ko-mem"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="02j-lu-nc4" secondAttribute="trailing" id="lG1-5E-0cC"/>
+                            <constraint firstItem="LGr-Bo-bdc" firstAttribute="centerY" secondItem="LKr-4i-4oK" secondAttribute="centerY" id="ljN-sn-Gks"/>
+                            <constraint firstAttribute="trailing" secondItem="i1H-Os-mjB" secondAttribute="trailing" id="ocN-EF-bu7"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="LKr-4i-4oK" secondAttribute="leading" id="pRc-LI-OiZ"/>
+                            <constraint firstItem="O8z-iJ-tp3" firstAttribute="centerX" secondItem="5bb-wL-bpX" secondAttribute="centerX" id="pyD-p8-NaU"/>
+                            <constraint firstItem="7dA-Uc-E3g" firstAttribute="centerY" secondItem="i1H-Os-mjB" secondAttribute="centerY" id="q4u-Lg-Vze"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="LGr-Bo-bdc" secondAttribute="trailing" id="qF0-wL-XIf"/>
+                            <constraint firstItem="9EF-wl-dDp" firstAttribute="centerY" secondItem="IS8-Hh-C28" secondAttribute="centerY" id="tIz-Hl-Zix"/>
+                            <constraint firstItem="9EF-wl-dDp" firstAttribute="top" secondItem="Mig-Do-Wp7" secondAttribute="bottom" constant="5" id="tmZ-0Y-cO2"/>
+                            <constraint firstItem="8gC-He-mH4" firstAttribute="centerY" secondItem="LKr-4i-4oK" secondAttribute="centerY" id="vBS-LJ-8dl"/>
+                            <constraint firstItem="RG5-Jg-dvh" firstAttribute="centerY" secondItem="LKr-4i-4oK" secondAttribute="centerY" id="wCX-5o-YDv"/>
+                            <constraint firstItem="cbC-DD-xyK" firstAttribute="centerY" secondItem="7dA-Uc-E3g" secondAttribute="centerY" id="xl1-r7-sY0"/>
+                            <constraint firstItem="cbC-DD-xyK" firstAttribute="centerX" secondItem="7dA-Uc-E3g" secondAttribute="centerX" id="yec-Jt-YU3"/>
+                            <constraint firstItem="hQ0-MQ-kr1" firstAttribute="top" secondItem="i1H-Os-mjB" secondAttribute="bottom" id="yrk-8W-AIt"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="Puk-IA-JMS"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="Puk-IA-JMS"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <navigationItem key="navigationItem" title="Ich höre" id="wSf-aG-qSn"/>
+                    <connections>
+                        <outlet property="ActivityIndicatorBackgroundView" destination="7dA-Uc-E3g" id="3ol-61-6dv"/>
+                        <outlet property="ActivityIndicatorView" destination="cbC-DD-xyK" id="rkA-kN-1x2"/>
+                        <outlet property="Airplay" destination="S3X-is-gTa" id="JRz-uI-eki"/>
+                        <outlet property="AlbumImage" destination="i1H-Os-mjB" id="lLL-N1-5yQ"/>
+                        <outlet property="AlbumLabel" destination="ALk-uc-f2h" id="4Tk-4i-y8c"/>
+                        <outlet property="AuthorLabel" destination="Icx-iq-25b" id="img-Ht-j5L"/>
+                        <outlet property="CloseButton" destination="TR0-ch-Ode" id="Qrm-7G-S91"/>
+                        <outlet property="KapitelButton" destination="tMF-ha-UAL" id="gYl-ck-99B"/>
+                        <outlet property="LesezeichenButton" destination="TY9-Xx-lw0" id="zia-oS-36S"/>
+                        <outlet property="MoreButton" destination="Vzo-HM-ion" id="7ws-oR-A55"/>
+                        <outlet property="NextTrack" destination="8gC-He-mH4" id="dSF-9H-BzQ"/>
+                        <outlet property="PlayButton" destination="a02-JW-VYK" id="n3Q-Gy-hYq"/>
+                        <outlet property="PrevTrack" destination="RG5-Jg-dvh" id="rqF-2u-OTf"/>
+                        <outlet property="ProgressBar" destination="9EF-wl-dDp" id="ffI-jA-G79"/>
+                        <outlet property="SendenButton" destination="l1n-Mg-SBs" id="32Z-Kf-6an"/>
+                        <outlet property="SkipBackward" destination="LKr-4i-4oK" id="Wxx-Da-MwZ"/>
+                        <outlet property="SkipForward" destination="LGr-Bo-bdc" id="FZi-3Y-0yz"/>
+                        <outlet property="SleepButton" destination="e85-uv-Erc" id="iMR-Jf-vZc"/>
+                        <outlet property="SleepTimerLabel" destination="pbU-Vz-Diq" id="Yfe-Wx-29k"/>
+                        <outlet property="bisEndeBuchLabel" destination="O8z-iJ-tp3" id="Am4-2V-dil"/>
+                        <outlet property="bisEndeKapitelLabel" destination="02j-lu-nc4" id="OxP-mM-Wax"/>
+                        <outlet property="kapitelLabel" destination="Mig-Do-Wp7" id="bE6-6W-LoX"/>
+                        <outlet property="seitStartKapitelLabel" destination="IS8-Hh-C28" id="7OC-WU-lL6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="t6q-0B-GqY" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-907.5" y="1171"/>
+        </scene>
     </scenes>
     <resources>
         <image name="Backward" width="25" height="25"/>
@@ -1645,6 +1983,7 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
         <image name="Genre" width="50" height="50"/>
         <image name="Hoerbuecher" width="50" height="50"/>
         <image name="Ich" width="50" height="50"/>
+        <image name="Kaset" width="50" height="50"/>
         <image name="Next" width="25" height="25"/>
         <image name="Play" width="24" height="24"/>
         <image name="Prev" width="25" height="25"/>
@@ -1652,9 +1991,13 @@ Die hier veröffentlichten Inhalte, Werke und bereitgestellten Informationen unt
         <image name="Spookify" width="274" height="121"/>
         <image name="Suche" width="50" height="50"/>
         <image name="Zuletzt" width="50" height="50"/>
+        <image name="down" width="274" height="121"/>
+        <image name="moon" width="26" height="26"/>
+        <image name="more" width="24" height="24"/>
+        <image name="upload" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="1Fp-sa-eDN"/>
-        <segue reference="COc-Kx-tIa"/>
+        <segue reference="JEx-ww-Vyo"/>
     </inferredMetricsTieBreakers>
 </document>

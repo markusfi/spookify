@@ -89,17 +89,28 @@ namespace Spookify
 			{
 				if (!CurrentPlayer.Current.IsSessionValid)
 					return;
+				bool needToLoadAgain = false;
 				lock (typeof(CurrentAudiobooks)) {
 					if (refreshRunning == null) {
 						refreshRunning = new CurrentAudiobooks ();
 						PlaylistChangedEventHandler handler = (object sender, PlaylistChangedEventArgs e) => {
 							if (refreshRunning.IsComplete) {
-								this.User = refreshRunning.User;
-								this.LastUpdate = DateTime.UtcNow;
-								this.StoreCurrent ();
-								refreshRunning._changed = null;
-								refreshRunning = null;
-								this.OnChanged(this,new PlaylistChangedEventArgs(""));
+								if (refreshRunning.User.Playlists.Count > 10 &&
+									(this._user == null || 
+									 (refreshRunning.User.Playlists.Count-5) > this.User.Playlists.Count)) 
+								{
+									this.User = refreshRunning.User;
+									this.LastUpdate = DateTime.UtcNow;
+									this.StoreCurrent ();
+									refreshRunning._changed = null;
+									refreshRunning = null;
+									this.OnChanged(this,new PlaylistChangedEventArgs(""));
+								}
+								else {
+									refreshRunning._changed = null;
+									refreshRunning = null;
+									needToLoadAgain = true;
+								}
 							}
 						};
 						refreshRunning.Changed += handler;
@@ -107,6 +118,8 @@ namespace Spookify
 						var dummy = refreshRunning.User.Playlists;
 					}
 				}
+				if (needToLoadAgain)
+					TriggerRefresh ();
 			}
 		}
 		public bool IsComplete {
@@ -201,7 +214,6 @@ namespace Spookify
 					playlist.Books.Add (book);
 			}
 		}
-			
 
 		private static void GetUserPlaylistAsync(PlaylistOwner playlistOwner, Action<UserPlaylist, bool> completionHandler = null) 
 		{
@@ -217,21 +229,14 @@ namespace Spookify
 				// AddPlaylistListsPageFromQueue (auth, completionHandler);
 			}
 		}
-		/*
-		public Queue<SPTListPage>BreathFirstQueue = new Queue<SPTListPage>();
-
-		private static void AddPlaylistListsPageFromQueue(SPTAuth auth, Action<UserPlaylist, bool> completionHandler)
-		{
-			if (BreathFirstQueue.Count > 0) {
-				var playlistlists = BreathFirstQueue.Dequeue ();
-				if (playlistlists != null)
-					AddPlaylistListsPage (auth, playlistlists, completionHandler);
-			}
-		}
-		*/
+			
 		private static void AddPlaylistListsPage(SPTAuth auth, SPTListPage playlistlists, Action<UserPlaylist, bool> completionHandler)
 		{
 			if (playlistlists == null) 
+				return;
+			if (auth == null || auth.Session == null)
+				auth = CurrentPlayer.Current.AuthPlayer;
+			if (auth == null || auth.Session == null)
 				return;
 			var items = playlistlists.Items as NSObject[];
 			if (items == null)

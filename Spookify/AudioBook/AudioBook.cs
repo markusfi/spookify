@@ -54,6 +54,12 @@ namespace Spookify
 		public string LargestCoverURL { get; set; }
 		public string Uri { get; set; }
 
+		public double GesamtSeit(AudioBookBookmark bookmark) {
+			return this.Tracks == null ? 0.0 : this.Tracks.Take (bookmark?.TrackIndex ?? 0).Sum (t => t.Duration) + (bookmark?.PlaybackPosition ?? 0.0);
+		}
+		public double GesamtSeitAnfang { get { return GesamtSeit (this.CurrentPosition);  } }
+		public double GesamtBisEnde { get { return this.Tracks == null ? 0.0 : this.Tracks.Sum (t => t.Duration); } }
+
 		[NonSerializedAttribute]
 		NSData SmallestCoverData;
 		[NonSerializedAttribute]

@@ -18,7 +18,7 @@ namespace Simple
 
 		public override bool FinishedLaunching (UIApplication application, NSDictionary launchOptions)
 		{
-
+			/*
 			// Set up shared authentication information
 			SPTAuth auth = SPTAuth.GetDefaultInstance();
 
@@ -32,6 +32,8 @@ namespace Simple
 			if (!string.IsNullOrEmpty(ConfigSpotify.kTokenRefreshServiceURL))
 				auth.TokenRefreshURL = new NSUrl(ConfigSpotify.kTokenRefreshServiceURL);
 			auth.SessionUserDefaultsKey = ConfigSpotify.kSessionUserDefaultsKey;
+			*/
+
 			return true;
 		}
 

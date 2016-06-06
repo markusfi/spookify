@@ -103,10 +103,4 @@
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\SpotifySDK\SpotifySDK.csproj">
-      <Project>{357BA94C-A517-44EF-AC2D-39BE162901CE}</Project>
-      <Name>SpotifySDK</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

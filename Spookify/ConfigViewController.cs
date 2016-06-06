@@ -4,6 +4,7 @@ using System;
 
 using Foundation;
 using UIKit;
+using SpotifySDK;
 
 namespace Spookify
 {
@@ -16,8 +17,30 @@ namespace Spookify
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+
+			this.LogoutButton.Layer.BorderColor = UIColor.LightGray.CGColor;
+			this.LogoutButton.Layer.BorderWidth = 0.5f;
+			this.LogoutButton.Layer.CornerRadius = 5;
 		}
 
+		partial void LogoutClicked (UIKit.UIButton sender)
+		{
+			var p = CurrentPlayer.Current;
+			if (p != null &&
+				p.AuthPlayer != null) {
+				// Cookies weg
+				var avc = SPTAuthViewController.AuthenticationViewControllerWithAuth (p.AuthPlayer);
+				avc.ClearCookies(() => { BeginInvokeOnMainThread(UpdateStatus); });
+
+				// Player abmelden
+				if (p.RawPlayer != null) {
+					p.RawPlayer.Stop((error) => { BeginInvokeOnMainThread(UpdateStatus); });
+					p.RawPlayer.Logout((error) => { p.ResetPlayer(); BeginInvokeOnMainThread(UpdateStatus); });
+				}
+				p.ClearAuthPlayer();
+				p.SessionDisabled = true;
+			}
+		}
 		public override void ViewWillAppear (bool animated)
 		{
 			base.ViewWillAppear (animated);

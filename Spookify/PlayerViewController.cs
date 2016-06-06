@@ -30,6 +30,23 @@ namespace Spookify
 		{
 		}
 					
+		void ConfigureViews(UIView view, int level)
+		{
+			foreach (var wnd in view.Subviews) {
+				// Console.WriteLine ("UIView("+level+"): " + wnd.GetType().Name + " " + ((wnd is UIButton) ? wnd.Tag.ToString() : ((wnd is UILabel) ? (wnd as UILabel).Text : "" )));
+				if (wnd is UIButton) {
+					var img = (wnd as UIButton).CurrentImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
+					wnd.TintColor = UIColor.White;
+					(wnd as UIButton).SetImage(img, UIControlState.Normal);
+				}
+				if (wnd is UILabel)
+					(wnd as UILabel).Text = "";
+				if (level == 1 && wnd is UILabel)
+					wnd.Hidden = true;
+				if (wnd.Subviews.Any())
+					ConfigureViews (wnd, level+1);
+			}
+		}
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();	
@@ -52,42 +69,40 @@ namespace Spookify
 			this.Airplay.AddConstraint (NSLayoutConstraint.Create (volumeView, NSLayoutAttribute.CenterX, NSLayoutRelation.Equal, this.Airplay, NSLayoutAttribute.CenterX, 1f, 0));
 			this.Airplay.AddConstraint (NSLayoutConstraint.Create (volumeView, NSLayoutAttribute.CenterY, NSLayoutRelation.Equal, this.Airplay, NSLayoutAttribute.CenterY, 1f, 0));
 
-			foreach (var wnd in this.View.Subviews) {
-				if (wnd is UIButton) {
-					var img = (wnd as UIButton).CurrentImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-					wnd.TintColor = UIColor.White;
-					(wnd as UIButton).SetImage(img, UIControlState.Normal);
-				}
-			}
-			
 			UIBarButtonItem rightButton = new UIBarButtonItem ();
 			rightButton.Image = UIImage.FromBundle ("Kaset");
 			rightButton.Clicked += PlaySettingsClicked;
 
-			this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
-			this.NavigationController.NavigationBar.BarTintColor = ConfigSpookify.BackgroundColor;
-			this.NavigationController.NavigationBar.Translucent = false;
-			this.NavigationController.NavigationBar.TintColor = ConfigSpookify.BartTintColor;
+			if (this.NavigationController != null && this.NavigationController.NavigationItem != null) {
+				this.NavigationController.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
+				this.NavigationController.NavigationBar.BarTintColor = ConfigSpookify.BackgroundColor;
+				this.NavigationController.NavigationBar.Translucent = false;
+				this.NavigationController.NavigationBar.TintColor = ConfigSpookify.BartTintColor;
 
-			this.NavigationItem.SetRightBarButtonItem (rightButton, false);
+				this.NavigationItem.SetRightBarButtonItem (rightButton, false);
 
-			if (HasCloseButton) {
-				UIBarButtonItem leftButton = new UIBarButtonItem ();
-				leftButton.Image = UIImage.FromBundle ("Close");
-				leftButton.Clicked += DismissHandler;
-				this.NavigationItem.SetLeftBarButtonItem (leftButton, false);
+				if (HasCloseButton) {
+					UIBarButtonItem leftButton = new UIBarButtonItem ();
+					leftButton.Image = UIImage.FromBundle ("Close");
+					leftButton.Clicked += DismissHandler;
+					this.NavigationItem.SetLeftBarButtonItem (leftButton, false);
+				}
 			}
-				
 
 			CurrentPlayer.Current.CreateSPTAudioStreamingDelegate (this);
-
 
 			UITapGestureRecognizer tapRecognizer = new UITapGestureRecognizer (HandleTouchInImage);
 			tapRecognizer.NumberOfTapsRequired = 1;
 			this.AlbumImage.UserInteractionEnabled = true;
 			this.AlbumImage.AddGestureRecognizer (tapRecognizer);
+
+			// call this FIRST here, so the View is already ready for display without any updates...
+			ConfigureViews (this.View, 1);
 		}
 
+		partial void OnCloseButtonClicked (UIKit.UIButton sender) {
+			this.DismissViewController (true, null);
+		}
 		void DismissHandler (object sender, EventArgs e)
 		{
 			this.DismissViewController (true, null);
@@ -132,38 +147,55 @@ namespace Spookify
 				}
 			}
 		}
+		public void UpdateGUI()
+		{
+			if (CurrentPlayer.Current.NeedToRenewSession)
+				CurrentPlayer.Current.RenewSession ();
 
+			DisplayAlbum ();
+		}
+		public override void ViewWillAppear (bool animated)
+		{
+			base.ViewWillAppear (animated);
+			UpdateGUI ();
+		}
 		public override void ViewDidAppear (bool animated)
 		{
 			base.ViewDidAppear (animated);
-
-			if (CurrentPlayer.Current.NeedToRenewSession)
-				CurrentPlayer.Current.RenewSession ();
-			
-			DisplayAlbum ();
 		}
-
+		public override void ViewWillDisappear (bool animated)
+		{
+			this.PresentingViewController.View.Hidden = false;
+			base.ViewWillDisappear (animated);
+		}
 		public override void ViewDidDisappear (bool animated)
 		{
 			base.ViewDidDisappear (animated);
+			this.MiniPlayer.DisposeBigPlayer ();
 		}
 
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
+			CurrentPlayer.Current.RemoveSPTAudioStreamingDelegate ();
+		}
 		AudioBook displayedAudioBook = null; 
-
-
-
 
 		void ShowNoConnection() {
 			this.AlbumLabel.Text = "Keine Internetverbindung\nStreaming nicht möglich";
+			this.AlbumLabel.Hidden = false;
 			this.PlayButton.SetImage (UIImage.FromBundle ("NoConnection").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
 			this.PlayButton.Hidden = true;
 			this.AlbumImage.Image = UIImage.FromBundle ("NoConnectionTitle");
 			this.AlbumImage.Hidden = false;
 			this.ActivityIndicatorBackgroundView.Hidden = true;
 			this.ActivityIndicatorView.StopAnimating ();
+			ShowOptionButtons (false);
+			ShowProgress (false);
 		}
 		void ShowPendingRenewSession() {
 			this.AlbumLabel.Text = "Sitzung wird aufgebaut";
+			this.AlbumLabel.Hidden = false;
 			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
 			this.PlayButton.Hidden = true;
 			this.AlbumImage.Image = null;
@@ -171,9 +203,12 @@ namespace Spookify
 			this.ActivityIndicatorBackgroundView.Hidden = false;
 			this.ActivityIndicatorBackgroundView.Layer.CornerRadius = 15f;
 			this.ActivityIndicatorView.StartAnimating();
+			ShowOptionButtons (false);
+			ShowProgress (false);
 		}
 		void ShowPendingLogin() {
 			this.AlbumLabel.Text = "Anmeldung wird durchgeführt";
+			this.AlbumLabel.Hidden = false;
 			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
 			this.PlayButton.Hidden = true;
 			this.AlbumImage.Image = null;
@@ -181,54 +216,90 @@ namespace Spookify
 			this.ActivityIndicatorBackgroundView.Hidden = false;
 			this.ActivityIndicatorBackgroundView.Layer.CornerRadius = 15f;
 			this.ActivityIndicatorView.StartAnimating();
+			ShowOptionButtons (false);
+			ShowProgress (false);
 		}
 		void ShowLoginToSpotify() {
-			this.AlbumLabel.Text = "Bitte melde dich mit deinem\nPremium Spotify Account an";
+			this.AlbumLabel.Text = "Bitte melde dich mit deinem\nPremium Spotify Account an.";
+			this.AlbumLabel.Hidden = false;
 			this.PlayButton.SetImage (UIImage.FromBundle ("NotLoggedIn").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
 			this.PlayButton.Hidden = false;
 			this.AlbumImage.Image = UIImage.FromBundle ("Spotify");
 			this.AlbumImage.Hidden = false;
 			this.ActivityIndicatorBackgroundView.Hidden = true;
 			this.ActivityIndicatorView.StopAnimating ();
+
+			ShowOptionButtons (false);
+			ShowProgress (false);
 		}
 		void ShowSelectAudiobook() {
 			this.AlbumLabel.Text = "Wähle ein Hörbuch aus einer\nder Playlisten oder Suche\nnach einem Titel oder Autor";
-			this.AuthorLabel.Text = "";
+			this.AlbumLabel.Hidden = false;
 			this.PlayButton.SetImage (UIImage.FromBundle ("Suche").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
 			this.AlbumImage.Image = UIImage.FromBundle ("Books");
 			this.AlbumImage.Hidden = false;
 			this.ActivityIndicatorBackgroundView.Hidden = true;
 			this.ActivityIndicatorView.StopAnimating ();
+			ShowOptionButtons (false);
+			ShowProgress (false);
 		}
+		void ShowProgress(bool show)
+		{
+			this.AuthorLabel.Hidden = 
+			this.ProgressBar.Hidden =
+			this.bisEndeKapitelLabel.Hidden = 
+			this.bisEndeBuchLabel.Hidden = 
+			this.kapitelLabel.Hidden = 
+			this.seitStartKapitelLabel.Hidden = !show;
+		}
+		void ShowOptionButtons(bool show)
+		{
+			this.KapitelButton.Hidden =
+			this.SendenButton.Hidden = 
+			this.MoreButton.Hidden =
+			this.SleepButton.Hidden = !show;
+		}
+			
 		void DisplayCurrentAudiobook(AudioBook ab) {
 			this.ActivityIndicatorBackgroundView.Hidden = true;
 			this.ActivityIndicatorView.StopAnimating ();
 			this.PlayButton.SetImage (this.Player.CurrentPlayButtonImage(), UIControlState.Normal);
 			this.PlayButton.Hidden = false;
 
+			if (this.MiniPlayer != null && this.MiniPlayer.SleepTimerOpion != 0) {
+				this.SleepTimerLabel.Hidden = false;
+				this.SleepTimerLabel.Text = string.Format (" {0:mm\\:ss}", this.MiniPlayer.SleepTimerStartTime.Subtract (DateTime.Now));
+			}
+			else 
+				this.SleepTimerLabel.Hidden = true;
+
 			if (ab != null &&
 				ab.CurrentPosition != null &&
 				ab.Tracks.Count () > ab.CurrentPosition.TrackIndex) 
 			{
+				ShowOptionButtons (true);
+				ShowProgress (true);
 				var track = ab.Tracks.ElementAt (ab.CurrentPosition.TrackIndex);
 				this.AlbumLabel.Text = ab.ToAlbumName ();
+				this.AlbumLabel.Hidden = false;
 
 				// this.TrackLabel.Text = track.Name;
 				this.ProgressBar.Hidden = track.Duration == 0.0;
 				if (track.Duration != 0.0)
 					this.ProgressBar.Progress = (float)(ab.CurrentPosition.PlaybackPosition / track.Duration);
 
-				var gesamtBisEnde = ab.Tracks.Skip(ab.CurrentPosition.TrackIndex).Sum (t => t.Duration) - ab.CurrentPosition.PlaybackPosition;
-				var tsBisEnde = TimeSpan.FromSeconds (gesamtBisEnde);
-				var gesamtSeitAnfang = ab.Tracks.Take (ab.CurrentPosition.TrackIndex - 1).Sum (t => t.Duration) + ab.CurrentPosition.PlaybackPosition;
-				var tsSeitAnfang = TimeSpan.FromSeconds (gesamtSeitAnfang);
+				var tsBisEnde = TimeSpan.FromSeconds (ab.GesamtBisEnde - ab.GesamtSeitAnfang);
+				var tsSeitAnfang = TimeSpan.FromSeconds (ab.GesamtSeitAnfang);
 				this.bisEndeBuchLabel.Text = tsBisEnde.ToLongTimeText () + " verbleiben";
 				this.kapitelLabel.Text = string.Format ("Kapitel {0} von {1}", ab.CurrentPosition.TrackIndex+1, ab.Tracks.Count);
 				var ts = TimeSpan.FromSeconds (ab.CurrentPosition.PlaybackPosition);
 				this.seitStartKapitelLabel.Text = ts.ToMinutesText ();
 				var tsToEnd = TimeSpan.FromSeconds (track.Duration).Subtract (ts);
 				this.bisEndeKapitelLabel.Text = tsToEnd.ToMinutesText ();
+
 			} else {
+				ShowOptionButtons (true);
+				ShowProgress (false);
 				this.bisEndeKapitelLabel.Text = "";
 				this.bisEndeBuchLabel.Text = "";
 				this.kapitelLabel.Text = "";
@@ -242,7 +313,7 @@ namespace Spookify
 		}
 		public void DisplayAlbum()
 		{
-			if (!this.IsViewLoaded || this.View.Superview == null)
+			if (!this.IsViewLoaded || this.View == null)
 				return;
 			
 			var ab = CurrentState.Current.CurrentAudioBook;
@@ -412,6 +483,64 @@ namespace Spookify
 			SkipTime(30);
 		}
 
+		partial void OnSendenButtonClicked (UIKit.UIButton sender)
+		{
+			// Sene URL zum Installieren & Direkten aufruf des Hörbuchs
+		}
+
+		partial void OnSleeptimer (UIKit.UIButton sender)
+		{
+			// Actionsheet mit Sleeptimer Optionen
+			PlayerViewSleepTimer.ShowSleepTimerConfiguration(this, this.MiniPlayer, null);
+		}
+
+		partial void OnMoreButtonClicked (UIKit.UIButton sender)
+		{
+			ShowBookmarks(this, CurrentPlayer.Current.PlayCurrentAudioBook);
+		}
+		public static void ShowBookmarks(UIViewController presentingViewController, Action okHandler = null, Action cancelHandler = null)
+		{
+			UIAlertController ac = UIAlertController.Create("Lesezeichen","Springe direkt zu einem Lesezeichen",UIAlertControllerStyle.ActionSheet);
+			var ab = CurrentState.Current.CurrentAudioBook;
+
+			if (ab != null) {
+				ac.AddAction(UIAlertAction.Create ("An den Anfang", UIAlertActionStyle.Default, (alertAction) => {
+					ac.Dispose ();
+					ab.CurrentPosition = new AudioBookBookmark ();
+					if (okHandler != null)
+						okHandler ();
+				}));
+			}
+			if (ab != null && ab.Bookmarks != null && ab.Bookmarks.Count > 0) {
+				for (int i = 0; i < ab.Bookmarks.Count; i++) {
+					ac.AddAction (CreateBookmarkOption (i, ac, ab.Bookmarks.ElementAt (i), okHandler));
+				}
+			}
+			ac.AddAction(UIAlertAction.Create ("Abbrechen", UIAlertActionStyle.Cancel, (alertAction) =>  {
+				ac.Dispose ();
+				if (cancelHandler != null)
+					cancelHandler();
+			}));
+			presentingViewController.PresentViewController(ac, true, null);			
+		}
+		static UIAlertAction CreateBookmarkOption(int i, UIAlertController ac, AudioBookBookmark bookmark, Action okHandler)
+		{
+			var time = CurrentState.Current.CurrentAudioBook.GesamtSeit (bookmark);
+			var ts = TimeSpan.FromSeconds (time);
+			string actiontext = 
+				string.Format ("Kapitel {0} - {1}",
+					bookmark.TrackIndex + 1,
+					ts.ToShortTimeText());
+			var alertOption = UIAlertAction.Create(
+				actiontext,
+				UIAlertActionStyle.Default, (alertAction) => { 
+					CurrentState.Current.CurrentAudioBook.CurrentPosition = bookmark;
+					ac.Dispose();
+					if (okHandler != null)
+						okHandler();
+				});
+			return alertOption;
+		}
 	}
 }
 

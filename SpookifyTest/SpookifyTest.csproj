@@ -106,9 +106,5 @@
       <Project>{6B6C90AF-0DD1-409A-AB94-0E422589D761}</Project>
       <Name>Spookify</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpotifySDK\SpotifySDK.csproj">
-      <Project>{357BA94C-A517-44EF-AC2D-39BE162901CE}</Project>
-      <Name>SpotifySDK</Name>
-    </ProjectReference>
   </ItemGroup>
 </Project>

@@ -11,7 +11,7 @@ namespace Spookify
 		public CurrentPlayer ()
 		{
 		}
-
+		public bool SessionDisabled { get; set; } = false;
 		static CurrentPlayer _currentPlayer;
 		public static CurrentPlayer Current
 		{ 
@@ -24,13 +24,21 @@ namespace Spookify
 		}
 
 		MySPTAudioStreamingPlaybackDelegate _mySPTAudioStreamingDelegate;
+
 		public void CreateSPTAudioStreamingDelegate(PlayerViewController vc)
 		{
 			_mySPTAudioStreamingDelegate = new MySPTAudioStreamingPlaybackDelegate (vc);
 			if (this.Player != null)
 				this.Player.PlaybackDelegate = _mySPTAudioStreamingDelegate;
 		}
-		 
+		public void RemoveSPTAudioStreamingDelegate()
+		{			
+			if (this.Player != null)
+				this.Player.PlaybackDelegate = null;
+			if (_mySPTAudioStreamingDelegate != null)
+				_mySPTAudioStreamingDelegate.Dispose ();
+			_mySPTAudioStreamingDelegate = null;
+		}
 		SPTAuthViewController authViewController = null;
 		SPTAuth _authPlayer;
 		public SPTAuth AuthPlayer { 
@@ -42,11 +50,24 @@ namespace Spookify
 				return _authPlayer;
 			} 
 		}
+		public void ClearAuthPlayer()
+		{
+			if (_authPlayer == null) {
+				if (_authPlayer.Session != null) {
+					_authPlayer.SessionUserDefaultsKey = null;
+					_authPlayer.Session = null;
+					_authPlayer.Session.Dispose ();
+				}
+				_authPlayer.Session = null;
+				_authPlayer.Dispose ();
+				_authPlayer = null;
+			}
+		}
 		public void CreateNewSPTAuth()
 		{
 			_authPlayer = new SPTAuth ();
 			_authPlayer.ClientID = ConfigSpotify.kClientId;
-			_authPlayer.RequestedScopes = new[]{ Constants.SPTAuthUserLibraryReadScope, Constants.SPTAuthStreamingScope };
+			_authPlayer.RequestedScopes = new[]{ ConstantsScope.SPTAuthUserLibraryReadScope, ConstantsScope.SPTAuthStreamingScope };
 			_authPlayer.RedirectURL = new NSUrl(ConfigSpotify.kCallbackURL);
 
 			var c = CurrentSettings.Current;
@@ -100,10 +121,12 @@ namespace Spookify
 		public bool IsSessionValid {
 			get {
 				SPTAuth auth = this.AuthPlayer;
-				return auth.Session != null &&
+				return 
+					!SessionDisabled &&
+					auth.Session != null &&
 					auth.Session.IsValid &&
 					auth.Session.ExpirationDate.NSDateToDateTime() > DateTime.Now && 
-					_authPlayer.RequestedScopes.Any (sc => (NSString)sc == Constants.SPTAuthStreamingScope);
+					_authPlayer.RequestedScopes.Any (sc => sc != null || (NSString)sc == ConstantsScope.SPTAuthStreamingScope);
 			}
 		}
 
@@ -116,6 +139,8 @@ namespace Spookify
 		bool refreshErrorOccured = false;
 		public bool CanRenewSession {
 			get {
+				if (SessionDisabled)
+					return false;
 				SPTAuth auth = this.AuthPlayer; // !string.IsNullOrEmpty(auth.Session.EncryptedRefreshToken) && 
 				return (auth.Session != null && !auth.Session.IsValid && auth.HasTokenRefreshService && !refreshErrorOccured);
 			}
@@ -206,7 +231,16 @@ namespace Spookify
 			}
 		}
 		public void ResetPlayer() {
-			_player = null;
+
+			if (this._player != null) {
+				if (this._player.PlaybackDelegate != null) {
+					this._player.PlaybackDelegate = null;
+				}
+				this._player.Dispose ();
+				this._player = null;
+			}
+			if (_authPlayer != null)
+				_authPlayer.Dispose ();
 			_authPlayer = null;
 			TriggerPlayerLogin = null;
 		}
@@ -297,6 +331,8 @@ namespace Spookify
 				vc.DefinesPresentationContext = true;
 
 				vc.PresentViewController (this.authViewController, false, null);
+
+
 			}
 		}
 	}
