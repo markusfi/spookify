@@ -485,7 +485,25 @@ namespace Spookify
 
 		partial void OnSendenButtonClicked (UIKit.UIButton sender)
 		{
-			// Sene URL zum Installieren & Direkten aufruf des Hörbuchs
+			// Sende URL zum Installieren & Direkten aufruf des Hörbuchs
+			var ab = CurrentState.Current.CurrentAudioBook;
+			if (ab != null) {
+				string txt = string.Format("Ein Audiobook für Spookify:\n{2}\nvon {3}\n{4}\n{0}://{1}",
+					ConfigSpookify.UriPlayBook,
+					ab.Uri,
+					ab.Album.Name,
+					ab.Artists.Aggregate("",(ac,s) => ac=="" ? s : ac + ", "+s),
+					TimeSpan.FromSeconds(ab.GesamtBisEnde).ToTimeText()
+				);
+				
+				var item = UIActivity.FromObject (txt);
+				var activityItems = this.AlbumImage.Image != null ? new NSObject[] { item, this.AlbumImage.Image } : new NSObject[] { item };
+				UIActivity[] applicationActivities = null;
+
+				var activityController = new UIActivityViewController (activityItems, applicationActivities);
+
+				PresentViewController (activityController, true, null);
+			}
 		}
 
 		partial void OnSleeptimer (UIKit.UIButton sender)
@@ -540,6 +558,20 @@ namespace Spookify
 						okHandler();
 				});
 			return alertOption;
+		}
+
+		public void CompleteAuthentication ()
+		{
+			this.DisplayAlbum ();
+
+			if (CurrentState.Current.Audiobooks.Count == 0) {
+				this.SwitchTab (2); // liste der Bücher in Playlists
+			} else if (CurrentState.Current.CurrentAudioBook == null) {
+				this.SwitchTab (0); // Liste der gewählten Bücher
+			} else {
+				this.SwitchTab (1);
+				this.PlayCurrentAudioBook ();
+			}
 		}
 	}
 }

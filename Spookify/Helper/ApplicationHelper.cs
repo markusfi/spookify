@@ -32,17 +32,6 @@ namespace Spookify
 				}
 			}
 		}
-		public static void SwitchToPlayWhenNoSession(this UITabBarController tabBarController)
-		{
-			bool hasConnection = Reachability.RemoteHostStatus () != NetworkStatus.NotReachable;
-
-			if (!hasConnection ||
-				(!CurrentPlayer.Current.IsSessionValid &&
-				 !CurrentPlayer.Current.CanRenewSession)) {
-				// Switch tab.
-				tabBarController.SwitchToTab(1);
-			}
-		}
 		public static void AsyncLoadWhenSession()
 		{
 			var gloalQueue = DispatchQueue.GetGlobalQueue(DispatchQueuePriority.Default);

@@ -52,13 +52,10 @@ namespace Spookify
 		}
 		public void ClearAuthPlayer()
 		{
-			if (_authPlayer == null) {
+			if (_authPlayer != null) {
 				if (_authPlayer.Session != null) {
-					_authPlayer.SessionUserDefaultsKey = null;
-					_authPlayer.Session = null;
 					_authPlayer.Session.Dispose ();
 				}
-				_authPlayer.Session = null;
 				_authPlayer.Dispose ();
 				_authPlayer = null;
 			}
@@ -126,7 +123,7 @@ namespace Spookify
 					auth.Session != null &&
 					auth.Session.IsValid &&
 					auth.Session.ExpirationDate.NSDateToDateTime() > DateTime.Now && 
-					_authPlayer.RequestedScopes.Any (sc => sc != null || (NSString)sc == ConstantsScope.SPTAuthStreamingScope);
+					_authPlayer.RequestedScopes.Any (sc => (NSString)sc == ConstantsScope.SPTAuthStreamingScope);
 			}
 		}
 
@@ -322,7 +319,7 @@ namespace Spookify
 				if (this.AuthPlayer.Session == null)
 					this._authPlayer = null;
 				this.authViewController = SPTAuthViewController.AuthenticationViewControllerWithAuth (this.AuthPlayer);
-				this.authViewController.HideSignup = true;
+				this.authViewController.HideSignup = false;
 				this.authViewController.Delegate = new MySPTAuthViewDelegate (vc);
 				this.authViewController.ModalPresentationStyle = UIModalPresentationStyle.FullScreen;
 				this.authViewController.ModalTransitionStyle = UIModalTransitionStyle.CrossDissolve;
@@ -331,8 +328,27 @@ namespace Spookify
 				vc.DefinesPresentationContext = true;
 
 				vc.PresentViewController (this.authViewController, false, null);
+			}
+		}
+		public void DismissAuthenticationViewControllerWithAuth()
+		{
+			if (this.authViewController != null &&
+			    this.authViewController.IsViewLoaded &&
+				this.authViewController.View.Superview != null) {
+				this.authViewController.DismissViewController (true, () => {
 
+					var del = this.authViewController.Delegate as MySPTAuthViewDelegate;
+					if (del != null) {
+						var playerViewController = del.PlayerViewController;
+						if (playerViewController != null)
+							playerViewController.CompleteAuthentication();
 
+						del.Dispose();
+						this.authViewController.Delegate = null;
+					}
+					this.authViewController.Dispose();
+					this.authViewController = null;
+				});
 			}
 		}
 	}

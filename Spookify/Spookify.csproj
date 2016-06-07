@@ -88,7 +88,7 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="MonoTouch.Dialog-1" />
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -194,7 +194,6 @@
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
     <None Include="LRU\LICENSE" />
-    <None Include="packages.config" />
     <Compile Include="AutorViewController.cs" />
     <Compile Include="AudioBook\CurrentBase.cs" />
     <Compile Include="AudioBook\CurrentPlaylistsCache.cs" />
@@ -220,6 +219,9 @@
     <Compile Include="AudioBook\MySPTAuthViewDelegate.cs" />
     <Compile Include="AudioBook\MySPTAudioStreamingPlaybackDelegate.cs" />
     <Compile Include="AudioBook\MySPTAudioStreamingDelegate.cs" />
+    <None Include="packages.config" />
+    <Compile Include="AudioBook\PlaylistManager.cs" />
+    <Compile Include="Helper\AlphanumComparator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

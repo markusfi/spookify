@@ -12,6 +12,8 @@ namespace Spookify
 			this.viewController = vc;
 		}
 
+		public PlayerViewController PlayerViewController { get { return this.viewController as PlayerViewController; } }
+
 		public override void AuthenticationViewControllerDidCancelLogin (SPTAuthViewController authenticationViewController)
 		{
 			BeginInvokeOnMainThread (() => {
@@ -30,21 +32,13 @@ namespace Spookify
 		{
 			if (this.viewController != null) {
 				if (this.viewController is PlayerViewController) {					
-					var playerViewController = this.viewController as PlayerViewController;
+					var playerViewController = this.PlayerViewController;
 
 					// wir erlauben prinzipiell wieder das Anmelden am Player...
 					CurrentPlayer.Current.SessionDisabled = false;
 
-					playerViewController.DisplayAlbum ();
+					playerViewController.CompleteAuthentication ();
 
-					if (CurrentState.Current.Audiobooks.Count == 0) {
-						playerViewController.SwitchTab (2); // liste der Bücher in Playlists
-					} else if (CurrentState.Current.CurrentAudioBook == null) {
-						playerViewController.SwitchTab (0); // Liste der gewählten Bücher
-					} else {
-						playerViewController.SwitchTab (1);
-						playerViewController.PlayCurrentAudioBook ();
-					}
 				} else {
 					new UIAlertView("Spookify","Login erfolgreich",null,"OK").Show();
 				}

@@ -52,13 +52,15 @@ namespace Spookify
 			if (_changed != null)
 				_changed (sender, args);
 		}
-		public override string Filename()  { return "Audiobooks"; } 
+		public override string Filename()  { return "Audiobooks04"; } 
 
 		PlaylistOwner _user;
 		public PlaylistOwner User { 
 			get { 
 				if (_user == null) {
-					_user = new PlaylistOwner () { Name = "hoerbuecher" };
+					_user = new PlaylistOwner () { Name = 
+						 "argonhörbücher,hoerbuecher" 
+					};
 					_user.Changed += OnChanged;
 					LastUpdate = DateTime.UtcNow;
 				}
@@ -66,7 +68,8 @@ namespace Spookify
 			}
 			set {
 				if (_user != value) {
-					_user.Changed -= OnChanged;
+					if (_user != null)
+						_user.Changed -= OnChanged;
 					_user = value; 
 					_user.Changed += OnChanged;
 				}
@@ -84,8 +87,8 @@ namespace Spookify
 		}
 		public void TriggerRefresh() {
 			if (refreshRunning == null &&
-			    (!HasPlaylists ||
-				(DateTime.UtcNow - LastUpdate).TotalDays > 1)) 
+				(!this.HasPlaylists ||
+					(DateTime.UtcNow - LastUpdate).TotalDays > 1))
 			{
 				if (!CurrentPlayer.Current.IsSessionValid)
 					return;
@@ -95,8 +98,8 @@ namespace Spookify
 						refreshRunning = new CurrentAudiobooks ();
 						PlaylistChangedEventHandler handler = (object sender, PlaylistChangedEventArgs e) => {
 							if (refreshRunning.IsComplete) {
-								if (refreshRunning.User.Playlists.Count > 10 &&
-									(this._user == null || 
+								if ((this._user == null) || 
+									(refreshRunning.User.Playlists.Count > 10 &&
 									 (refreshRunning.User.Playlists.Count-5) > this.User.Playlists.Count)) 
 								{
 									this.User = refreshRunning.User;
@@ -129,7 +132,7 @@ namespace Spookify
 		}
 		public bool HasPlaylists {
 			get {
-				return User.Playlists.Any();
+				return this._user != null && this._user.PlaylistsInitialized && User.Playlists.Any();
 			}
 		}
 		public DateTime LastUpdate { get; set; }
@@ -156,42 +159,26 @@ namespace Spookify
 		}
 
 		public string Name { get; set; }
+		public bool PlaylistsInitialized { get { return _playlists != null; } }
 
 		List<UserPlaylist> _playlists;
 		public List<UserPlaylist> Playlists {
 			get { 
 				if (_playlists == null) {
 					_playlists = new List<UserPlaylist> ();
-					GetUserPlaylistAsync (this, (newUserPlaylist, isComplete) => { 
-						// will be called multiple times.
-						if (newUserPlaylist != null) {
-							lock(_playlists) {
-								var p = _playlists.FirstOrDefault(p1 => p1.Name == newUserPlaylist.Name);
-								if (p != null) {
-									// p.Books.AddRange(newUserPlaylist.Books);
-									AddWithoutDups(_playlists, p, newUserPlaylist);
-									if (isComplete) 
-										p.TrackCount = (uint)p.Books.Count;
-									p.IsComplete = isComplete;
-									Console.WriteLine("Playlist "+newUserPlaylist.Name + "  TrackCount: "+p.TrackCount+ "  Books.Count: "+p.Books.Count());
-								} else {
-									p = new UserPlaylist() { Books = new List<PlaylistBook>(), Name = newUserPlaylist.Name };
-									AddWithoutDups(_playlists, p, newUserPlaylist);
-									newUserPlaylist.Books = p.Books;
-									_playlists.Add(newUserPlaylist);
-									if (isComplete)
-										newUserPlaylist.TrackCount = (uint)newUserPlaylist.Books.Count;
-									newUserPlaylist.IsComplete = isComplete;
-									Console.WriteLine("Playlist "+newUserPlaylist.Name + "  TrackCount: "+newUserPlaylist.TrackCount+ "  Books.Count: "+newUserPlaylist.Books.Count());
-								}
-							}
-						}
-						OnChanged(this, new PlaylistChangedEventArgs(newUserPlaylist?.Name));
-						ordered = false;
+					var playlistManager = new PlaylistManager ();
+					playlistManager.EnqueueUser (this.Name.Split (new [] { "," }, StringSplitOptions.RemoveEmptyEntries));
+					playlistManager.AddConstantUris (playlists => {
+						foreach(var playlist in playlists) 
+							AddPlaylists(playlist, false);
 					});
+					ConfigListen.ConfigPosition (_playlists, 10000);
+					playlistManager.GetUserPlaylistsAsync (GetPlaylistCompletionhandler);
 				}
 				if (_playlists != null) {
 					if (!ordered) {
+						ConfigListen.ConfigPosition (_playlists);
+								
 						_playlists.Sort (ConfigListen.Comparison);
 						ordered = true;
 					}
@@ -199,151 +186,113 @@ namespace Spookify
 				return _playlists;
 			}
 		}
+		void AddPlaylists(UserPlaylist newUserPlaylist, bool isComplete)
+		{
+			if (newUserPlaylist != null) {
+				lock(_playlists) {
+					var p = _playlists.FirstOrDefault(p1 => p1.Name == newUserPlaylist.Name);
+					if (p != null) {
+						// p.Books.AddRange(newUserPlaylist.Books);
+						AddWithoutDups(_playlists, p, newUserPlaylist);
+						if (isComplete && p.Books!= null) 
+							p.TrackCount = (uint)p.Books.Count;
+						p.IsComplete = isComplete;
+						Console.WriteLine("Playlist "+newUserPlaylist.Name + "  TrackCount: "+p.TrackCount+ "  Books.Count: "+p.Books.Count());
+					} else {
+						p = new UserPlaylist() { Books = new List<PlaylistBook>(), Name = newUserPlaylist.Name };
+						AddWithoutDups(_playlists, p, newUserPlaylist);
+						newUserPlaylist.Books = p.Books;
+						_playlists.Add(newUserPlaylist);
+						if (isComplete && newUserPlaylist.Books != null)
+							newUserPlaylist.TrackCount = (uint)newUserPlaylist.Books.Count;
+						newUserPlaylist.IsComplete = isComplete;
+						Console.WriteLine("Playlist "+newUserPlaylist.Name + "  TrackCount: "+newUserPlaylist.TrackCount+ "  Books.Count: "+newUserPlaylist.Books.Count());
+					}
+				}
+			}
+		}
+		void GetPlaylistCompletionhandler(IEnumerable<UserPlaylist> newUserPlaylists, PlaylistManager playlistManager)
+		{
+			// will be called one time when all playlists are enumerated.
+			if (newUserPlaylists != null) {
+				foreach (var newUserPlaylist in newUserPlaylists)
+					AddPlaylists (newUserPlaylist, false);
+			}
+			if (playlistManager.HasEnqueuedUser) {
+				playlistManager.GetUserPlaylistsAsync (completionHandler: GetPlaylistCompletionhandler);
+			} else {
+				playlistManager.GetPlaylistTracks (_playlists, completionHandler: (userPlaylist, isBookReadComplete) => {
+					AddPlaylists (userPlaylist, isBookReadComplete);
+					if (_playlists.All (p => p.IsComplete)) {
+						ordered = false;
+						OnChanged (this, new PlaylistChangedEventArgs (""));
+					}
+				});
+			}
+		}
 		bool ordered = false;
 
 		void AddWithoutDups(List<UserPlaylist> master, UserPlaylist playlist, UserPlaylist newSublist)
 		{
+			if (playlist == null || playlist.Books == null)
+				return;
 			string[] noDups = { "Bestseller", "Geheimtipps" };
 			bool doNotAllowDups = noDups.Any(s => playlist.Name.Contains(s));
 			var sortedList = doNotAllowDups 
-				? master.SelectMany (p => p?.Books ?? new List<PlaylistBook> ()).OrderBy (b => b?.Uri).ToList ()
-				: playlist.Books.OrderBy(b => b.Uri).ToList();
+				? master.SelectMany (p => p?.Books ?? new List<PlaylistBook> ()).ToList ()
+				: playlist.Books.ToList();
+			if (newSublist == null || newSublist.Books == null) 
+				return;
+			sortedList.Sort (PlaylistBook.CompareUri);
+			newSublist.Books.Sort (PlaylistBook.CompareUri);
+			PlaylistBook lastBook = null;
 			foreach (var book in newSublist.Books) {
-				var index = sortedList.BinarySearch (book, PlaylistBook.Empty);
-				if (index < 0)
-					playlist.Books.Add (book);
-			}
-		}
-
-		private static void GetUserPlaylistAsync(PlaylistOwner playlistOwner, Action<UserPlaylist, bool> completionHandler = null) 
-		{
-			if (CurrentPlayer.Current.IsSessionValid) {
-				SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
-				if (auth.Session != null) {
-					SPTPlaylistList.PlaylistsForUser (playlistOwner.Name, auth.Session.AccessToken, (nsError, obj) => {
-						if (nsError != null) 
-							return;
-						AddPlaylistListsPage(auth, obj as SPTPlaylistList, completionHandler);
-					});
+				if (PlaylistBook.CompareUri(lastBook,book)!=0) {
+					var index = sortedList.BinarySearch (book, PlaylistBook.Empty);
+					if (index < 0)
+						playlist.Books.Add (book);
 				}
-				// AddPlaylistListsPageFromQueue (auth, completionHandler);
-			}
-		}
-			
-		private static void AddPlaylistListsPage(SPTAuth auth, SPTListPage playlistlists, Action<UserPlaylist, bool> completionHandler)
-		{
-			if (playlistlists == null) 
-				return;
-			if (auth == null || auth.Session == null)
-				auth = CurrentPlayer.Current.AuthPlayer;
-			if (auth == null || auth.Session == null)
-				return;
-			var items = playlistlists.Items as NSObject[];
-			if (items == null)
-				return;
-			var playListArray = items.Select (a => a as SPTPartialPlaylist).ToArray ();
-			if (playListArray != null && playListArray.Any()) {
-				Queue<Tuple<SPTPartialPlaylist, SPTListPage>> RequestsQueue = new Queue<Tuple<SPTPartialPlaylist, SPTListPage>> ();
-				GetPlaylist(playListArray, completionHandler, RequestsQueue);
-			}
-			if (playlistlists.HasNextPage) {
-				// BreathFirstQueue.Enqueue (playlistlists);
-
-				// next page of this users Playlists
-				NSError errorOut;
-				var nsUrlRequest = playlistlists.CreateRequestForNextPageWithAccessToken (auth.Session.AccessToken, out errorOut);
-				if (errorOut != null)
-					return;
-				if (nsUrlRequest == null)
-					return;
-				SPTRequestHandlerProtocol_Extensions.Callback (SPTRequest.SPTRequestHandlerProtocol, nsUrlRequest, (er, resp1, jsonData1) => {
-					if (er != null) {
-						return;
-					}
-					var nextpage = SPTListPage.ListPageFromData (jsonData1, resp1, true, "", out errorOut);
-					if (errorOut != null) {
-						return;
-					}
-					AddPlaylistListsPage(auth, nextpage, completionHandler);
-				});
-			}
-		}
-
-		static readonly int maxConcorrent = 1;
-		private static void GetPlaylist(IEnumerable<SPTPartialPlaylist> playlistTotalArray, Action<UserPlaylist, bool> completionHandler, Queue<Tuple<SPTPartialPlaylist, SPTListPage>> RequestsQueue)
-		{
-			IEnumerable<SPTPartialPlaylist> playListArray = playlistTotalArray.Count () > maxConcorrent ? playlistTotalArray.Take (maxConcorrent) : playlistTotalArray;
-			IEnumerable<SPTPartialPlaylist> playlistRestArray = playlistTotalArray.Count () > maxConcorrent ? playlistTotalArray.Skip(maxConcorrent) : null;
-		
-			foreach (var playlist in playListArray) {
-				Console.WriteLine ("Start PlaylistBook.CreateFromFullAsync: "+playlist.Name);
-				CallCreateFromAsync (playlist, completionHandler, playlistRestArray, RequestsQueue);
-			}
-		}
-
-		static void CallCreateFromAsync(SPTPartialPlaylist playlist, Action<UserPlaylist, bool> completionHandler, IEnumerable<SPTPartialPlaylist> playlistRestArray, Queue<Tuple<SPTPartialPlaylist, SPTListPage>> RequestsQueue)
-		{
-			PlaylistBook.CreateFromFullAsync(playlist, (IEnumerable<PlaylistBook> playlistBooks, bool isComplete, SPTListPage nextPageForPlaylist) => {
-				// will be called only one time for breath first.
-				CompletionHandlerForPlaylist(playlist, completionHandler, RequestsQueue, playlistBooks, isComplete, nextPageForPlaylist);
-			}, () => {
-				// will be called when finished with this list
-				FinishedHandlerForPlaylist(playlist, completionHandler, playlistRestArray, RequestsQueue);
-			});			
-		}
-		static void CompletionHandlerForPlaylist(SPTPartialPlaylist playlist,  Action<UserPlaylist, bool> completionHandler, Queue<Tuple<SPTPartialPlaylist, SPTListPage>> RequestsQueue, IEnumerable<PlaylistBook> playlistBooks, bool isComplete, SPTListPage nextPageForPlaylist)
-		{
-			Console.WriteLine ("Callback PlaylistBook.CreateFromFullAsync: "+playlist.Name);
-			if (playlistBooks != null) {
-				if (completionHandler != null) {
-					completionHandler(new UserPlaylist() {
-						Name = playlist.Name,
-						TrackCount = (uint) playlist.TrackCount,
-						LargeImageUrl = playlist.LargestImage?.ImageURL?.AbsoluteString,
-						SmallImageUrl = playlist.SmallestImage?.ImageURL?.AbsoluteString,
-						Books = playlistBooks.ToList(),
-					}, isComplete);
-				}
-			}
-			if (nextPageForPlaylist != null && nextPageForPlaylist.HasNextPage) {
-				RequestsQueue.Enqueue(new Tuple<SPTPartialPlaylist, SPTListPage>(playlist, nextPageForPlaylist));
-			}
-		}
-		static void FinishedHandlerForPlaylist(SPTPartialPlaylist playlist,  Action<UserPlaylist, bool> completionHandler, IEnumerable<SPTPartialPlaylist> playlistRestArray, Queue<Tuple<SPTPartialPlaylist, SPTListPage>> RequestsQueue)
-		{
-			// next book.
-			if (playlistRestArray != null) {						
-				GetPlaylist(playlistRestArray, completionHandler, RequestsQueue);
-				Console.WriteLine ("Continue Next Playlist PlaylistBook.CreateFromFullAsync: "+playlist.Name + "  Left:" +playlistRestArray.Count());
-			}
-			else if (RequestsQueue.Count > 0) {
-				var t = RequestsQueue.Dequeue();
-				Console.WriteLine ("Continue Next Queued Page PlaylistBook.CreateFromFullAsync: "+t.Item1.Name);
-				PlaylistBook.CreateRequestNextPage(t.Item2, (IEnumerable<PlaylistBook> playlistBooks, bool isComplete, SPTListPage nextPageForPlaylist) => {
-					// will be called only one time for breath first.
-					CompletionHandlerForPlaylist(t.Item1, completionHandler, RequestsQueue, playlistBooks, isComplete, nextPageForPlaylist);
-				}, () => {
-					// finished handler
-					FinishedHandlerForPlaylist(t.Item1, completionHandler, playlistRestArray, RequestsQueue);
-				});
-			} else {
-				Console.WriteLine ("Stop PlaylistBook.CreateFromFullAsync: "+playlist.Name);
-				if (completionHandler != null)
-					completionHandler(null, true);
+				lastBook = book;
 			}
 		}
 	}
 
 	[Serializable]
-	public class UserPlaylist 
+	public class UserPlaylist
 	{
+		public UserPlaylist() {}
+		//"Shakespeare: The Poetry","spotify:user:spotify:playlist:18uLNnbFxvQhr8gnytJlYJ",162,300,"https://i.scdn.co/image/33408d37ef01e05a594c71a988f635c8989e78f7",
+		public UserPlaylist(string name, string uri, uint trackCount, string imageUrl) {
+			this.Name = name;
+			this.Uri = uri;
+			this.TrackCount = trackCount;
+			this.SmallImageUrl = imageUrl;	
+		}
 		public string Name { get; set; }
 		public uint TrackCount { get; set; }
 		public string LargeImageUrl { get; set; }
+		public string[] ImageUrls { get; set; }
 		public string SmallImageUrl { get; set; }
 		public List<PlaylistBook> Books { get; set; }
+		public string Uri { get; set; }
+		public int Position { get; set; }
 
-		public bool IsComplete { get; set; } = false;
+		public bool IsComplete { get; set; } = false;	
+
+		public UserPlaylist Clone ()
+		{
+			return new UserPlaylist() {
+				Name = this.Name,
+				TrackCount = this.TrackCount,
+				LargeImageUrl = this.LargeImageUrl,
+				ImageUrls = this.ImageUrls,
+				SmallImageUrl = this.SmallImageUrl,
+				Books = this.Books,
+				Uri = this.Uri,
+				IsComplete = this.IsComplete
+			};
+		}
 	}
+
 }
 

@@ -18,7 +18,7 @@ namespace Spookify
 		UIKit.NSLayoutConstraint bottomConstraint { get; set; }
 
 		[Outlet]
-		UIKit.UITableView HoerbuchListeTableView { get; set; }
+		public UIKit.UITableView HoerbuchListeTableView { get; set; }
 
 		void ReleaseDesignerOutlets ()
 		{

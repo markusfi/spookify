@@ -44,7 +44,8 @@ namespace Spookify
 			this.HoerbuchTableView.Source = ds;
 			ds.Changed += DataSourceChanged;
 			ds.Selected += RowSelected;
-
+			this.HoerbuchTableView.EstimatedRowHeight = (125+155)/2;
+			this.HoerbuchTableView.RowHeight = UITableView.AutomaticDimension;
 			this.AutomaticallyAdjustsScrollViewInsets = false;
 
 			HoerbuchTableView.TableFooterView = new UIView (CGRect.Empty);

@@ -290,6 +290,31 @@ namespace Spookify
 			}
 		}
 
+		void LoadNextPageAsync(AudioBook newbook, SPTListPage page, SPTAuth auth, SPTRequestHandlerProtocol p)
+		{
+			NSError errorOut, nsError;
+			if (page != null && page.HasNextPage) {
+				var nsUrlRequest = page.CreateRequestForNextPageWithAccessToken(auth.Session.AccessToken, out errorOut);
+				SPTRequestHandlerProtocol_Extensions.Callback(p, nsUrlRequest, (er1,resp1,jsonData1) => {
+					var nextpage = SPTListPage.ListPageFromData(jsonData1, resp1, true, "", out nsError);
+					if (nextpage != null) {
+						int kapitelNummer = newbook.Tracks.Any() ? newbook.Tracks.Max(t => t.Index) + 1 : 0;
+						newbook.Tracks.AddRange(nextpage.Items
+							.Cast<SPTPartialTrack>()
+							.Where(pt => pt.IsPlayable)
+							.Select(pt => new AudioBookTrack() { 
+								Url = pt.GetUri().AbsoluteString, 
+								Name = pt.Name, 
+								Duration = pt.Duration, 
+								Index = kapitelNummer++  } )
+							.ToList());
+						SetBookLength();
+						LoadNextPageAsync(newbook, nextpage, auth, p);
+					}
+				});
+			}
+		}
+
 		partial void OnSucheAmazon (UIKit.UIButton sender)
 		{
 			this.PerformSegue("RechercheSegue",sender);
@@ -325,31 +350,6 @@ namespace Spookify
 					this.NavigationController.PopToRootViewController (false);
 				*/
 			} 
-		}
-
-		void LoadNextPageAsync(AudioBook newbook, SPTListPage page, SPTAuth auth, SPTRequestHandlerProtocol p)
-		{
-			NSError errorOut, nsError;
-			if (page != null && page.HasNextPage) {
-				var nsUrlRequest = page.CreateRequestForNextPageWithAccessToken(auth.Session.AccessToken, out errorOut);
-			    SPTRequestHandlerProtocol_Extensions.Callback(p, nsUrlRequest, (er1,resp1,jsonData1) => {
-					var nextpage = SPTListPage.ListPageFromData(jsonData1, resp1, true, "", out nsError);
-					if (nextpage != null) {
-						int kapitelNummer = newbook.Tracks.Any() ? newbook.Tracks.Max(t => t.Index) + 1 : 0;
-						newbook.Tracks.AddRange(nextpage.Items
-							.Cast<SPTPartialTrack>()
-							.Where(pt => pt.IsPlayable)
-							.Select(pt => new AudioBookTrack() { 
-								Url = pt.GetUri().AbsoluteString, 
-								Name = pt.Name, 
-								Duration = pt.Duration, 
-								Index = kapitelNummer++  } )
-							.ToList());
-						SetBookLength();
-						LoadNextPageAsync(newbook, nextpage, auth, p);
-					}
-				});
-			}
 		}
 	}
 }

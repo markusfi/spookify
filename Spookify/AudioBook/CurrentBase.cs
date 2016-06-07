@@ -65,6 +65,9 @@ namespace Spookify
 		}
 		public virtual void StoreCurrent()
 		{
+			#if DEBUG
+			Console.WriteLine("Store File: "+Prototype.StateFilename);
+			#endif
 			lock (typeof(CurrentState)) {
 				if (File.Exists (Prototype.StateFilenameTemp))
 					File.Delete (Prototype.StateFilenameTemp);

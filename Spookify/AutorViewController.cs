@@ -1,5 +1,4 @@
 ﻿using System;
-
 using UIKit;
 using SpotifySDK;
 using System.Linq;
@@ -165,6 +164,7 @@ namespace Spookify
 											Album = new AudioBookAlbum () { Name = partialAlbum.Name },
 											SmallestCoverURL = partialAlbum.SmallestCover.ImageURL.AbsoluteString,
 											LargestCoverURL = partialAlbum.LargestCover.ImageURL.AbsoluteString,
+											ImageUrls = partialAlbum.Covers?.Select(c => c.ImageURL?.AbsoluteString).ToArray(), 
 											Uri = partialAlbum.Uri.AbsoluteString,
 											Authors = new List<Author> () { author }
 										});

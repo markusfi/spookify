@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Spookify
 {
@@ -15,6 +16,7 @@ namespace Spookify
 			"Hörspiele Bestseller & Ausgezeichnet" ,
 			"Hörspiele Geheimtipps" ,
 			"Alle Hörspiele" ,
+			"Hörbücher Special Playlist - EM 2016" ,
 			"Hörbücher Charts Top 20" ,
 			"Hörbücher Kinder" ,
 			"Hörbücher Jugend" ,
@@ -30,15 +32,26 @@ namespace Spookify
 			"Hörbücher Balance & Wellness" ,
 			"All Audiobooks" ,
 			"Music For Readers" };
-		
+
+		public static void ConfigPosition(IEnumerable<UserPlaylist>playlists, int start = 1000)
+		{
+			int pos = start;
+			foreach (var p in playlists) {
+				if (p.Position == 0) {
+					var index = PlaylistIndex (p.Name);
+					if (index == -1)
+						p.Position = (++pos);
+					else
+						p.Position = index;
+				}
+			}
+		}
 		public static int PlaylistIndex(string playlist) {
 			return Array.IndexOf(ConfigListen.OrderedList, playlist);
 		}
 		public static int Comparison(UserPlaylist s1, UserPlaylist s2)
-		{
-			int i1 = ConfigListen.PlaylistIndex (s1?.Name ?? "");
-			int i2 = ConfigListen.PlaylistIndex (s2?.Name ?? "");
-			return i1.CompareTo (i2);
+		{			
+			return s1.Position.CompareTo (s2.Position);
 		}	
 	}
 }

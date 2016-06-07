@@ -16,6 +16,11 @@ namespace Spookify
 			base.ViewDidLoad ();
 			this.View.Hidden = true;
 			this.View.BackgroundColor = ConfigSpookify.BackgroundColor;
+
+			var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
+			if (appDelegate != null)
+				appDelegate.TabBarController = this;
+
 		}
 		public override void ViewDidLayoutSubviews ()
 		{

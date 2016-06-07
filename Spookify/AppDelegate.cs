@@ -2,6 +2,8 @@
 using UIKit;
 using SpotifySDK;
 using CoreFoundation;
+using System.Linq;
+using System;
 
 namespace Spookify
 {
@@ -10,37 +12,11 @@ namespace Spookify
 	[Register ("AppDelegate")]
 	public class AppDelegate : UIApplicationDelegate
 	{
-		public override UIWindow Window {
-			get;
-			set;
-		}
+		public override UIWindow Window { get; set; }
+		public ResizeTabBarController TabBarController { get; set; }
 
 		public override bool FinishedLaunching (UIApplication application, NSDictionary launchOptions)
 		{
-			// Override point for customization after application launch.
-			// If not required for your application you can safely delete this method
-
-			// Code to start the Xamarin Test Cloud Agent
-			#if ENABLE_TEST_CLOUD
-			// Xamarin.Calabash.Start();
-			#endif
-
-			/*
-			// Set up shared authentication information
-			SPTAuth auth = SPTAuth.GetDefaultInstance();
-
-			auth.ClientID = ConfigSpotify.kClientId;
-			auth.RequestedScopes = new[]{ Constants.SPTAuthUserLibraryReadScope };
-			auth.RedirectURL = new NSUrl(ConfigSpotify.kCallbackURL);
-
-			if (!string.IsNullOrEmpty(ConfigSpotify.kTokenSwapServiceURL))
-				auth.TokenSwapURL = new NSUrl(ConfigSpotify.kTokenSwapServiceURL);
-
-			if (!string.IsNullOrEmpty(ConfigSpotify.kTokenRefreshServiceURL))
-				auth.TokenRefreshURL = new NSUrl(ConfigSpotify.kTokenRefreshServiceURL);
-			auth.SessionUserDefaultsKey = ConfigSpotify.kSessionUserDefaultsKey;
-			*/
-
 			UINavigationBar.Appearance.SetTitleTextAttributes(new UITextAttributes() {
 				TextColor = UIColor.White,
 				TextShadowColor = UIColor.Clear,
@@ -62,10 +38,17 @@ namespace Spookify
 			SPTAuthCallback authCallback = (NSError error, SPTSession session) => {
 
 				if (error != null) {
-					System.Diagnostics.Debug.WriteLine("*** Auth error: {0}", error);
+					var alert = new UIAlertView("Fehler","Beim Anmelden ist ein Fehler aufgetreten: "+error.LocalizedDescription,null,"Ok",null);
+					alert.Show();
+					alert.Dismissed += (object sender, UIButtonEventArgs e) => {
+						alert.Dispose();
+					};
+					CurrentPlayer.Current.DismissAuthenticationViewControllerWithAuth();
 					return;
 				}
 				auth.Session = session;
+				CurrentPlayer.Current.SessionDisabled = false;
+				CurrentPlayer.Current.DismissAuthenticationViewControllerWithAuth();
 				NSNotificationCenter.DefaultCenter.PostNotificationName("sessionUpdated", this);
 			};
 
@@ -78,8 +61,122 @@ namespace Spookify
 				auth.HandleAuthCallbackWithTriggeredAuthURL (url, authCallback);
 				return true;
 			}
+			// link to a book was sent...open this book.
+			if (url.AbsoluteString.StartsWith (ConfigSpookify.UriPlayBook)) {
 
+				if (url.AbsoluteString.Length > ConfigSpookify.UriPlayBook.Length + 3) {
+					string book = url.AbsoluteString.Substring (ConfigSpookify.UriPlayBook.Length + 3);
+					var	thisBook = CurrentState.Current.Audiobooks.FirstOrDefault (a => string.Equals(a.Uri,book));
+					if (thisBook != null) {
+						CurrentState.Current.Audiobooks.Remove (thisBook);
+						SelectBook (thisBook);
+					} else {
+						var playlistBook = CurrentAudiobooks.Current.User.Playlists.SelectMany (b => b.Books).FirstOrDefault (b => string.Equals (b.Uri, book));
+						if (playlistBook != null)
+							LoadBookTracksAsync(playlistBook.Uri, SelectBook);
+						else
+							LoadBookTracksAsync(book, SelectBook);
+					}
+
+				}
+				return true;
+			}
 			return false;
+		}
+		void SelectBook(AudioBook thisBook)
+		{
+			if (thisBook != null) {
+				CurrentState.Current.Audiobooks.Insert (0, thisBook);
+				CurrentState.Current.CurrentAudioBook = thisBook;
+				CurrentState.Current.StoreCurrent ();
+				CurrentPlayer.Current.PlayCurrentAudioBook ();
+				if (TabBarController != null) {
+					TabBarController.SwitchToTab (0);
+					var zuletztViewController = TabBarController.ViewControllers
+						.Select (vc => (vc as UINavigationController)?.ViewControllers?.FirstOrDefault () as ZuletztViewController)
+						.FirstOrDefault (vc => vc != null && vc is ZuletztViewController);
+					if (zuletztViewController != null && zuletztViewController.IsViewLoaded && zuletztViewController.HoerbuchListeTableView != null) {
+						zuletztViewController.HoerbuchListeTableView.ReloadData ();
+					}
+				}
+			}
+		}
+		void LoadBookTracksAsync(string uri, Action<AudioBook> completionHandler)
+		{
+			if (uri != null) {
+				var url = new NSUrl (uri);
+				SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
+				if (auth == null || auth.Session == null || !auth.Session.IsValid)
+					return;
+				var p = SPTRequest.SPTRequestHandlerProtocol;
+				NSError errorOut;
+
+				var nsUrlRequest = SPTAlbum.CreateRequestForAlbum (url, auth.Session.AccessToken, "DE", out errorOut);
+				SPTRequestHandlerProtocol_Extensions.Callback (p, nsUrlRequest, (er, resp, jsonData) => {
+					if (er != null) {
+						return;
+					}
+					NSError nsError;
+					var album = SPTAlbum.AlbumFromData (jsonData, resp, out nsError);
+					if (album != null) {
+						int kapitelNummer = 1;
+						var newBook = new AudioBook () {
+							Uri = album.Uri.AbsoluteString,
+							Album = new AudioBookAlbum () { Name = album.Name }, 
+							Tracks = album.FirstTrackPage.Items
+								.Cast<SPTPartialTrack> ()
+								.Where (pt => pt.IsPlayable)
+								.Select (pt => new AudioBookTrack () { 
+									Url = pt.GetUri ().AbsoluteString, 
+									Name = pt.Name, 
+									Duration = pt.Duration, 
+									Index = kapitelNummer++
+								})
+								.ToList (),
+							Authors = album.Artists.Cast<SPTPartialArtist> ().Select (a => new Author () {
+								Name = a.Name,
+								URI = a.Uri.AbsoluteString
+							}).ToList (),
+							LargestCoverURL = album.LargestCover.ImageURL.AbsoluteString,
+							SmallestCoverURL = album.SmallestCover.ImageURL.AbsoluteString
+						};
+						LoadNextPageAsync (newBook, album.FirstTrackPage, auth, p, completionHandler);
+					}
+				});
+			}
+		}
+
+		void LoadNextPageAsync(AudioBook newbook, SPTListPage page, SPTAuth auth, SPTRequestHandlerProtocol p, Action<AudioBook> completionHandler)
+		{
+			NSError errorOut, nsError;
+			if (auth == null || auth.Session == null || !auth.Session.IsValid) {
+				completionHandler (newbook);
+				return;
+			}
+			
+			if (page != null && page.HasNextPage) {
+				var nsUrlRequest = page.CreateRequestForNextPageWithAccessToken (auth.Session.AccessToken, out errorOut);
+				SPTRequestHandlerProtocol_Extensions.Callback (p, nsUrlRequest, (er1, resp1, jsonData1) => {
+					var nextpage = SPTListPage.ListPageFromData (jsonData1, resp1, true, "", out nsError);
+					if (nextpage != null) {
+						int kapitelNummer = newbook.Tracks.Any () ? newbook.Tracks.Max (t => t.Index) + 1 : 0;
+						newbook.Tracks.AddRange (nextpage.Items
+							.Cast<SPTPartialTrack> ()
+							.Where (pt => pt.IsPlayable)
+							.Select (pt => new AudioBookTrack () { 
+							Url = pt.GetUri ().AbsoluteString, 
+							Name = pt.Name, 
+							Duration = pt.Duration, 
+							Index = kapitelNummer++
+						})
+							.ToList ());
+						LoadNextPageAsync (newbook, nextpage, auth, p, completionHandler);
+					}
+					else
+						completionHandler (newbook);
+				});
+			} else
+				completionHandler (newbook);
 		}
 
 		public override void OnResignActivation (UIApplication application)

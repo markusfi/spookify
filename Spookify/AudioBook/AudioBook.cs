@@ -52,6 +52,7 @@ namespace Spookify
 		public List<Author> Authors { get; set; } 
 		public string SmallestCoverURL  { get; set; }
 		public string LargestCoverURL { get; set; }
+		public string[] ImageUrls { get; set; }
 		public string Uri { get; set; }
 
 		public double GesamtSeit(AudioBookBookmark bookmark) {
@@ -117,6 +118,7 @@ namespace Spookify
 		public List<Author> Authors { get; set; } 
 		public string SmallestCoverURL { get; set; }
 		public string LargestCoverURL { get; set; }
+		public string[] ImageUrls { get; set; }
 		public string Uri { get; set; }
 
 		int IComparer<PlaylistBook>.Compare (PlaylistBook x, PlaylistBook y) {
@@ -141,7 +143,7 @@ namespace Spookify
 				return -1;
 			if (y?.Album?.Name == null)
 				return 1;
-			return string.Compare(x.Album.Name, y.Album.Name);
+			return AlphanumComparator.AlphanumComparator.CompareStatic(x.Album.Name, y.Album.Name);
 		}
 
 		public static explicit operator PlaylistBook(AudioBook ab)
@@ -152,40 +154,14 @@ namespace Spookify
 				Authors = ab.Authors == null ? null : ab.Authors.Select(a => new Author() { Name = a.Name, URI = a.URI }).ToList(),
 				SmallestCoverURL = ab.SmallestCoverURL,
 				LargestCoverURL = ab.LargestCoverURL,
+				ImageUrls = ab.ImageUrls,
 				Uri = ab.Uri
 			};
 		}
 
-		public static void CreateFromAsync(SPTPartialPlaylist p, Action<IEnumerable<PlaylistBook>> action)
+		public static void CreatePlaylistFromUriAsync(NSUrl playlistUri, Action<IEnumerable<PlaylistBook>, bool, SPTListPage> addBooksCompletionHandler, Action finished)
 		{
-			if (p == null)
-				return;
-			if (action == null)
-				return;
-
-			var list = CurrentPlaylistsCache.Current.ListCache.GetItem (p.Uri.AbsoluteString);
-			if (list != null) {
-				action (list.Data);
-			} else {				
-				SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
-				NSError errorOut;
-				NSUrlRequest playlistReq = SPTPlaylistSnapshot.CreateRequestForPlaylistWithURI (p.Uri, auth.Session.AccessToken, out errorOut);
-				SPTRequestHandlerProtocol_Extensions.Callback (SPTRequest.SPTRequestHandlerProtocol, playlistReq, (er, resp, dat) => {
-					if (er != null) {
-						return;
-					}
-					var page = SPTPlaylistSnapshot.PlaylistSnapshotFromData (dat, resp, out errorOut);
-					if (page != null && page.FirstTrackPage != null && page.FirstTrackPage.Items != null && page.FirstTrackPage.Items.Any ()) {
-						var books = CreatePlaylistBooks (page.FirstTrackPage);
-						CurrentPlaylistsCache.Current.ListCache.Insert(p.Uri.AbsoluteString, books.ToList());
-						action (books);
-					}
-				});
-			}
-		}
-		public static void CreateFromFullAsync(SPTPartialPlaylist p, Action<IEnumerable<PlaylistBook>, bool, SPTListPage> action, Action finished)
-		{
-			if (p == null || action == null) {
+			if (playlistUri == null || addBooksCompletionHandler == null) {
 				Console.WriteLine ("CreateFromFullAsync: Abbruch weil SPTPartialPlaylist oder action ungültig");
 				if (finished != null)
 					finished ();
@@ -194,7 +170,7 @@ namespace Spookify
 	
 			SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
 			NSError errorOut;
-			NSUrlRequest playlistReq = SPTPlaylistSnapshot.CreateRequestForPlaylistWithURI (p.Uri, auth.Session.AccessToken, out errorOut);
+			NSUrlRequest playlistReq = SPTPlaylistSnapshot.CreateRequestForPlaylistWithURI (playlistUri, auth.Session.AccessToken, out errorOut);
 			SPTRequestHandlerProtocol_Extensions.Callback (SPTRequest.SPTRequestHandlerProtocol, playlistReq, (er, resp, dat) => {
 				if (er != null) {
 					Console.WriteLine ("CreateFromFullAsync: Abbruch weil Error: "+er.LocalizedDescription);
@@ -202,22 +178,28 @@ namespace Spookify
 						finished ();
 					return;
 				}
-				var page = SPTPlaylistSnapshot.PlaylistSnapshotFromData (dat, resp, out errorOut);
-				if (page != null)
-					AddListPage(auth, page.FirstTrackPage, action, finished);
-				else {
-					Console.WriteLine ("CreateFromFullAsync: Abbruch weil PlaylistSnapshotFromData() == null");
+				try {
+					var page = SPTPlaylistSnapshot.PlaylistSnapshotFromData (dat, resp, out errorOut);
+					if (page != null)
+						AddListPage(auth, page.FirstTrackPage, addBooksCompletionHandler, finished);
+					else {
+						Console.WriteLine ("CreateFromFullAsync: Abbruch weil PlaylistSnapshotFromData() == null");
+						if (finished != null)
+							finished ();
+					}
+				} catch(Exception ex) {
+					Console.WriteLine ("CreateFromFullAsync: Abbruch weil Exception int PlaylistSnapshotFromData()");
 					if (finished != null)
-						finished ();
+						finished();
 				}
 			});
 		}
-		static void AddListPage(SPTAuth auth, SPTListPage firstTrackPage,  Action<IEnumerable<PlaylistBook>, bool, SPTListPage> action, Action finished)
+		static void AddListPage(SPTAuth auth, SPTListPage firstTrackPage,  Action<IEnumerable<PlaylistBook>, bool, SPTListPage> addBooksCompletionHandler, Action finished)
 		{
 			if (firstTrackPage != null) {
 				if (firstTrackPage.Items != null && firstTrackPage.Items.Any ()) {
 					var books = CreatePlaylistBooks (firstTrackPage);
-					action (books, !firstTrackPage.HasNextPage, firstTrackPage);
+					addBooksCompletionHandler (books, !firstTrackPage.HasNextPage, firstTrackPage);
 				}
 				// AddNextPage (auth, firstTrackPage, action, finished);
 				Console.WriteLine ("AddListPage: Abbruch weil Continue in Breath");
@@ -299,6 +281,7 @@ namespace Spookify
 						}).ToList (),
 						SmallestCoverURL = track.Album.SmallestCover?.ImageURL?.AbsoluteString,
 						LargestCoverURL = track.Album.LargestCover?.ImageURL?.AbsoluteString,
+						ImageUrls = track.Album.Covers?.Select(c => c.ImageURL?.AbsoluteString).ToArray(), 
 						Uri = track.Album.GetUri ().AbsoluteString
 					};
 				}

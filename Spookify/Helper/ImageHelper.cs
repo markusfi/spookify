@@ -26,7 +26,7 @@ namespace Spookify
 			if (imageView == null)
 				return;
 			if (book != null)
-				LoadImage (imageView, new NSUrl (book.LargestCoverURL));
+				LoadImage (imageView, new NSUrl (book.SmallestCoverURL));
 		}
 		public static void LoadImage(this UIImageView imageView, string imageURL, Action<NSData> dataSetter = null, bool useLRUCache = true)
 		{

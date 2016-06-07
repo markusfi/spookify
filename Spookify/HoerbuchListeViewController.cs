@@ -16,7 +16,15 @@ namespace Spookify
 		bool searchControllerWasActive;
 		bool searchControllerSearchFieldWasFirstResponder;
 
-		public UserPlaylist ThisAudioBookPlaylist { get; set; }
+		UserPlaylist _thisAudioBookPlaylist = null;
+		public UserPlaylist ThisAudioBookPlaylist { 
+			get { return _thisAudioBookPlaylist; }
+			set {
+				_thisAudioBookPlaylist = value.Clone ();
+				_thisAudioBookPlaylist.Books = value.Books.ToList();
+				_thisAudioBookPlaylist.Books.Sort(PlaylistBook.CompareName);
+			}
+		}
 
 		public HoerbuchListeViewController (IntPtr handle) : base (handle)
 		{
