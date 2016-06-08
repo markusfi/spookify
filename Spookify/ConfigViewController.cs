@@ -5,6 +5,7 @@ using System;
 using Foundation;
 using UIKit;
 using SpotifySDK;
+using System.IO;
 
 namespace Spookify
 {
@@ -32,6 +33,18 @@ namespace Spookify
 				var avc = SPTAuthViewController.AuthenticationViewControllerWithAuth (p.AuthPlayer);
 				avc.ClearCookies(() => { BeginInvokeOnMainThread(UpdateStatus); });
 
+				try {
+					var cookies = Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments);
+					int pos = cookies.LastIndexOf('/');
+					if (pos != -1) {
+						cookies = cookies.Substring(0,pos+1);
+						cookies += "Library/Cookies/Spookify.consultdot.net.binarycookies";
+						if (File.Exists(cookies))
+							File.Delete(cookies);
+					}
+				} catch (Exception ex) {
+					Console.WriteLine("Could not delete Cookie: "+ex.Message);
+				}
 				// Player abmelden
 				if (p.RawPlayer != null) {
 					try {
