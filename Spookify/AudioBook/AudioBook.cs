@@ -6,6 +6,8 @@ using Foundation;
 using UIKit;
 using CoreFoundation;
 using System.Collections;
+using Newtonsoft.Json;
+using System.Globalization;
 
 namespace Spookify
 {
@@ -40,6 +42,50 @@ namespace Spookify
 	}
 
 	[Serializable]
+	public class Volume
+	{
+		[JsonProperty("items")]
+		public IList<Item> Items { get; set; }
+	}
+	[Serializable]
+	public class Item
+	{
+		[JsonProperty("volumeInfo")]
+		public VolumeInfo VolumeInfo { get; set;}
+	}
+
+	[Serializable]
+	public class VolumeInfo 
+	{
+		public static VolumeInfo Empty { get; } = new VolumeInfo();
+
+		[JsonProperty("title")]
+		public string Title { get; set; }
+		[JsonProperty("averageRating")]
+		public float AverageRating { get; set; }
+		[JsonProperty("ratingsCount")]
+		public float RatingsCount { get; set; }
+		[JsonProperty("publishedDate")]
+		public string _publishedDateInternal { set; private get; }
+		[JsonProperty("description")]
+		public string Description { get; set; }
+
+		public DateTime? PublishedDate {
+			get { 
+				if (!string.IsNullOrWhiteSpace (_publishedDateInternal)) {
+					DateTime date;
+					if (DateTime.TryParseExact (_publishedDateInternal, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date)) {
+						return date;
+					}
+				}
+				return null;
+			}
+		}
+		[JsonProperty("publisher")]
+		public string Publisher { get; set; }
+	}
+
+	[Serializable]
 	public class AudioBook : IComparer
 	{
 		[NonSerializedAttribute]
@@ -54,6 +100,7 @@ namespace Spookify
 		public string LargestCoverURL { get; set; }
 		public string[] ImageUrls { get; set; }
 		public string Uri { get; set; }
+		public VolumeInfo VolumeInfo { get; set; }
 
 		public double GesamtSeit(AudioBookBookmark bookmark) {
 			return this.Tracks == null ? 0.0 : this.Tracks.Take (bookmark?.TrackIndex ?? 0).Sum (t => t.Duration) + (bookmark?.PlaybackPosition ?? 0.0);
@@ -118,8 +165,17 @@ namespace Spookify
 		public List<Author> Authors { get; set; } 
 		public string SmallestCoverURL { get; set; }
 		public string LargestCoverURL { get; set; }
+		public string MediumCoverUrl { 
+			get { 
+				var medium = ImageUrls.FirstOrDefault (i => i != LargestCoverURL && i != SmallestCoverURL);
+				if (medium == null)
+					medium = SmallestCoverURL;
+				return medium;
+			}
+		}
 		public string[] ImageUrls { get; set; }
 		public string Uri { get; set; }
+		public VolumeInfo VolumeInfo { get; set; }
 
 		int IComparer<PlaylistBook>.Compare (PlaylistBook x, PlaylistBook y) {
 			return PlaylistBook.CompareUri (x, y);
@@ -155,7 +211,8 @@ namespace Spookify
 				SmallestCoverURL = ab.SmallestCoverURL,
 				LargestCoverURL = ab.LargestCoverURL,
 				ImageUrls = ab.ImageUrls,
-				Uri = ab.Uri
+				Uri = ab.Uri,
+				VolumeInfo = ab.VolumeInfo
 			};
 		}
 

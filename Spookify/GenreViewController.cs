@@ -461,7 +461,7 @@ namespace Spookify
 				var p = Getplaylist (indexPath);
 				if (p != null) {
 					bool tippCell = p.Name.Contains (keyTippDerWoche);
-					return tippCell ? 180 : (indexPath.Row % 2 == 1 ? 125 : 155); 
+					return tippCell ? (tableView.Frame.Width/2+15+21) : (indexPath.Row % 2 == 1 ? 125 : 155); 
 				}
 			}
 			return 88;
@@ -473,11 +473,13 @@ namespace Spookify
 		}
 		public override nint NumberOfSections (UITableView tableView)
 		{
-			return this.PlaylistLists != null && this.PlaylistLists.Any() ? GetBarNumberOfSection()
+			return CurrentAudiobooks.Current.HasPlaylists ? GetBarNumberOfSection()
 				: 0;
 		}
 		public override nint RowsInSection (UITableView tableView, nint section)
 		{			
+			if (!CurrentAudiobooks.Current.HasPlaylists)
+				return 0;
 			if (section == 0) {
 				var tag = this.genreViewController.NavigationController.TabBarItem.Tag;
 				if (tag == 2)

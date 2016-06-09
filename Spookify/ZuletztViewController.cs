@@ -49,6 +49,7 @@ namespace Spookify
 				var destinationViewController = segue.DestinationViewController as HoerbuchViewController;
 				try {
 					destinationViewController.Book = (PlaylistBook)cell.CurrentAudioBook;
+					destinationViewController.NewBook = cell.CurrentAudioBook;
 				} catch {
 
 				}

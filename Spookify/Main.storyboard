@@ -174,7 +174,7 @@
                                             <outlet property="GenereLabel" destination="a3V-I3-ONH" id="ht2-G5-oQF"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TippCell" rowHeight="200" id="oat-kF-zna" customClass="GenreTableViewCell">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TippCell" rowHeight="240" id="oat-kF-zna" customClass="GenreTableViewCell">
                                         <rect key="frame" x="0.0" y="356" width="600" height="200"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="center" tableViewCell="oat-kF-zna" id="O5x-TB-OKN">
@@ -211,6 +211,12 @@
                                                         <constraint firstAttribute="width" secondItem="ZWk-ES-e2J" secondAttribute="height" multiplier="1:1" id="MNP-7w-1oe"/>
                                                     </constraints>
                                                 </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Spotifys Tipp der Woche" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Xp-WU-xjG">
+                                                    <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
+                                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
@@ -219,18 +225,36 @@
                                                 <constraint firstItem="ySb-Q5-LQs" firstAttribute="leading" secondItem="zvd-1N-Rz7" secondAttribute="trailing" id="9PP-KS-KMc"/>
                                                 <constraint firstAttribute="bottom" secondItem="ZWk-ES-e2J" secondAttribute="bottom" constant="5" id="DAD-bX-z0N"/>
                                                 <constraint firstItem="ySb-Q5-LQs" firstAttribute="height" secondItem="O5x-TB-OKN" secondAttribute="height" id="Iha-Y6-48I"/>
-                                                <constraint firstItem="INh-Va-acf" firstAttribute="top" secondItem="O5x-TB-OKN" secondAttribute="top" constant="5" id="Js0-eM-fd5"/>
+                                                <constraint firstItem="INh-Va-acf" firstAttribute="top" secondItem="O5x-TB-OKN" secondAttribute="top" constant="45" id="Js0-eM-fd5"/>
                                                 <constraint firstAttribute="bottom" secondItem="zvd-1N-Rz7" secondAttribute="bottom" constant="3" id="Oan-Vh-SGT"/>
                                                 <constraint firstItem="ZnB-9C-U3A" firstAttribute="centerX" secondItem="INh-Va-acf" secondAttribute="centerX" id="Rgr-Vu-Bq0"/>
                                                 <constraint firstItem="zvd-1N-Rz7" firstAttribute="top" secondItem="O5x-TB-OKN" secondAttribute="top" id="RqZ-zC-jNX"/>
                                                 <constraint firstAttribute="bottom" secondItem="INh-Va-acf" secondAttribute="bottom" constant="5" id="S79-OK-HfU"/>
+                                                <constraint firstItem="INh-Va-acf" firstAttribute="width" secondItem="O5x-TB-OKN" secondAttribute="width" multiplier="0.5" constant="-10" id="W3l-Rc-jbm"/>
+                                                <constraint firstItem="ZWk-ES-e2J" firstAttribute="width" secondItem="O5x-TB-OKN" secondAttribute="width" multiplier="0.5" constant="-10" id="Wzm-TQ-tcz"/>
+                                                <constraint firstItem="ZWk-ES-e2J" firstAttribute="top" secondItem="4Xp-WU-xjG" secondAttribute="bottom" constant="5" id="Zjq-GY-YnA"/>
                                                 <constraint firstAttribute="bottom" secondItem="ZnB-9C-U3A" secondAttribute="bottom" id="b7z-wu-7XC"/>
-                                                <constraint firstItem="ZWk-ES-e2J" firstAttribute="top" secondItem="O5x-TB-OKN" secondAttribute="top" constant="5" id="kVg-ur-To0"/>
+                                                <constraint firstItem="4Xp-WU-xjG" firstAttribute="leading" secondItem="O5x-TB-OKN" secondAttribute="leading" constant="5" id="hig-vo-hki"/>
+                                                <constraint firstItem="ZWk-ES-e2J" firstAttribute="top" secondItem="O5x-TB-OKN" secondAttribute="top" constant="45" id="kVg-ur-To0"/>
                                                 <constraint firstItem="ySb-Q5-LQs" firstAttribute="width" secondItem="O5x-TB-OKN" secondAttribute="width" multiplier="0.5" id="pkm-2g-OpP"/>
                                                 <constraint firstItem="ZnB-9C-U3A" firstAttribute="leading" secondItem="ySb-Q5-LQs" secondAttribute="trailing" id="sJE-w8-QAh"/>
                                                 <constraint firstItem="ZnB-9C-U3A" firstAttribute="top" secondItem="O5x-TB-OKN" secondAttribute="top" id="txH-5a-Yh9"/>
                                                 <constraint firstItem="zvd-1N-Rz7" firstAttribute="centerX" secondItem="ZWk-ES-e2J" secondAttribute="centerX" id="vnR-iY-z6I"/>
                                             </constraints>
+                                            <variation key="default">
+                                                <mask key="subviews">
+                                                    <exclude reference="4Xp-WU-xjG"/>
+                                                </mask>
+                                                <mask key="constraints">
+                                                    <exclude reference="kVg-ur-To0"/>
+                                                    <exclude reference="Js0-eM-fd5"/>
+                                                </mask>
+                                            </variation>
+                                            <variation key="widthClass=compact">
+                                                <mask key="subviews">
+                                                    <include reference="4Xp-WU-xjG"/>
+                                                </mask>
+                                            </variation>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
@@ -421,7 +445,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Nw-L8-lE0" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2605" y="-1327"/>
+            <point key="canvasLocation" x="2604" y="-1327"/>
         </scene>
         <!--Resize Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
@@ -597,254 +621,7 @@ Hörbücher bei Spotify finden und anhören....</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tgH-Je-Oz7" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1494" y="730.5"/>
-        </scene>
-        <!--Ich höre-->
-        <scene sceneID="oFo-Si-d2C">
-            <objects>
-                <viewController id="giE-9k-V4U" customClass="PlayerViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="TcM-Yh-8Mc"/>
-                        <viewControllerLayoutGuide type="bottom" id="wUV-wf-26d"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="iga-SE-Rdw">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Titel" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nbo-lR-5zo">
-                                <rect key="frame" x="5" y="493" width="590" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="17" id="uBa-hm-cdY"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uUh-Rk-iDo">
-                                <rect key="frame" x="426" y="520" width="25" height="25"/>
-                                <state key="normal" image="Next"/>
-                                <connections>
-                                    <action selector="OnNextTrack:" destination="giE-9k-V4U" eventType="touchUpInside" id="nrZ-t8-myd"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8jM-MD-LnD">
-                                <rect key="frame" x="150" y="520" width="25" height="25"/>
-                                <state key="normal" image="Prev"/>
-                                <connections>
-                                    <action selector="OnPrevTrack:" destination="giE-9k-V4U" eventType="touchUpInside" id="Ncp-FL-gCp"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IQY-Gw-1QR">
-                                <rect key="frame" x="20" y="520" width="25" height="25"/>
-                                <state key="normal" image="Backward"/>
-                                <connections>
-                                    <action selector="OnBackTime:" destination="giE-9k-V4U" eventType="touchUpInside" id="kW0-nb-89P"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u8K-FY-UnA">
-                                <rect key="frame" x="283" y="515" width="35" height="35"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="Ag4-Ug-kzB"/>
-                                    <constraint firstAttribute="width" constant="35" id="o8O-Ow-fK7"/>
-                                </constraints>
-                                <state key="normal" image="Play"/>
-                                <connections>
-                                    <action selector="OnPlay:" destination="giE-9k-V4U" eventType="touchUpInside" id="UYo-Wh-IFw"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="253" verticalCompressionResistancePriority="751" placeholderIntrinsicWidth="300" placeholderIntrinsicHeight="15" text="Autor" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dcL-2g-A67">
-                                <rect key="frame" x="50" y="473" width="500" height="15"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="KVa-LS-Zpe">
-                                <rect key="frame" x="91" y="24" width="419" height="419"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="KVa-LS-Zpe" secondAttribute="height" multiplier="1:1" id="Bnd-GH-o8l"/>
-                                </constraints>
-                            </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fNa-Wz-SfX">
-                                <rect key="frame" x="555" y="520" width="25" height="25"/>
-                                <state key="normal" image="Forward"/>
-                                <connections>
-                                    <action selector="OnForwardTime:" destination="giE-9k-V4U" eventType="touchUpInside" id="qZ9-Lh-b71"/>
-                                </connections>
-                            </button>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="SEG-Of-dCK">
-                                <rect key="frame" x="75" y="575" width="450" height="3"/>
-                                <color key="progressTintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <color key="trackTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </progressView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="grs-Ep-Z1b">
-                                <rect key="frame" x="41" y="569" width="24" height="15"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="12"/>
-                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                                <variation key="widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="38" y="520" width="27" height="15"/>
-                                </variation>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="72D-q2-XOo">
-                                <rect key="frame" x="275" y="555" width="50" height="15"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="15" id="ZSZ-AC-NJy"/>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="vDW-nZ-E3r"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="12"/>
-                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wA7-Js-bJd">
-                                <rect key="frame" x="535" y="569" width="24" height="15"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="12"/>
-                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                                <variation key="widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="335" y="520" width="27" height="15"/>
-                                </variation>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gba-dA-gg1">
-                                <rect key="frame" x="275" y="582" width="50" height="15"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="OWR-Pj-fOV"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="15" id="fEe-Ae-IKz"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="12"/>
-                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qwP-Xf-na7">
-                                <rect key="frame" x="555" y="463" width="25" height="25"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="25" id="2Na-S0-3Ew"/>
-                                    <constraint firstAttribute="width" constant="25" id="pdY-GS-7kS"/>
-                                </constraints>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="252" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OE0-QH-jmY">
-                                <rect key="frame" x="20" y="463" width="50" height="25"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="25" id="AWB-hI-SFr"/>
-                                    <constraint firstAttribute="width" constant="25" id="IlJ-5F-YYS"/>
-                                </constraints>
-                                <state key="normal" image="Bookmark"/>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="IlJ-5F-YYS"/>
-                                    </mask>
-                                </variation>
-                                <variation key="widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="IlJ-5F-YYS"/>
-                                    </mask>
-                                </variation>
-                                <connections>
-                                    <action selector="OnAddBookmark:" destination="giE-9k-V4U" eventType="touchUpInside" id="rJR-nj-yup"/>
-                                </connections>
-                            </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TrF-qM-9ow">
-                                <rect key="frame" x="250" y="184" width="100" height="100"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="100" id="MYo-xY-rzD"/>
-                                    <constraint firstAttribute="width" constant="100" id="uA7-E5-lUx"/>
-                                </constraints>
-                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="150" y="155" width="100" height="100"/>
-                                </variation>
-                            </view>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="tsC-rR-PO1">
-                                <rect key="frame" x="282" y="215" width="37" height="37"/>
-                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="182" y="186" width="37" height="37"/>
-                                </variation>
-                            </activityIndicatorView>
-                        </subviews>
-                        <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="trailing" secondItem="KVa-LS-Zpe" secondAttribute="trailing" constant="20" id="4qr-dg-cGd"/>
-                            <constraint firstItem="SEG-Of-dCK" firstAttribute="leading" secondItem="grs-Ep-Z1b" secondAttribute="trailing" constant="10" id="5g8-vV-Lkd"/>
-                            <constraint firstItem="wA7-Js-bJd" firstAttribute="centerY" secondItem="SEG-Of-dCK" secondAttribute="centerY" id="7RQ-v8-lVR"/>
-                            <constraint firstItem="dcL-2g-A67" firstAttribute="top" relation="greaterThanOrEqual" secondItem="KVa-LS-Zpe" secondAttribute="bottom" constant="5" id="A7n-uh-Ly4"/>
-                            <constraint firstItem="u8K-FY-UnA" firstAttribute="top" secondItem="nbo-lR-5zo" secondAttribute="bottom" constant="5" id="APQ-dR-CUx"/>
-                            <constraint firstItem="nbo-lR-5zo" firstAttribute="leading" secondItem="iga-SE-Rdw" secondAttribute="leading" constant="5" id="AyO-CS-puA"/>
-                            <constraint firstItem="u8K-FY-UnA" firstAttribute="centerY" secondItem="IQY-Gw-1QR" secondAttribute="centerY" id="D9P-bH-X7J"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="qwP-Xf-na7" secondAttribute="trailing" id="GEv-3F-OmZ"/>
-                            <constraint firstItem="uUh-Rk-iDo" firstAttribute="centerY" secondItem="IQY-Gw-1QR" secondAttribute="centerY" id="Gy2-hD-ewu"/>
-                            <constraint firstItem="TrF-qM-9ow" firstAttribute="centerY" secondItem="KVa-LS-Zpe" secondAttribute="centerY" id="H0k-It-MpX"/>
-                            <constraint firstItem="Gba-dA-gg1" firstAttribute="centerX" secondItem="iga-SE-Rdw" secondAttribute="centerX" id="J9z-Ye-l0M"/>
-                            <constraint firstItem="wA7-Js-bJd" firstAttribute="leading" secondItem="SEG-Of-dCK" secondAttribute="trailing" constant="10" id="N8v-HT-8cS"/>
-                            <constraint firstAttribute="trailing" secondItem="nbo-lR-5zo" secondAttribute="trailing" constant="5" id="Os6-oh-LPH"/>
-                            <constraint firstItem="8jM-MD-LnD" firstAttribute="centerY" secondItem="IQY-Gw-1QR" secondAttribute="centerY" id="QHF-dk-7MS"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="fNa-Wz-SfX" secondAttribute="trailing" id="RYg-jN-BFF"/>
-                            <constraint firstItem="SEG-Of-dCK" firstAttribute="top" secondItem="72D-q2-XOo" secondAttribute="bottom" constant="5" id="S6I-Ly-oBh"/>
-                            <constraint firstItem="dcL-2g-A67" firstAttribute="top" secondItem="KVa-LS-Zpe" secondAttribute="bottom" priority="750" constant="30" id="UHj-kO-TPJ"/>
-                            <constraint firstAttribute="trailing" secondItem="SEG-Of-dCK" secondAttribute="trailing" constant="75" id="Ugj-Af-rGE"/>
-                            <constraint firstItem="KVa-LS-Zpe" firstAttribute="leading" secondItem="iga-SE-Rdw" secondAttribute="leading" constant="20" id="YNx-DZ-UGE"/>
-                            <constraint firstItem="grs-Ep-Z1b" firstAttribute="centerY" secondItem="SEG-Of-dCK" secondAttribute="centerY" id="atw-cP-7KW"/>
-                            <constraint firstAttribute="trailing" secondItem="dcL-2g-A67" secondAttribute="trailing" constant="50" id="bgy-vj-xBz"/>
-                            <constraint firstItem="u8K-FY-UnA" firstAttribute="centerX" secondItem="iga-SE-Rdw" secondAttribute="centerX" id="diR-SM-Nbh"/>
-                            <constraint firstItem="8jM-MD-LnD" firstAttribute="centerX" secondItem="iga-SE-Rdw" secondAttribute="centerX" multiplier="0.5" constant="12" id="fC4-zM-XN3"/>
-                            <constraint firstItem="72D-q2-XOo" firstAttribute="centerX" secondItem="iga-SE-Rdw" secondAttribute="centerX" id="hAP-MH-DDe"/>
-                            <constraint firstItem="KVa-LS-Zpe" firstAttribute="centerX" secondItem="iga-SE-Rdw" secondAttribute="centerX" id="iTw-jp-n8H"/>
-                            <constraint firstItem="IQY-Gw-1QR" firstAttribute="leading" secondItem="iga-SE-Rdw" secondAttribute="leadingMargin" id="nDo-Yn-pyL"/>
-                            <constraint firstItem="72D-q2-XOo" firstAttribute="top" secondItem="u8K-FY-UnA" secondAttribute="bottom" constant="5" id="nhS-Zp-99S"/>
-                            <constraint firstItem="OE0-QH-jmY" firstAttribute="leading" secondItem="iga-SE-Rdw" secondAttribute="leadingMargin" id="oos-kL-bEr"/>
-                            <constraint firstItem="SEG-Of-dCK" firstAttribute="leading" secondItem="iga-SE-Rdw" secondAttribute="leading" constant="75" id="sq6-sP-Wqz"/>
-                            <constraint firstItem="tsC-rR-PO1" firstAttribute="centerX" secondItem="TrF-qM-9ow" secondAttribute="centerX" id="tmx-gT-hSb"/>
-                            <constraint firstItem="fNa-Wz-SfX" firstAttribute="centerY" secondItem="IQY-Gw-1QR" secondAttribute="centerY" id="u8X-xc-eZ0"/>
-                            <constraint firstItem="dcL-2g-A67" firstAttribute="leading" secondItem="iga-SE-Rdw" secondAttribute="leading" constant="50" id="vHw-0T-j6j"/>
-                            <constraint firstItem="uUh-Rk-iDo" firstAttribute="centerX" secondItem="iga-SE-Rdw" secondAttribute="centerX" multiplier="1.5" constant="-12" id="vmG-ug-gSN"/>
-                            <constraint firstItem="Gba-dA-gg1" firstAttribute="top" secondItem="SEG-Of-dCK" secondAttribute="bottom" constant="5" id="vrb-2j-O3H"/>
-                            <constraint firstItem="wUV-wf-26d" firstAttribute="top" secondItem="SEG-Of-dCK" secondAttribute="bottom" constant="23" id="wgB-6R-aME">
-                                <variation key="heightClass=regular-widthClass=compact" constant="40"/>
-                            </constraint>
-                            <constraint firstItem="qwP-Xf-na7" firstAttribute="bottom" secondItem="OE0-QH-jmY" secondAttribute="bottom" id="wtk-vS-fng"/>
-                            <constraint firstItem="TrF-qM-9ow" firstAttribute="centerX" secondItem="KVa-LS-Zpe" secondAttribute="centerX" id="xB3-kb-Ys3"/>
-                            <constraint firstItem="nbo-lR-5zo" firstAttribute="top" secondItem="dcL-2g-A67" secondAttribute="bottom" constant="5" id="xeN-Fu-T8u"/>
-                            <constraint firstItem="KVa-LS-Zpe" firstAttribute="top" secondItem="iga-SE-Rdw" secondAttribute="top" constant="24" id="yAB-Xg-whB">
-                                <variation key="heightClass=compact" constant="24"/>
-                            </constraint>
-                            <constraint firstItem="tsC-rR-PO1" firstAttribute="centerY" secondItem="TrF-qM-9ow" secondAttribute="centerY" id="ygP-Y3-TYY"/>
-                            <constraint firstItem="dcL-2g-A67" firstAttribute="bottom" secondItem="OE0-QH-jmY" secondAttribute="bottom" id="yj4-SU-aHO"/>
-                        </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="4qr-dg-cGd"/>
-                                <exclude reference="YNx-DZ-UGE"/>
-                            </mask>
-                        </variation>
-                        <variation key="heightClass=regular-widthClass=compact">
-                            <mask key="constraints">
-                                <include reference="4qr-dg-cGd"/>
-                                <include reference="YNx-DZ-UGE"/>
-                            </mask>
-                        </variation>
-                    </view>
-                    <navigationItem key="navigationItem" title="Ich höre" id="fSZ-2c-NwH"/>
-                    <connections>
-                        <outlet property="ActivityIndicatorBackgroundView" destination="TrF-qM-9ow" id="NgO-25-aG7"/>
-                        <outlet property="ActivityIndicatorView" destination="tsC-rR-PO1" id="R7I-ra-FPD"/>
-                        <outlet property="Airplay" destination="qwP-Xf-na7" id="rh1-8G-acN"/>
-                        <outlet property="AlbumImage" destination="KVa-LS-Zpe" id="Joe-oC-Och"/>
-                        <outlet property="AlbumLabel" destination="nbo-lR-5zo" id="cGJ-wn-xhM"/>
-                        <outlet property="AuthorLabel" destination="dcL-2g-A67" id="3ov-Hx-RjS"/>
-                        <outlet property="LesezeichenButton" destination="OE0-QH-jmY" id="CaT-Av-kX3"/>
-                        <outlet property="NextTrack" destination="uUh-Rk-iDo" id="Chb-jU-HoK"/>
-                        <outlet property="PlayButton" destination="u8K-FY-UnA" id="aiT-11-Bpl"/>
-                        <outlet property="PrevTrack" destination="8jM-MD-LnD" id="TKk-dc-BH2"/>
-                        <outlet property="ProgressBar" destination="SEG-Of-dCK" id="kPt-tY-mat"/>
-                        <outlet property="SkipBackward" destination="IQY-Gw-1QR" id="O7w-O9-DPk"/>
-                        <outlet property="SkipForward" destination="fNa-Wz-SfX" id="e2u-eL-82b"/>
-                        <outlet property="bisEndeBuchLabel" destination="Gba-dA-gg1" id="6KF-XP-ECD"/>
-                        <outlet property="bisEndeKapitelLabel" destination="wA7-Js-bJd" id="q1c-Xc-ajv"/>
-                        <outlet property="kapitelLabel" destination="72D-q2-XOo" id="YoR-cQ-cM5"/>
-                        <outlet property="seitStartKapitelLabel" destination="grs-Ep-Z1b" id="EsQ-B1-ALb"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="XS4-uM-16v" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-141" y="523"/>
+            <point key="canvasLocation" x="1671" y="730"/>
         </scene>
         <!--Hörbücher-->
         <scene sceneID="jQp-BP-6fZ">
@@ -1028,33 +805,23 @@ Hörbücher bei Spotify finden und anhören....</string>
                         <viewControllerLayoutGuide type="bottom" id="JIm-h3-k6J"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="OQu-zg-CZ6">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tUi-e7-cmZ">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tUi-e7-cmZ">
+                                <rect key="frame" x="0.0" y="0.0" width="400" height="551"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" horizontalHuggingPriority="200" verticalHuggingPriority="200" horizontalCompressionResistancePriority="200" verticalCompressionResistancePriority="200" translatesAutoresizingMaskIntoConstraints="NO" id="hQk-s6-RVB">
-                                        <rect key="frame" x="0.0" y="0.0" width="600" height="719"/>
+                                    <view contentMode="scaleToFill" horizontalHuggingPriority="200" verticalHuggingPriority="200" horizontalCompressionResistancePriority="200" verticalCompressionResistancePriority="200" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hQk-s6-RVB">
+                                        <rect key="frame" x="0.0" y="0.0" width="400" height="551"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text=" " textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zTj-ps-j6V">
-                                                <rect key="frame" x="10" y="10" width="580" height="22"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" misplaced="YES" text=" " textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zTj-ps-j6V">
+                                                <rect key="frame" x="10" y="10" width="380" height="22"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="18"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Na6-yQ-FD2">
-                                                <rect key="frame" x="10" y="595" width="580" height="30"/>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
-                                                <state key="normal" title="Anhören">
-                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="OnBuchSelektiert:" destination="MJR-vP-EN2" eventType="touchUpInside" id="xQi-e4-Nhw"/>
-                                                </connections>
-                                            </button>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Tm-Ft-6Ib">
-                                                <rect key="frame" x="10" y="540" width="311" height="18"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" misplaced="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Tm-Ft-6Ib">
+                                                <rect key="frame" x="10" y="380" width="222" height="18"/>
                                                 <attributedString key="attributedText">
                                                     <fragment content=" ">
                                                         <attributes>
@@ -1065,18 +832,63 @@ Hörbücher bei Spotify finden und anhören....</string>
                                                     </fragment>
                                                 </attributedString>
                                                 <nil key="highlightedColor"/>
-                                                <variation key="widthClass=compact" misplaced="YES">
-                                                    <rect key="frame" x="10" y="380" width="200" height="18"/>
-                                                </variation>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cIW-qY-LZ1">
-                                                <rect key="frame" x="10" y="566" width="580" height="17"/>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
-                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VVQ-Mq-JXS">
-                                                <rect key="frame" x="10" y="635" width="580" height="35"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="mLR-Ge-j0A">
+                                                <rect key="frame" x="10" y="407" width="580" height="18"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="0 Stunden 0 Minuten" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cIW-qY-LZ1">
+                                                        <rect key="frame" x="0.0" y="1" width="505" height="17"/>
+                                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
+                                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Stars" translatesAutoresizingMaskIntoConstraints="NO" id="pu7-21-lVT">
+                                                        <rect key="frame" x="510" y="4" width="48" height="10"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" priority="999" constant="48" id="1Iv-In-6pg"/>
+                                                            <constraint firstAttribute="height" constant="10" id="Nr2-Mf-xWJ"/>
+                                                        </constraints>
+                                                    </imageView>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QaA-Lo-lYM">
+                                                        <rect key="frame" x="563" y="0.0" width="17" height="18"/>
+                                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
+                                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" distribution="fillProportionally" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="6BO-UR-ksY">
+                                                <rect key="frame" x="10" y="433" width="580" height="30"/>
+                                                <subviews>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Na6-yQ-FD2">
+                                                        <rect key="frame" x="0.0" y="0.0" width="342" height="30"/>
+                                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                        <state key="normal" title="Auf die Merkliste">
+                                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        </state>
+                                                        <connections>
+                                                            <action selector="OnBuchAufMerkliste:" destination="MJR-vP-EN2" eventType="touchUpInside" id="wAo-SW-oGU"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LrI-zB-vho">
+                                                        <rect key="frame" x="352" y="0.0" width="228" height="30"/>
+                                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                                        <inset key="titleEdgeInsets" minX="-30" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                        <inset key="imageEdgeInsets" minX="94" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                        <state key="normal" title="Anhören" image="Play">
+                                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        </state>
+                                                        <connections>
+                                                            <action selector="OnBuchAnhoeren:" destination="MJR-vP-EN2" eventType="touchUpInside" id="FNe-6B-OCf"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="LrI-zB-vho" firstAttribute="width" secondItem="Na6-yQ-FD2" secondAttribute="width" multiplier="2:3" priority="999" id="kbX-yx-hJt"/>
+                                                </constraints>
+                                            </stackView>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" bounces="NO" scrollEnabled="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VVQ-Mq-JXS">
+                                                <rect key="frame" x="10" y="475" width="380" height="35"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="35" id="MZC-Zi-ZHP"/>
@@ -1086,17 +898,17 @@ Hörbücher bei Spotify finden und anhören....</string>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="15"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
-                                                    <rect key="frame" x="10" y="475" width="380" height="325"/>
+                                                    <rect key="frame" x="10" y="675" width="380" height="325"/>
                                                 </variation>
                                             </textView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7HM-00-Pov">
-                                                <rect key="frame" x="60" y="42" width="480" height="480"/>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7HM-00-Pov">
+                                                <rect key="frame" x="40" y="42" width="320" height="320"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="7HM-00-Pov" secondAttribute="height" multiplier="1:1" id="T0d-DH-GT0"/>
                                                 </constraints>
                                             </imageView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RNZ-0k-ygv">
-                                                <rect key="frame" x="10" y="685" width="280" height="29"/>
+                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RNZ-0k-ygv">
+                                                <rect key="frame" x="10" y="525" width="180" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="21" id="dlr-C6-qLR"/>
                                                 </constraints>
@@ -1104,22 +916,12 @@ Hörbücher bei Spotify finden und anhören....</string>
                                                 <state key="normal" title="Suche Amazon">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
-                                                <variation key="default">
-                                                    <mask key="constraints">
-                                                        <exclude reference="dlr-C6-qLR"/>
-                                                    </mask>
-                                                </variation>
-                                                <variation key="widthClass=compact">
-                                                    <mask key="constraints">
-                                                        <include reference="dlr-C6-qLR"/>
-                                                    </mask>
-                                                </variation>
                                                 <connections>
                                                     <action selector="OnSucheAmazon:" destination="MJR-vP-EN2" eventType="touchUpInside" id="veY-6p-bE0"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bX3-sg-43F">
-                                                <rect key="frame" x="310" y="685" width="280" height="29"/>
+                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bX3-sg-43F">
+                                                <rect key="frame" x="210" y="525" width="180" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="21" id="pYH-s2-Qb5"/>
                                                 </constraints>
@@ -1127,22 +929,12 @@ Hörbücher bei Spotify finden und anhören....</string>
                                                 <state key="normal" title="Suche Büchertreff.de">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
-                                                <variation key="default">
-                                                    <mask key="constraints">
-                                                        <exclude reference="pYH-s2-Qb5"/>
-                                                    </mask>
-                                                </variation>
-                                                <variation key="widthClass=compact">
-                                                    <mask key="constraints">
-                                                        <include reference="pYH-s2-Qb5"/>
-                                                    </mask>
-                                                </variation>
                                                 <connections>
                                                     <action selector="OnSucheBuechertreff:" destination="MJR-vP-EN2" eventType="touchUpInside" id="Sre-aa-paY"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ceq-aN-cYb">
-                                                <rect key="frame" x="342" y="536" width="248" height="28"/>
+                                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ceq-aN-cYb">
+                                                <rect key="frame" x="242" y="380" width="148" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="21" id="bJe-bL-6vM"/>
                                                 </constraints>
@@ -1150,22 +942,12 @@ Hörbücher bei Spotify finden und anhören....</string>
                                                 <state key="normal" title="Mehr vom Autor">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
-                                                <variation key="default">
-                                                    <mask key="constraints">
-                                                        <exclude reference="bJe-bL-6vM"/>
-                                                    </mask>
-                                                </variation>
-                                                <variation key="widthClass=compact">
-                                                    <mask key="constraints">
-                                                        <include reference="bJe-bL-6vM"/>
-                                                    </mask>
-                                                </variation>
                                                 <connections>
                                                     <segue destination="JUN-Nr-gOA" kind="show" id="D5d-8X-A9N"/>
                                                 </connections>
                                             </button>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ejB-sj-Sb7">
-                                                <rect key="frame" x="0.0" y="724" width="600" height="10"/>
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ejB-sj-Sb7">
+                                                <rect key="frame" x="0.0" y="556" width="400" height="10"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="10" id="7aU-GD-x6L"/>
@@ -1174,35 +956,35 @@ Hörbücher bei Spotify finden und anhören....</string>
                                         </subviews>
                                         <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
-                                            <constraint firstItem="Ceq-aN-cYb" firstAttribute="width" secondItem="8Tm-Ft-6Ib" secondAttribute="width" multiplier="0.8" id="0Lt-IZ-q34"/>
                                             <constraint firstItem="7HM-00-Pov" firstAttribute="top" secondItem="zTj-ps-j6V" secondAttribute="bottom" constant="10" id="102-Nb-Dia"/>
-                                            <constraint firstItem="Na6-yQ-FD2" firstAttribute="centerX" secondItem="hQk-s6-RVB" secondAttribute="centerX" id="2Cr-Ux-gMV"/>
+                                            <constraint firstItem="VVQ-Mq-JXS" firstAttribute="top" secondItem="6BO-UR-ksY" secondAttribute="bottom" constant="12" id="1tR-lt-3m3"/>
+                                            <constraint firstItem="mLR-Ge-j0A" firstAttribute="top" secondItem="8Tm-Ft-6Ib" secondAttribute="bottom" constant="10" id="2dJ-2j-3ND"/>
                                             <constraint firstItem="7HM-00-Pov" firstAttribute="centerX" secondItem="hQk-s6-RVB" secondAttribute="centerX" id="7FZ-qA-J3c"/>
                                             <constraint firstAttribute="trailing" secondItem="ejB-sj-Sb7" secondAttribute="trailing" id="8VM-lI-5SP"/>
-                                            <constraint firstItem="Ceq-aN-cYb" firstAttribute="leading" secondItem="8Tm-Ft-6Ib" secondAttribute="trailing" constant="21" id="BJG-Wg-TLa"/>
+                                            <constraint firstItem="mLR-Ge-j0A" firstAttribute="trailing" secondItem="6BO-UR-ksY" secondAttribute="trailing" id="APq-f4-JQu"/>
+                                            <constraint firstItem="Ceq-aN-cYb" firstAttribute="leading" secondItem="8Tm-Ft-6Ib" secondAttribute="trailing" constant="10" id="BJG-Wg-TLa"/>
+                                            <constraint firstItem="LrI-zB-vho" firstAttribute="width" secondItem="Ceq-aN-cYb" secondAttribute="width" priority="999" id="BXW-dQ-zne"/>
                                             <constraint firstItem="bX3-sg-43F" firstAttribute="leading" secondItem="RNZ-0k-ygv" secondAttribute="trailing" constant="20" id="FM3-8y-dw4"/>
                                             <constraint firstItem="zTj-ps-j6V" firstAttribute="centerX" secondItem="hQk-s6-RVB" secondAttribute="centerX" id="H0T-Dr-6sd"/>
+                                            <constraint firstItem="6BO-UR-ksY" firstAttribute="top" secondItem="mLR-Ge-j0A" secondAttribute="bottom" constant="10" id="J0i-bd-SHg"/>
                                             <constraint firstItem="8Tm-Ft-6Ib" firstAttribute="top" secondItem="7HM-00-Pov" secondAttribute="bottom" constant="18" id="JqN-ng-IL7"/>
+                                            <constraint firstItem="mLR-Ge-j0A" firstAttribute="leading" secondItem="6BO-UR-ksY" secondAttribute="leading" id="KpD-m1-xYS"/>
                                             <constraint firstItem="Ceq-aN-cYb" firstAttribute="baseline" secondItem="8Tm-Ft-6Ib" secondAttribute="baseline" id="MPw-DN-3a0"/>
                                             <constraint firstItem="ejB-sj-Sb7" firstAttribute="leading" secondItem="hQk-s6-RVB" secondAttribute="leading" id="PJF-4P-cQs"/>
                                             <constraint firstAttribute="bottom" secondItem="ejB-sj-Sb7" secondAttribute="bottom" constant="-15" id="ScF-ff-nx3"/>
                                             <constraint firstItem="zTj-ps-j6V" firstAttribute="leading" secondItem="hQk-s6-RVB" secondAttribute="leading" constant="10" id="Tte-cU-Rdy"/>
-                                            <constraint firstItem="Na6-yQ-FD2" firstAttribute="top" secondItem="cIW-qY-LZ1" secondAttribute="bottom" constant="12" id="Ufs-zN-Qd3"/>
-                                            <constraint firstItem="cIW-qY-LZ1" firstAttribute="centerX" secondItem="hQk-s6-RVB" secondAttribute="centerX" id="Wz5-Py-H35"/>
-                                            <constraint firstItem="cIW-qY-LZ1" firstAttribute="leading" secondItem="zTj-ps-j6V" secondAttribute="leading" id="XEE-tu-8yc"/>
-                                            <constraint firstItem="VVQ-Mq-JXS" firstAttribute="top" secondItem="Na6-yQ-FD2" secondAttribute="bottom" constant="10" id="YO1-71-z6O"/>
                                             <constraint firstItem="VVQ-Mq-JXS" firstAttribute="leading" secondItem="zTj-ps-j6V" secondAttribute="leading" id="Z9f-uJ-rkm"/>
                                             <constraint firstItem="RNZ-0k-ygv" firstAttribute="centerY" secondItem="bX3-sg-43F" secondAttribute="centerY" id="cM5-j5-7Ct"/>
                                             <constraint firstItem="bX3-sg-43F" firstAttribute="trailing" secondItem="VVQ-Mq-JXS" secondAttribute="trailing" id="cse-KA-pKR"/>
-                                            <constraint firstItem="cIW-qY-LZ1" firstAttribute="top" secondItem="8Tm-Ft-6Ib" secondAttribute="bottom" constant="8" id="eH1-ug-74G"/>
+                                            <constraint firstItem="Ceq-aN-cYb" firstAttribute="trailing" secondItem="LrI-zB-vho" secondAttribute="trailing" id="cvq-Wp-YDq"/>
+                                            <constraint firstItem="6BO-UR-ksY" firstAttribute="centerX" secondItem="hQk-s6-RVB" secondAttribute="centerX" id="fni-sf-tgq"/>
                                             <constraint firstItem="RNZ-0k-ygv" firstAttribute="leading" secondItem="VVQ-Mq-JXS" secondAttribute="leading" id="h3N-JM-uQ7"/>
-                                            <constraint firstItem="Ceq-aN-cYb" firstAttribute="trailing" secondItem="cIW-qY-LZ1" secondAttribute="trailing" id="jKh-XV-Uwp"/>
+                                            <constraint firstItem="6BO-UR-ksY" firstAttribute="leading" secondItem="zTj-ps-j6V" secondAttribute="leading" id="nmT-7y-OW3"/>
                                             <constraint firstItem="VVQ-Mq-JXS" firstAttribute="centerX" secondItem="hQk-s6-RVB" secondAttribute="centerX" id="nrV-kj-tuN"/>
                                             <constraint firstItem="bX3-sg-43F" firstAttribute="width" secondItem="RNZ-0k-ygv" secondAttribute="width" id="oJE-Lv-Gi8"/>
                                             <constraint firstItem="7HM-00-Pov" firstAttribute="height" secondItem="hQk-s6-RVB" secondAttribute="width" multiplier="0.8" id="rT7-EL-cWA"/>
                                             <constraint firstItem="zTj-ps-j6V" firstAttribute="top" secondItem="hQk-s6-RVB" secondAttribute="top" constant="10" id="toe-y6-L6c"/>
                                             <constraint firstItem="RNZ-0k-ygv" firstAttribute="top" secondItem="VVQ-Mq-JXS" secondAttribute="bottom" constant="15" id="viU-12-Yw1"/>
-                                            <constraint firstItem="Na6-yQ-FD2" firstAttribute="leading" secondItem="zTj-ps-j6V" secondAttribute="leading" id="wNA-Sa-LtO"/>
                                             <constraint firstItem="ejB-sj-Sb7" firstAttribute="top" secondItem="bX3-sg-43F" secondAttribute="bottom" constant="10" id="wwB-hQ-7Ez"/>
                                             <constraint firstItem="8Tm-Ft-6Ib" firstAttribute="leading" secondItem="zTj-ps-j6V" secondAttribute="leading" id="yyN-s8-cuw"/>
                                         </constraints>
@@ -1231,6 +1013,9 @@ Hörbücher bei Spotify finden und anhören....</string>
                         <outlet property="AlbumImage" destination="7HM-00-Pov" id="oZa-Ca-mL3"/>
                         <outlet property="AlbumLabel" destination="zTj-ps-j6V" id="tWG-fw-ZLs"/>
                         <outlet property="AuthorLabel" destination="8Tm-Ft-6Ib" id="LBP-4t-1Go"/>
+                        <outlet property="BewertungImageview" destination="pu7-21-lVT" id="FBu-kN-aL9"/>
+                        <outlet property="BewertungLabel" destination="QaA-Lo-lYM" id="3J1-jt-Cag"/>
+                        <outlet property="BuchPlayButton" destination="LrI-zB-vho" id="mxh-wJ-jtb"/>
                         <outlet property="BuchSelektiertButton" destination="Na6-yQ-FD2" id="X50-Cr-5lM"/>
                         <outlet property="ContainerBottomLayoutConstraint" destination="OB7-84-3GF" id="3rM-LC-o0t"/>
                         <outlet property="ContainerHeightLayoutConstraint" destination="mHJ-7j-ah3" id="IDH-9G-y63"/>
@@ -1247,7 +1032,7 @@ Hörbücher bei Spotify finden und anhören....</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BC4-Ud-GIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4658" y="-133"/>
+            <point key="canvasLocation" x="4657.5" y="-133"/>
         </scene>
         <!--Recherche View Controller-->
         <scene sceneID="ofJ-GK-wlE">
@@ -1258,22 +1043,31 @@ Hörbücher bei Spotify finden und anhören....</string>
                         <viewControllerLayoutGuide type="bottom" id="FqX-VW-Z8r"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="GPO-x6-gHG">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lkw-Ab-sN5">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="deviceRGB"/>
+                                <variation key="widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="0.0" y="20" width="400" height="580"/>
+                                </variation>
                             </webView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="cCS-hR-7gV">
                                 <rect key="frame" x="282" y="198" width="37" height="37"/>
                                 <color key="color" red="0.39215686274509803" green="0.5607843137254902" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <variation key="widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="182" y="198" width="37" height="37"/>
+                                </variation>
                             </activityIndicatorView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Zu diesem Buch finde ich nichts..." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oRc-mo-hAJ">
                                 <rect key="frame" x="118" y="287" width="364" height="29"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="24"/>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
+                                <variation key="widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="60" y="273" width="280" height="57"/>
+                                </variation>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1485,25 +1279,6 @@ Hörbücher bei Spotify finden und anhören....</string>
             </objects>
             <point key="canvasLocation" x="2341.5" y="741"/>
         </scene>
-        <!--Ich höre-->
-        <scene sceneID="0pt-Ba-A7A">
-            <objects>
-                <navigationController storyboardIdentifier="Player" title="Ich höre" automaticallyAdjustsScrollViewInsets="NO" id="cC1-op-hXN" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Ich höre..." image="Ich" selectedImage="Ich" id="476-3R-mow"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="xl4-27-D4a">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="giE-9k-V4U" kind="relationship" relationship="rootViewController" id="Of7-2H-Yq9"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ZZc-ip-bIG" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-895" y="524"/>
-        </scene>
         <!--Genres-->
         <scene sceneID="p6J-QL-bsY">
             <objects>
@@ -1530,21 +1305,21 @@ Hörbücher bei Spotify finden und anhören....</string>
                         <viewControllerLayoutGuide type="bottom" id="JLX-FG-jpZ"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="MeV-ig-DJb">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="XfV-5w-5jz">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="88" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="cbp-CJ-dh3">
-                                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                         <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                         <color key="separatorColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="calibratedRGB"/>
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <color key="sectionIndexBackgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="HoerbuchCell" id="7GR-Yk-y8m" customClass="HoerbuchTableViewCell">
-                                                <rect key="frame" x="0.0" y="92" width="600" height="88"/>
+                                                <rect key="frame" x="0.0" y="28" width="600" height="88"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7GR-Yk-y8m" id="K6n-H9-vcA">
                                                     <rect key="frame" x="0.0" y="0.0" width="567" height="87"/>
@@ -1556,8 +1331,8 @@ Hörbücher bei Spotify finden und anhören....</string>
                                                                 <constraint firstAttribute="width" constant="84" id="VJD-H6-Y4y"/>
                                                             </constraints>
                                                         </imageView>
-                                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="RAS-bv-NsH">
-                                                            <rect key="frame" x="96" y="6" width="458" height="20"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="RAS-bv-NsH">
+                                                            <rect key="frame" x="96" y="6" width="258" height="20"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="20" id="xE7-Ad-aBu"/>
                                                             </constraints>
@@ -1565,8 +1340,8 @@ Hörbücher bei Spotify finden und anhören....</string>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ivk-0h-xC9">
-                                                            <rect key="frame" x="96" y="31" width="458" height="17"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ivk-0h-xC9">
+                                                            <rect key="frame" x="96" y="31" width="258" height="17"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="17" id="UsX-rh-YnB"/>
                                                             </constraints>
@@ -1574,8 +1349,8 @@ Hörbücher bei Spotify finden und anhören....</string>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YC5-0O-v41">
-                                                            <rect key="frame" x="96" y="53" width="458" height="17"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YC5-0O-v41">
+                                                            <rect key="frame" x="96" y="53" width="258" height="17"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="17" id="d5r-zA-s7a"/>
                                                             </constraints>
@@ -1698,17 +1473,11 @@ Titel Zeile 2</string>
                                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         <nil key="highlightedColor"/>
-                                                        <variation key="widthClass=compact" misplaced="YES">
-                                                            <rect key="frame" x="0.0" y="17" width="320" height="33"/>
-                                                        </variation>
                                                         <variation key="heightClass=compact-widthClass=compact" ambiguous="YES" misplaced="YES">
                                                             <rect key="frame" x="0.0" y="0.0" width="320" height="0.0"/>
                                                         </variation>
                                                     </label>
                                                 </subviews>
-                                                <variation key="widthClass=compact" misplaced="YES">
-                                                    <rect key="frame" x="40" y="9" width="320" height="50"/>
-                                                </variation>
                                                 <variation key="heightClass=compact-widthClass=compact" ambiguous="YES" misplaced="YES">
                                                     <rect key="frame" x="0.0" y="0.0" width="320" height="0.0"/>
                                                 </variation>
@@ -1744,9 +1513,6 @@ Titel Zeile 2</string>
                                             <constraint firstItem="S3X-is-gTa" firstAttribute="centerY" secondItem="TY9-Xx-lw0" secondAttribute="centerY" id="k7W-xp-rTo"/>
                                             <constraint firstItem="ZGq-0c-Y1Z" firstAttribute="centerY" secondItem="1gi-T4-nSi" secondAttribute="centerY" id="zGq-UD-2tN"/>
                                         </constraints>
-                                        <variation key="widthClass=compact" misplaced="YES">
-                                            <rect key="frame" x="0.0" y="0.0" width="400" height="57"/>
-                                        </variation>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vLc-LO-VKe">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="0.0"/>
@@ -1782,8 +1548,8 @@ Titel Zeile 2</string>
                                             <button opaque="NO" tag="5" contentMode="bottom" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a02-JW-VYK">
                                                 <rect key="frame" x="283" y="583" width="35" height="35"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="35" id="Rb3-Dh-kMn"/>
-                                                    <constraint firstAttribute="height" constant="35" id="w0v-DN-lXL"/>
+                                                    <constraint firstAttribute="width" constant="45" id="Rb3-Dh-kMn"/>
+                                                    <constraint firstAttribute="height" constant="45" id="w0v-DN-lXL"/>
                                                 </constraints>
                                                 <state key="normal" image="Play"/>
                                                 <connections>
@@ -1807,9 +1573,6 @@ Titel Zeile 2</string>
                                             <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="a02-JW-VYK" secondAttribute="bottom" constant="2" id="sZz-Ds-mfg"/>
                                             <constraint firstItem="RG5-Jg-dvh" firstAttribute="centerX" secondItem="vLc-LO-VKe" secondAttribute="centerX" multiplier="0.5" id="uEW-SP-eC1"/>
                                         </constraints>
-                                        <variation key="widthClass=compact" misplaced="YES">
-                                            <rect key="frame" x="0.0" y="57" width="400" height="48"/>
-                                        </variation>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="E38-MP-BJc">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="0.0"/>
@@ -1878,9 +1641,6 @@ Titel Zeile 2</string>
                                             <constraint firstItem="9EF-wl-dDp" firstAttribute="leading" secondItem="IS8-Hh-C28" secondAttribute="trailing" constant="10" id="xiU-sq-Daf"/>
                                             <constraint firstItem="9EF-wl-dDp" firstAttribute="top" secondItem="Mig-Do-Wp7" secondAttribute="bottom" constant="3" id="yZ1-ro-WhQ"/>
                                         </constraints>
-                                        <variation key="widthClass=compact" misplaced="YES">
-                                            <rect key="frame" x="0.0" y="105" width="400" height="47"/>
-                                        </variation>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YZY-WD-vBS">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="0.0"/>
@@ -1907,7 +1667,7 @@ Titel Zeile 2</string>
                                                         <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="25" id="bLH-ct-cK1"/>
-                                                            <constraint firstAttribute="width" constant="25" id="sww-H8-eAV"/>
+                                                            <constraint firstAttribute="width" priority="999" constant="25" id="sww-H8-eAV"/>
                                                         </constraints>
                                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         <state key="normal" image="moon"/>
@@ -1925,16 +1685,6 @@ Titel Zeile 2</string>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="25" id="ALb-Ss-nuR"/>
                                                 </constraints>
-                                                <variation key="default">
-                                                    <mask key="constraints">
-                                                        <exclude reference="ALb-Ss-nuR"/>
-                                                    </mask>
-                                                </variation>
-                                                <variation key="widthClass=compact">
-                                                    <mask key="constraints">
-                                                        <include reference="ALb-Ss-nuR"/>
-                                                    </mask>
-                                                </variation>
                                                 <variation key="heightClass=compact-widthClass=compact" ambiguous="YES" misplaced="YES">
                                                     <rect key="frame" x="169" y="-12" width="62" height="25"/>
                                                 </variation>
@@ -1965,9 +1715,6 @@ Titel Zeile 2</string>
                                             <constraint firstAttribute="bottom" secondItem="l1n-Mg-SBs" secondAttribute="bottom" constant="10" id="iIV-Jy-Eba"/>
                                             <constraint firstAttribute="trailing" secondItem="Vzo-HM-ion" secondAttribute="trailing" constant="10" id="lSl-m6-tGy"/>
                                         </constraints>
-                                        <variation key="widthClass=compact" misplaced="YES">
-                                            <rect key="frame" x="0.0" y="152" width="400" height="48"/>
-                                        </variation>
                                     </view>
                                 </subviews>
                             </stackView>
@@ -2046,7 +1793,7 @@ Titel Zeile 2</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="t6q-0B-GqY" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-907.5" y="1170.75"/>
+            <point key="canvasLocation" x="-823.5" y="778"/>
         </scene>
     </scenes>
     <resources>
@@ -2055,12 +1802,12 @@ Titel Zeile 2</string>
         <image name="Forward" width="25" height="25"/>
         <image name="Genre" width="50" height="50"/>
         <image name="Hoerbuecher" width="50" height="50"/>
-        <image name="Ich" width="50" height="50"/>
         <image name="Next" width="25" height="25"/>
         <image name="Play" width="24" height="24"/>
         <image name="Prev" width="25" height="25"/>
         <image name="Settings" width="50" height="50"/>
         <image name="Spookify" width="274" height="121"/>
+        <image name="Stars" width="200" height="10"/>
         <image name="Suche" width="50" height="50"/>
         <image name="Zuletzt" width="50" height="50"/>
         <image name="down" width="24" height="24"/>
@@ -2070,6 +1817,6 @@ Titel Zeile 2</string>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="1Fp-sa-eDN"/>
-        <segue reference="COc-Kx-tIa"/>
+        <segue reference="Mpq-Dr-I1G"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -30,15 +30,13 @@ namespace Spookify
 
 		public override void AuthenticationViewControllerLogin (SPTAuthViewController authenticationViewController, SPTSession session)
 		{
+			// wir erlauben prinzipiell wieder das Anmelden am Player...
+			CurrentPlayer.Current.SessionDisabled = false;
+
 			if (this.viewController != null) {
 				if (this.viewController is PlayerViewController) {					
 					var playerViewController = this.PlayerViewController;
-
-					// wir erlauben prinzipiell wieder das Anmelden am Player...
-					CurrentPlayer.Current.SessionDisabled = false;
-
 					playerViewController.CompleteAuthentication ();
-
 				} else {
 					new UIAlertView("Anmeldung","Login erfolgreich",null,"OK").Show();
 				}

@@ -54,6 +54,7 @@ namespace Spookify
 			var p = CurrentPlayer.Current;
 			if (p != null &&
 				p.AuthPlayer != null) {
+				p.SessionDisabled = true;
 				// Cookies weg
 				var avc = SPTAuthViewController.AuthenticationViewControllerWithAuth (p.AuthPlayer);
 				avc.ClearCookies(() => { BeginInvokeOnMainThread(UpdateStatus); });
@@ -105,8 +106,13 @@ namespace Spookify
 				else {
 					p.ClearAuthPlayer();
 				}
-				p.SessionDisabled = true;
 			}
+			UIAlertController ac = UIAlertController.Create("Abmelden","Sie wurden von Spotify abgemeldet",UIAlertControllerStyle.Alert);
+			ac.AddAction(UIAlertAction.Create ("Ok", UIAlertActionStyle.Default, (alertAction) =>  {
+				ac.Dispose ();
+				BeginInvokeOnMainThread(UpdateStatus); 
+			}));
+			this.PresentViewController(ac, true, null);		
 		}
 		public override void ViewWillAppear (bool animated)
 		{

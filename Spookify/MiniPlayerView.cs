@@ -268,7 +268,7 @@ namespace Spookify
 				centerLabel.Text = "";
 				activityIndicatorView.StopAnimating ();
 				playImage.Hidden = false;
-				playImage.Image = Player.CurrentPlayButtonImage ();
+				playImage.Image = Player.CurrentPlayButtonImageSmall ();
 				albumNameLabel.Text = ab?.ToAlbumName ();
 				if (ab != null) {
 					if (!ab.Started && !ab.Finished) {

@@ -117,7 +117,6 @@
     <ImageAsset Include="Resources\Images.xcassets\Prev.imageset\skip_to_start.png" />
     <ImageAsset Include="Resources\Images.xcassets\Next.imageset\end.png" />
     <ImageAsset Include="Resources\Images.xcassets\Pause.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Pause.imageset\pause.png" />
     <ImageAsset Include="Resources\Images.xcassets\Forward.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Backward.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Forward.imageset\forward.png" />
@@ -187,6 +186,17 @@
     <ImageAsset Include="Resources\Images.xcassets\Play.imageset\play-75.png" />
     <ImageAsset Include="Resources\Images.xcassets\Spookify.imageset\Bookify-438x242.png" />
     <ImageAsset Include="Resources\Images.xcassets\Spookify.imageset\Bookify-274x121.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Stars.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Stars.imageset\Stars.png" />
+    <ImageAsset Include="Resources\Images.xcassets\PlaySmall.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\PlaySmall.imageset\Play-25.png" />
+    <ImageAsset Include="Resources\Images.xcassets\PlaySmall.imageset\play-33.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Pause.imageset\pause-50.png" />
+    <ImageAsset Include="Resources\Images.xcassets\PauseSmall.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\PauseSmall.imageset\pause-33.png" />
+    <ImageAsset Include="Resources\Images.xcassets\PauseSmall.imageset\pause-25.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Pause.imageset\pause-25.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Pause.imageset\pause-75.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -225,6 +235,8 @@
     <None Include="packages.config" />
     <Compile Include="AudioBook\PlaylistManager.cs" />
     <Compile Include="Helper\AlphanumComparator.cs" />
+    <Compile Include="Helper\GeneralExtensions.cs" />
+    <Compile Include="Helper\UIViewControllerExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -271,7 +283,6 @@
     <Compile Include="PlayerViewSleepTimer.cs" />
     <Compile Include="LRU\LRUCache.cs" />
     <Compile Include="LRU\Node.cs" />
-    <Compile Include="Util\GeneralExtensions.cs" />
     <Compile Include="AudioBook\CurrentLRUCache.cs" />
     <Compile Include="AudioBook\CurrentSettings.cs" />
     <Compile Include="ConfigViewController.cs" />
@@ -322,7 +333,6 @@
     <Folder Include="Resources\Images.xcassets\Anmelden.imageset\" />
     <Folder Include="AudioBook\" />
     <Folder Include="LRU\" />
-    <Folder Include="Util\" />
     <Folder Include="Helper\" />
   </ItemGroup>
   <ItemGroup>

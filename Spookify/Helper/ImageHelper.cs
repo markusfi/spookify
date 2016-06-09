@@ -62,9 +62,9 @@ namespace Spookify
 				if (loadBookImage) {
 					if (p.Books != null && p.Books.FirstOrDefault() != null)
 						LoadImage (imageView, 
-							new NSUrl (p.Books.FirstOrDefault ().LargestCoverURL));
+							new NSUrl (p.Books.FirstOrDefault ().MediumCoverUrl));
 				} else
-					LoadImage (imageView, new NSUrl (p.SmallImageUrl));			
+					LoadImage (imageView, new NSUrl (p.MeidumImageUrl));			
 			}
 		}
 		public static void LoadImage(this UIImageView imageView, PlaylistBook book)
@@ -72,7 +72,7 @@ namespace Spookify
 			if (imageView == null)
 				return;
 			if (book != null)
-				LoadImage (imageView, new NSUrl (book.SmallestCoverURL));
+				LoadImage (imageView, new NSUrl (book.MediumCoverUrl));
 		}
 		public static void LoadImage(this UIImageView imageView, string imageURL, Action<NSData> dataSetter = null, bool useLRUCache = true)
 		{

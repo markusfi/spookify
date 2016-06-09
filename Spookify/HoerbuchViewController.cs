@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using CoreGraphics;
 using System.Globalization;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Spookify
 {
@@ -29,7 +30,13 @@ namespace Spookify
 			base.ViewDidLoad ();
 
 			this.BuchSelektiertButton.Layer.CornerRadius = 15;
-			this.BuchSelektiertButton.Layer.BackgroundColor = UIColor.FromRGB (100, 143, 0).CGColor;
+			this.BuchSelektiertButton.Layer.BackgroundColor = ConfigSpookify.GreenButton.CGColor;
+
+			this.BuchPlayButton.Layer.CornerRadius = 15;
+			this.BuchPlayButton.Layer.BackgroundColor = ConfigSpookify.GreenButton.CGColor;
+			this.BuchPlayButton.ImageView.TintColor = UIColor.White;
+			this.BuchPlayButton.TintColor = UIColor.White;
+			this.BuchPlayButton.SetImage (UIImage.FromBundle ("PlaySmall").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate), UIControlState.Normal);
 
 			this.SucheAmazonButton.Layer.CornerRadius = 10;
 			this.SucheAmazonButton.Layer.BorderWidth = 0.5f;
@@ -51,6 +58,12 @@ namespace Spookify
 			ScrollView.TranslatesAutoresizingMaskIntoConstraints = false;
 			ContainerView.TranslatesAutoresizingMaskIntoConstraints = false;
 			ViewDidAppearCalled = true;
+
+			this.NavigationItem.RightBarButtonItem = new UIBarButtonItem (UIImage.FromBundle ("upload"), UIBarButtonItemStyle.Plain, SendenButtonClicked);
+		}
+		public void SendenButtonClicked(object sender, EventArgs args)
+		{
+			this.SendAudiobook(NewBook,null);
 		}
 		public void InitialWithCurrentBook (PlaylistBook book)
 		{
@@ -61,6 +74,8 @@ namespace Spookify
 		}
 		void InitLabels()
 		{
+			this.BewertungImageview.Hidden = true;
+			this.BewertungLabel.Hidden = true;
 			SetBookTitleAndAuthor ();
 			LoadBookTracksAsync ();
 			LoadCoverAsync ();
@@ -89,92 +104,115 @@ namespace Spookify
 		}
 		void SetBookLength()
 		{
-			if (NewBook != null && NewBook.Tracks != null) {
-				var gesamtSeitAnfang = NewBook.Tracks.Sum (t => t.Duration);
-				var tsSeitAnfang = TimeSpan.FromSeconds (gesamtSeitAnfang);
-				string txt = tsSeitAnfang.ToLongTimeText ();
-				DispatchQueue.MainQueue.DispatchAsync (() => {
-					this.LengthLabel.Text = txt;
-				});
-			}
+			if (NewBook == null || NewBook.Tracks == null)
+				return;
+			var gesamtSeitAnfang = NewBook.Tracks.Sum (t => t.Duration);
+			var tsSeitAnfang = TimeSpan.FromSeconds (gesamtSeitAnfang);
+			string txt = tsSeitAnfang.ToLongTimeText ();
+			DispatchQueue.MainQueue.DispatchAsync (() => {
+				this.LengthLabel.Text = txt;
+			});
 		}
+
 		void LoadDescriptionAsync()
 		{
-			if (Book != null && Book.Album != null) {
-				var gloalQueue = DispatchQueue.GetGlobalQueue (DispatchQueuePriority.Default);
-				gloalQueue.DispatchAsync (() => {
-					NSError err = null;
-					var name = MakeSearchKey (Book.Album.Name);
-					var author = MakeSearchKey (Book.Artists.FirstOrDefault ());
-					var data = NSData.FromUrl (new NSUrl (string.Format ("{0}?q=intitle:{1}+inauthor:{2}&key={3}",
-						           ConfigGoogle.kSearchTitleURL,
-						           System.Web.HttpUtility.UrlEncode (name),
-						           System.Web.HttpUtility.UrlEncode (author),
-						           ConfigGoogle.kDeveloperKey)), 0, out err);
-				
-					if (err == null) {
-						var json = (string)NSString.FromData (data, NSStringEncoding.UTF8);
-						if (json != null) {
-							string description = string.Empty;
-							var volume = Newtonsoft.Json.Linq.JObject.Parse (json);
-							if (volume != null && volume.HasValues) {
-								var items = volume ["items"];
-								if (items != null) {
-									JToken book = null;
-									if (items.Count () > 1) {
-										book = items.FirstOrDefault (x => string.Compare ((string)x ["volumeInfo"] ["title"], name, true) == 0);
-									} else if (items.Count () > 0) {
-										book = items [0];
-									}
-									if (book != null) {
-										JToken volumeInfo = book ["volumeInfo"];
-										if (volumeInfo != null) {
-											description = (string)volumeInfo ["description"];
-											var tmp = (string)volumeInfo ["publishedDate"];
-											if (!string.IsNullOrWhiteSpace (tmp)) {
-												DateTime date;
-												if (DateTime.TryParseExact (tmp, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date)) {
-													description += "\n\nErscheinungsdatum: " + date.ToShortDateString ();
-												}
-											}
-											tmp = (string)volumeInfo ["publisher"];
-											if (!string.IsNullOrWhiteSpace (tmp)) {
-												description += "\n\nVerlag: " + tmp;
-											}
-										}
-									}
-								}
-							}
-							DispatchQueue.MainQueue.DispatchAsync (() => {
-								this.DescriptionTextView.Text = description;
-								this.DescriptionTextView.TextColor = this.AlbumLabel.TextColor;
-								this.DescriptionTextView.Font = UIFont.FromName(@"HelveticaNeue-Light",14.0f);
-
-								var frame = this.DescriptionTextView.Frame;
-								var height = this.DescriptionTextView.SizeThatFits (this.DescriptionTextView.Frame.Size).Height;
-								this.DescriptionTextView.Frame = new CGRect (frame.Location, new CGSize (frame.Width, height));
-								this.DescriptionTextViewHeightLayoutConstraint.Constant = height;
-
-								// Find the right size for the content view - that is the view inside the scrollview that holds all controls that can grow or shrink
-								var size = new CGSize (this.ContainerView.Frame.Width, ContainerView.Subviews.Max (x => x.Frame.Bottom) - this.ContainerView.Frame.Y);
-								// now adjust the content view by - do this by changing its height constraint and bottom alignment to its parent scroll view
-								var delta = size.Height - this.ScrollView.Frame.Height;
-								this.ContainerBottomLayoutConstraint.Constant = -delta;
-								this.ContainerHeightLayoutConstraint.Constant = delta;
-								// now recalculate the constraints
-								this.View.NeedsUpdateConstraints ();
-								this.View.UpdateConstraintsIfNeeded();
-								// now recalculate the layout
-								this.View.SetNeedsLayout();
-								this.View.LayoutIfNeeded();
-								// now we have the right size for the scrollview content after all children have been moved around
-								size = new CGSize (this.ContainerView.Frame.Width, ContainerView.Subviews.Max (x => x.Frame.Bottom) - this.ContainerView.Frame.Y);
-								this.ScrollView.ContentSize = size;
-							});
-						}	
-					}
-				});
+			if (Book == null || Book.Album == null)
+				return;
+			if (Book.VolumeInfo != null) {
+				SetVolumeInfo (Book.VolumeInfo);
+				return;
 			}
+				
+			var gloalQueue = DispatchQueue.GetGlobalQueue (DispatchQueuePriority.Default);
+			gloalQueue.DispatchAsync (() => {
+				NSError err = null;
+				var name = MakeSearchKey (Book.Album.Name);
+				if (name == null)
+					return;
+				var author = MakeSearchKey (Book.Artists.FirstOrDefault ());
+				var data = NSData.FromUrl (new NSUrl (string.Format ("{0}?q=intitle:{1}+inauthor:{2}&key={3}",
+					           ConfigGoogle.kSearchTitleURL,
+					           System.Web.HttpUtility.UrlEncode (name),
+					           System.Web.HttpUtility.UrlEncode (author),
+					           ConfigGoogle.kDeveloperKey)), 0, out err);
+				if (err != null) 
+					return;
+				var json = (string)NSString.FromData (data, NSStringEncoding.UTF8);
+				#if DEBUG
+				Console.WriteLine("Json from google:\n"+json);
+				#endif
+				if (json == null) 
+					return;
+				var volume = Newtonsoft.Json.JsonConvert.DeserializeObject<Volume>(json);
+				if (volume?.Items == null || !volume.Items.Any()) { 
+					Book.VolumeInfo = VolumeInfo.Empty;
+					if (NewBook != null)
+						NewBook.VolumeInfo = Book.VolumeInfo;
+					return;
+				}
+				var bookInfo = volume.Items.FirstOrDefault(item => string.Compare(item.VolumeInfo?.Title,name,true)==0);
+				if (bookInfo == null)
+					bookInfo = volume.Items.FirstOrDefault(item => 
+						!string.IsNullOrWhiteSpace(item?.VolumeInfo?.Title) && 
+						(item.VolumeInfo.Title.IndexOf(name,StringComparison.InvariantCultureIgnoreCase) != -1 ||
+						 name.IndexOf(item.VolumeInfo.Title,StringComparison.InvariantCultureIgnoreCase) !=-1));
+				if (bookInfo == null)
+					bookInfo = volume.Items?.FirstOrDefault();
+				var volumeInfo = bookInfo?.VolumeInfo;
+				if (volumeInfo != null) {
+					Book.VolumeInfo = volumeInfo;
+					if (NewBook != null)
+						NewBook.VolumeInfo = volumeInfo;
+					SetVolumeInfo(volumeInfo);
+				}
+			});
+		}
+		void SetVolumeInfo(VolumeInfo volumeInfo)
+		{
+			DispatchQueue.MainQueue.DispatchAsync (() => {
+				if (volumeInfo != null && (volumeInfo.RatingsCount > 0 || volumeInfo.AverageRating > 0)) {
+					if (volumeInfo.AverageRating > 5)
+						volumeInfo.AverageRating = 5;
+					if (volumeInfo.AverageRating < 0)
+						volumeInfo.AverageRating = 0;
+					this.BewertungImageview.Hidden = false;
+					this.BewertungLabel.Hidden = false;
+					bool halfStar = volumeInfo.AverageRating - Math.Truncate (volumeInfo.AverageRating) >= 0.5;
+					int x = (int)(95.0 - Math.Truncate (volumeInfo.AverageRating) * 19.0) + (halfStar ? 205-19 : 5);
+					this.BewertungImageview.Image = UIImage.FromBundle ("Stars").GetTile (new CGRect (x, 0, 95, 20));
+					this.BewertungLabel.Text = volumeInfo.RatingsCount.ToString ();
+				} else {
+					this.BewertungImageview.Hidden = true;
+					this.BewertungLabel.Hidden = true;
+				}
+
+				this.DescriptionTextView.Text = volumeInfo == null ? "" : (volumeInfo.Description +
+					(volumeInfo.PublishedDate.HasValue ? "\n\nErscheinungsdatum: " + volumeInfo.PublishedDate.Value.ToShortDateString () : ""));
+
+				this.DescriptionTextView.TextColor = this.AlbumLabel.TextColor;
+				this.DescriptionTextView.Font = UIFont.FromName (@"HelveticaNeue-Light", 14.0f);
+
+				var frame = this.DescriptionTextView.Frame;
+				var height = this.DescriptionTextView.SizeThatFits (this.DescriptionTextView.Frame.Size).Height;
+				this.DescriptionTextView.Frame = new CGRect (frame.Location, new CGSize (frame.Width, height));
+				this.DescriptionTextViewHeightLayoutConstraint.Constant = height;
+
+				// Find the right size for the content view - that is the view inside the scrollview that holds all controls that can grow or shrink
+				var size = new CGSize (this.ContainerView.Frame.Width, ContainerView.Subviews.Max (x => x.Frame.Bottom) - this.ContainerView.Frame.Y);
+				// now adjust the content view by - do this by changing its height constraint and bottom alignment to its parent scroll view
+				var delta = size.Height - this.ScrollView.Frame.Height;
+				this.ContainerBottomLayoutConstraint.Constant = -delta;
+				this.ContainerHeightLayoutConstraint.Constant = delta;
+				// now recalculate the constraints
+				this.View.NeedsUpdateConstraints ();
+				this.View.UpdateConstraintsIfNeeded ();
+				// now recalculate the layout
+				this.View.SetNeedsLayout ();
+				this.View.LayoutIfNeeded ();
+				// now we have the right size for the scrollview content after all children have been moved around
+				size = new CGSize (this.ContainerView.Frame.Width, ContainerView.Subviews.Max (x => x.Frame.Bottom) - this.ContainerView.Frame.Y);
+				this.ScrollView.ContentSize = size;		
+			});
 		}
 		void LoadCoverAsync()
 		{
@@ -226,6 +264,8 @@ namespace Spookify
 						rechercheViewController.Url = string.Format(@"https://www.google.de/search?q='{0}'{1}'{2}'&as_sitesearch=amazon.de&num=1",name,System.Web.HttpUtility.UrlEncode(" "),author);
 					else if (sender == SucheBuechertreffButton)
 						rechercheViewController.Url = string.Format(@"https://www.google.de/search?q='{0}'{1}'{2}'&as_sitesearch=buechertreff.de&num=1",name,System.Web.HttpUtility.UrlEncode(" "),author);
+					else if (sender == this.SuchehoebudeButton)
+						rechercheViewController.Url = string.Format(@"https://www.google.de/search?q='{0}'{1}'{2}'&as_sitesearch=hoebu.de&num=1",name,System.Web.HttpUtility.UrlEncode(" "),author);
 					else
 						rechercheViewController.Url = string.Format(@"https://www.google.de/search?q='{0}'{1}'{2}'",name,System.Web.HttpUtility.UrlEncode(" "),author);
 				}
@@ -248,46 +288,51 @@ namespace Spookify
 
 		void LoadBookTracksAsync()
 		{
-			if (Book != null && Book.Uri != null) {
-				var url = new NSUrl (Book.Uri);
-				SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
-				var p = SPTRequest.SPTRequestHandlerProtocol;
-				NSError errorOut;
-
-				var nsUrlRequest = SPTAlbum.CreateRequestForAlbum (url, auth.Session.AccessToken, "DE", out errorOut);
-				SPTRequestHandlerProtocol_Extensions.Callback (p, nsUrlRequest, (er, resp, jsonData) => {
-					if (er != null) {
-						return;
-					}
-					NSError nsError;
-					var album = SPTAlbum.AlbumFromData (jsonData, resp, out nsError);
-					if (album != null) {
-						int kapitelNummer = 1;
-						NewBook = new AudioBook () {
-							Uri = album.Uri.AbsoluteString,
-							Album = new AudioBookAlbum () { Name = album.Name }, 
-							Tracks = album.FirstTrackPage.Items
-							.Cast<SPTPartialTrack> ()
-							.Where (pt => pt.IsPlayable)
-							.Select (pt => new AudioBookTrack () { 
-								Url = pt.GetUri ().AbsoluteString, 
-								Name = pt.Name, 
-								Duration = pt.Duration, 
-								Index = kapitelNummer++
-							})
-							.ToList (),
-							Authors = album.Artists.Cast<SPTPartialArtist> ().Select (a => new Author () {
-								Name = a.Name,
-								URI = a.Uri.AbsoluteString
-							}).ToList (),
-							LargestCoverURL = album.LargestCover.ImageURL.AbsoluteString,
-							SmallestCoverURL = album.SmallestCover.ImageURL.AbsoluteString
-						};
-						SetBookLength ();
-						LoadNextPageAsync (NewBook, album.FirstTrackPage, auth, p);
-					}
-				});
+			if (Book == null || Book.Uri == null)
+				return;
+			if (NewBook != null) {
+				SetBookLength ();
+				return;
 			}
+			
+			var url = new NSUrl (Book.Uri);
+			SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
+			var p = SPTRequest.SPTRequestHandlerProtocol;
+			NSError errorOut;
+
+			var nsUrlRequest = SPTAlbum.CreateRequestForAlbum (url, auth.Session.AccessToken, "DE", out errorOut);
+			SPTRequestHandlerProtocol_Extensions.Callback (p, nsUrlRequest, (er, resp, jsonData) => {
+				if (er != null) {
+					return;
+				}
+				NSError nsError;
+				var album = SPTAlbum.AlbumFromData (jsonData, resp, out nsError);
+				if (album != null) {
+					int kapitelNummer = 1;
+					NewBook = new AudioBook () {
+						Uri = album.Uri.AbsoluteString,
+						Album = new AudioBookAlbum () { Name = album.Name }, 
+						Tracks = album.FirstTrackPage.Items
+						.Cast<SPTPartialTrack> ()
+						.Where (pt => pt.IsPlayable)
+						.Select (pt => new AudioBookTrack () { 
+							Url = pt.GetUri ().AbsoluteString, 
+							Name = pt.Name, 
+							Duration = pt.Duration, 
+							Index = kapitelNummer++
+						})
+						.ToList (),
+						Authors = album.Artists.Cast<SPTPartialArtist> ().Select (a => new Author () {
+							Name = a.Name,
+							URI = a.Uri.AbsoluteString
+						}).ToList (),
+						LargestCoverURL = album.LargestCover.ImageURL.AbsoluteString,
+						SmallestCoverURL = album.SmallestCover.ImageURL.AbsoluteString
+					};
+					SetBookLength ();
+					LoadNextPageAsync (NewBook, album.FirstTrackPage, auth, p);
+				}
+			});
 		}
 
 		void LoadNextPageAsync(AudioBook newbook, SPTListPage page, SPTAuth auth, SPTRequestHandlerProtocol p)
@@ -325,7 +370,7 @@ namespace Spookify
 			this.PerformSegue("RechercheSegue",sender);
 		}
 
-		partial void OnBuchSelektiert (UIKit.UIButton sender)
+		bool AddBuchToMerkliste()
 		{
 			if (NewBook != null) {
 
@@ -336,20 +381,27 @@ namespace Spookify
 				}								
 
 				CurrentState.Current.Audiobooks.Insert(0,NewBook);
-				CurrentState.Current.CurrentAudioBook = NewBook;
 				CurrentState.Current.StoreCurrent();
-				CurrentPlayer.Current.PlayCurrentAudioBook();
-
-				/*
-				var tabBarController = this.TabBarController;
-				var fromNavController = tabBarController.SelectedViewController as UINavigationController;
-				if (fromNavController != null && 
-					fromNavController.ViewControllers != null &&
-					fromNavController.ViewControllers.Length > 0 && 
-					fromNavController.ViewControllers[0].GetType() == typeof(ZuletztViewController))
-					this.NavigationController.PopToRootViewController (false);
-				*/
+				return true;
 			} 
+			return false;
+		}
+		partial void OnBuchAnhoeren (UIKit.UIButton sender)
+		{
+			AddBuchToMerkliste();
+			CurrentState.Current.CurrentAudioBook = NewBook;
+			CurrentPlayer.Current.PlayCurrentAudioBook();
+		}
+
+		partial void OnBuchAufMerkliste (UIKit.UIButton sender)
+		{
+			if (AddBuchToMerkliste()) {
+				UIAlertController ac = UIAlertController.Create("Merkliste","\""+NewBook.Album.Name+"\" wurde in die Merkliste eingefügt.",UIAlertControllerStyle.Alert);
+				ac.AddAction(UIAlertAction.Create ("Ok", UIAlertActionStyle.Default, (alertAction) =>  {
+					ac.Dispose ();
+				}));
+				this.PresentViewController(ac, true, null);			
+			}
 		}
 	}
 }

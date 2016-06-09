@@ -138,7 +138,7 @@ namespace Spookify
 		}
 		public bool HasPlaylists {
 			get {
-				return this._user != null && this._user.PlaylistsInitialized && User.Playlists.Any();
+				return this._user != null && this._user.PlaylistsInitialized && User.Playlists.Any () && this._user.Playlists.Any (p => p.Books != null && p.Books.Any ());
 			}
 		}
 		public DateTime LastUpdate { get; set; }
@@ -279,6 +279,14 @@ namespace Spookify
 		public string LargeImageUrl { get; set; }
 		public string[] ImageUrls { get; set; }
 		public string SmallImageUrl { get; set; }
+		public string MeidumImageUrl { 
+			get { 
+				var medium = ImageUrls.FirstOrDefault (i => i != LargeImageUrl && i != SmallImageUrl);
+				if (medium == null)
+					medium = SmallImageUrl;
+				return medium;
+			}
+		}
 		public List<PlaylistBook> Books { get; set; }
 		public string Uri { get; set; }
 		public int Position { get; set; }

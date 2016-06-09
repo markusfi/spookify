@@ -91,7 +91,7 @@ namespace Spookify
 
 			this.PlayButton.Layer.BorderColor = UIColor.White.CGColor;
 			this.PlayButton.Layer.BorderWidth = 1f;
-			this.PlayButton.Layer.CornerRadius = this.PlayButton.Frame.Width / 2.0f;
+			this.PlayButton.Layer.CornerRadius = 45f/2.0f;
 
 			CurrentPlayer.Current.CreateSPTAudioStreamingDelegate (this);
 
@@ -304,6 +304,8 @@ namespace Spookify
 				var track = ab.Tracks.ElementAt (ab.CurrentPosition.TrackIndex);
 				this.AlbumLabel.Text = ab.ToAlbumName ();
 				this.AlbumLabel.Hidden = false;
+				this.AuthorLabel.Text = ab.ToAuthorName ();
+				this.AuthorLabel.Hidden = false;
 
 				// this.TrackLabel.Text = track.Name;
 				this.ProgressBar.Hidden = track.Duration == 0.0;
@@ -327,14 +329,13 @@ namespace Spookify
 				this.seitStartKapitelLabel.Text = "";
 			}
 			if (ab != displayedAudioBook) { 
-				this.AuthorLabel.Text = ab.ToAuthorName ();
 				ab.SetLargeImage (this.AlbumImage);
 				displayedAudioBook = ab;
 			} 
 			if (displayImage != this.AlbumImage.Image && this.AlbumImage.Image != null) {
 				displayImage = this.AlbumImage.Image;
 				var l = this.AlbumImage.Image.GetTile(this.CloseButton.Frame).Luminance ();
-				if (l > 0.4) {
+				if (l > 0.3) {
 					this.CloseButton.Layer.CornerRadius = this.CloseButton.Frame.Width / 2.0f;
 					this.CloseButton.BackgroundColor = ConfigSpookify.BackgroundColor;
 				} else {
@@ -519,25 +520,7 @@ namespace Spookify
 
 		partial void OnSendenButtonClicked (UIKit.UIButton sender)
 		{
-			// Sende URL zum Installieren & Direkten aufruf des Hörbuchs
-			var ab = CurrentState.Current.CurrentAudioBook;
-			if (ab != null) {
-				string txt = string.Format("Ein Audiobook für Spookify:\n\n{0}://{1}\n\n{2}\nvon {3}\n{4}",
-					ConfigSpookify.UriPlayBook,
-					ab.Uri,
-					ab.Album.Name,
-					ab.Artists.Aggregate("",(ac,s) => ac=="" ? s : ac + ", "+s),
-					TimeSpan.FromSeconds(ab.GesamtBisEnde).ToTimeText()
-				);
-				
-				var item = UIActivity.FromObject (txt);
-				var activityItems = this.AlbumImage.Image != null ? new NSObject[] { item, this.AlbumImage.Image } : new NSObject[] { item };
-				UIActivity[] applicationActivities = null;
-
-				var activityController = new UIActivityViewController (activityItems, applicationActivities);
-
-				PresentViewController (activityController, true, null);
-			}
+			this.SendAudiobook(CurrentState.Current.CurrentAudioBook, this.AlbumImage.Image);
 		}
 
 		partial void OnSleeptimer (UIKit.UIButton sender)

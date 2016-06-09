@@ -14,6 +14,10 @@ namespace Spookify
 		public static readonly UIColor BackgroundColorLight = UIColor.FromRGB(95,0,20);
 
 		public static readonly string UriPlayBook = "bookify";
+
+		public static readonly string ItunesUri = "https://itunes.apple.com/app/id1086144727";
+
+		public static readonly UIColor GreenButton = UIColor.FromRGB (100, 143, 0);
 	}
 }
 

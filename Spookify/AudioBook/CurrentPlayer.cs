@@ -54,7 +54,7 @@ namespace Spookify
 		{
 			if (_authPlayer != null) {
 				if (_authPlayer.Session != null) {
-					_authPlayer.Session.Dispose ();
+					_authPlayer.Session = new SPTSession();
 				}
 				_authPlayer.Dispose ();
 				_authPlayer = null;
