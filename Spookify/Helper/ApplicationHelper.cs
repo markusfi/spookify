@@ -141,6 +141,8 @@ namespace Spookify
 
 		public static DateTime NSDateToDateTime(this Foundation.NSDate date)
 		{
+			if (date == null)
+				return DateTime.MinValue;
 			DateTime reference = new DateTime(2001, 1, 1, 0, 0, 0);
 			DateTime currentDate = reference.AddSeconds(date.SecondsSinceReferenceDate);
 			DateTime localDate = currentDate.ToLocalTime ();

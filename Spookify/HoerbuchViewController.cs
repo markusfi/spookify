@@ -327,7 +327,8 @@ namespace Spookify
 							URI = a.Uri.AbsoluteString
 						}).ToList (),
 						LargestCoverURL = album.LargestCover.ImageURL.AbsoluteString,
-						SmallestCoverURL = album.SmallestCover.ImageURL.AbsoluteString
+						SmallestCoverURL = album.SmallestCover.ImageURL.AbsoluteString,
+						ImageUrls = album.Covers.Select(c => c.ImageURL.AbsoluteString).ToArray()
 					};
 					SetBookLength ();
 					LoadNextPageAsync (NewBook, album.FirstTrackPage, auth, p);

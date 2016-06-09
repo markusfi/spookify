@@ -257,7 +257,7 @@ namespace Spookify
 			cell.CurrentPlaylistBook = currentBook;
 			cell.AlbumLabel.Text = currentBook.Album.Name;
 			cell.AuthorLabel.Text = currentBook.Artists.FirstOrDefault ();
-			cell.AlbumImage.LoadImage (currentBook.SmallestCoverURL);
+			cell.AlbumImage.LoadImage (currentBook.MediumCoverUrl);
 		}
 		public override nint NumberOfSections (UITableView tableView)
 		{

@@ -65,26 +65,6 @@ namespace Spookify
 		{
 			public ZuletztViewController zuletztViewController { get; set; }
 
-			public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
-			{
-				/*
-				var selectedBook = CurrentState.Current.Audiobooks [indexPath.Row];
-				if (selectedBook != null) {
-					CurrentState.Current.CurrentAudioBook = selectedBook;
-					CurrentState.Current.StoreCurrentState ();
-					CurrentPlayer.Current.PlayCurrentAudioBook ();
-
-					var tabBarController = this.zuletztViewController.TabBarController;
-
-					UIView fromView = tabBarController.SelectedViewController.View;
-					UIView toView = tabBarController.ViewControllers [1].View;
-
-					UIView.Transition (fromView, toView, 0.5, UIViewAnimationOptions.CurveEaseInOut, () => {
-						tabBarController.SelectedIndex = 1;
-					});
-				}
-				*/
-			}
 			public override string TitleForDeleteConfirmation (UITableView tableView, NSIndexPath indexPath)
 			{
 				return "Buch entfernen";
@@ -168,7 +148,7 @@ namespace Spookify
 
 						cell.AuthorLabel.Text = currentBook.Artists.FirstOrDefault ();
 
-						currentBook.SetSmallImage (cell.AlbumImage);
+						currentBook.SetMediumImage (cell.AlbumImage);
 					}
 				}
 				return cell;

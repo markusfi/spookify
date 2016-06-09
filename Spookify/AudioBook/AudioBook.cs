@@ -102,6 +102,15 @@ namespace Spookify
 		public string Uri { get; set; }
 		public VolumeInfo VolumeInfo { get; set; }
 
+		public string MediumCoverUrl { 
+			get { 
+				var medium = ImageUrls?.FirstOrDefault (i => i != LargestCoverURL && i != SmallestCoverURL);
+				if (medium == null)
+					medium = SmallestCoverURL;
+				return medium;
+			}
+		}
+
 		public double GesamtSeit(AudioBookBookmark bookmark) {
 			return this.Tracks == null ? 0.0 : this.Tracks.Take (bookmark?.TrackIndex ?? 0).Sum (t => t.Duration) + (bookmark?.PlaybackPosition ?? 0.0);
 		}
@@ -112,6 +121,8 @@ namespace Spookify
 		NSData SmallestCoverData;
 		[NonSerializedAttribute]
 		NSData LargestCoverData;
+		[NonSerializedAttribute]
+		NSData MediumCoverData;
 	
 		public AudioBookBookmark CurrentPosition { get; set; }
 
@@ -125,6 +136,10 @@ namespace Spookify
 		public void SetLargeImage(UIImageView imageView)
 		{
 			imageView.SetUIImage( this.LargestCoverURL, LargestCoverData, (val) => LargestCoverData = val);
+		}
+		public void SetMediumImage(UIImageView imageView)
+		{
+			imageView.SetUIImage(this.MediumCoverUrl, MediumCoverData, (val) => MediumCoverData = val);
 		}
 		public void AddBookmark(AudioBookBookmark b)
 		{

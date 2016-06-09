@@ -139,7 +139,8 @@ namespace Spookify
 				if (SessionDisabled)
 					return false;
 				SPTAuth auth = this.AuthPlayer; // !string.IsNullOrEmpty(auth.Session.EncryptedRefreshToken) && 
-				return (auth.Session != null && !auth.Session.IsValid && auth.HasTokenRefreshService && !refreshErrorOccured);
+				return (auth.Session != null && !auth.Session.IsValid && auth.HasTokenRefreshService && !refreshErrorOccured &&
+				(!string.IsNullOrWhiteSpace (auth.Session.AccessToken) || !string.IsNullOrWhiteSpace (auth.Session.EncryptedRefreshToken)));
 			}
 		}
 		public bool NeedToRenewSession {

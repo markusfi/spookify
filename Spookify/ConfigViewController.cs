@@ -131,7 +131,9 @@ namespace Spookify
 			    CurrentPlayer.Current.AuthPlayer.Session != null) {
 				this._StatusRefreshLabel.Text = string.Format ("Session: {0}  Expiration: {1}",
 					CurrentPlayer.Current.AuthPlayer.Session.IsValid ? "valid" : (CurrentPlayer.Current.TriggerWaitingForSessionRenew ? "renew pending" : "invalid"),
-					CurrentPlayer.Current.AuthPlayer.Session.ExpirationDate.NSDateToDateTime ().ToString ("G")
+					CurrentPlayer.Current.AuthPlayer.Session.ExpirationDate != null 
+						? CurrentPlayer.Current.AuthPlayer.Session.ExpirationDate.NSDateToDateTime ().ToString ("G")
+						: "-"
 				);
 			} else
 				this._StatusRefreshLabel.Text = "no Session";

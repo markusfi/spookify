@@ -30,8 +30,11 @@ namespace Spookify
 			"Hörbücher Klassiker" ,
 			"Hörbücher Sachbücher" ,
 			"Hörbücher Balance & Wellness" ,
-			"All Audiobooks" ,
-			"Music For Readers" };
+			"All Audiobooks" };
+
+		public static readonly string[] StopList = {
+			"Music For Readers" 
+		};
 
 		public static void ConfigPosition(IEnumerable<UserPlaylist>playlists, int start = 1000)
 		{

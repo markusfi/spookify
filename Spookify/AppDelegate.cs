@@ -40,7 +40,7 @@ namespace Spookify
 			SPTAuthCallback authCallback = (NSError error, SPTSession session) => {
 
 				if (error != null) {
-					var alert = new UIAlertView("Fehler","Beim Anmelden ist ein Fehler aufgetreten: "+error.LocalizedDescription,null,"Ok",null);
+					var alert = new UIAlertView("Fehler","Beim Anmelden ist ein Fehler aufgetreten: "+error.LocalizedDescription+"\n\nBitte beenden und starten Sie die Spotify App neu.",null,"Ok",null);
 					alert.Show();
 					alert.Dismissed += (object sender, UIButtonEventArgs e) => {
 						alert.Dispose();
@@ -140,7 +140,8 @@ namespace Spookify
 								URI = a.Uri.AbsoluteString
 							}).ToList (),
 							LargestCoverURL = album.LargestCover.ImageURL.AbsoluteString,
-							SmallestCoverURL = album.SmallestCover.ImageURL.AbsoluteString
+							SmallestCoverURL = album.SmallestCover.ImageURL.AbsoluteString,
+							ImageUrls = album.Covers.Select(c => c.ImageURL.AbsoluteString).ToArray()
 						};
 						LoadNextPageAsync (newBook, album.FirstTrackPage, auth, p, completionHandler);
 					}
