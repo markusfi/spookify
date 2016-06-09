@@ -1,5 +1,6 @@
 ﻿using System;
 using UIKit;
+using Foundation;
 
 namespace Spookify
 {
@@ -18,6 +19,10 @@ namespace Spookify
 		public static readonly string ItunesUri = "https://itunes.apple.com/app/id1086144727";
 
 		public static readonly UIColor GreenButton = UIColor.FromRGB (100, 143, 0);
+
+		public static readonly NSString SPTAuthUserLibraryReadScope = new NSString( "user-library-read");
+
+		public static readonly NSString SPTAuthStreamingScope = new NSString("streaming");
 	}
 }
 

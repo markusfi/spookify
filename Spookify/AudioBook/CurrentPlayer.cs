@@ -64,7 +64,7 @@ namespace Spookify
 		{
 			_authPlayer = new SPTAuth ();
 			_authPlayer.ClientID = ConfigSpotify.kClientId;
-			_authPlayer.RequestedScopes = new[]{ ConstantsScope.SPTAuthUserLibraryReadScope, ConstantsScope.SPTAuthStreamingScope };
+			_authPlayer.RequestedScopes = new[]{ ConfigSpookify.SPTAuthUserLibraryReadScope, ConfigSpookify.SPTAuthStreamingScope };
 			_authPlayer.RedirectURL = new NSUrl(ConfigSpotify.kCallbackURL);
 
 			var c = CurrentSettings.Current;
@@ -120,10 +120,10 @@ namespace Spookify
 				SPTAuth auth = this.AuthPlayer;
 				return 
 					!SessionDisabled &&
-					auth.Session != null &&
-					auth.Session.IsValid &&
-					auth.Session.ExpirationDate.NSDateToDateTime() > DateTime.Now && 
-					_authPlayer.RequestedScopes.Any (sc => (NSString)sc == ConstantsScope.SPTAuthStreamingScope);
+				auth.Session != null &&
+				auth.Session.IsValid &&
+				auth.Session.ExpirationDate.NSDateToDateTime () > DateTime.Now &&
+				_authPlayer.RequestedScopes.Any (sc => string.Equals ((string)(NSString)sc, (string)ConfigSpookify.SPTAuthStreamingScope));
 			}
 		}
 
