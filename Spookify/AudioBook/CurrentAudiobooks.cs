@@ -86,43 +86,49 @@ namespace Spookify
 			}
 		}
 		public void TriggerRefresh() {
-			if (refreshRunning == null &&
-				(!this.HasPlaylists ||
-					(DateTime.UtcNow - LastUpdate).TotalDays > 1))
-			{
-				if (!CurrentPlayer.Current.IsSessionValid)
-					return;
-				bool needToLoadAgain = false;
-				lock (typeof(CurrentAudiobooks)) {
-					if (refreshRunning == null) {
-						refreshRunning = new CurrentAudiobooks ();
-						PlaylistChangedEventHandler handler = (object sender, PlaylistChangedEventArgs e) => {
-							if (refreshRunning.IsComplete) {
-								if ((this._user == null) || 
-									(refreshRunning.User.Playlists.Count > 10 &&
-									 (refreshRunning.User.Playlists.Count-5) > this.User.Playlists.Count)) 
-								{
-									this.User = refreshRunning.User;
-									this.LastUpdate = DateTime.UtcNow;
-									this.StoreCurrent ();
-									refreshRunning._changed = null;
-									refreshRunning = null;
-									this.OnChanged(this,new PlaylistChangedEventArgs(""));
-								}
-								else {
-									refreshRunning._changed = null;
-									refreshRunning = null;
-									needToLoadAgain = true;
-								}
+			if (refreshRunning != null)
+				return;
+			if (this.HasPlaylists &&
+			    (DateTime.UtcNow - LastUpdate).TotalDays < 1)
+				return;
+
+			var remoteHoststatus = Reachability.RemoteHostStatus ();
+			if (remoteHoststatus == NetworkStatus.NotReachable)
+				return;
+			if ((remoteHoststatus == NetworkStatus.ReachableViaCarrierDataNetwork) &&
+				((DateTime.UtcNow - LastUpdate).TotalDays < 7))
+				return;
+			
+			if (!CurrentPlayer.Current.IsSessionValid)
+				return;
+			
+			lock (typeof(CurrentAudiobooks)) {
+				if (refreshRunning == null) {
+					refreshRunning = new CurrentAudiobooks ();
+					PlaylistChangedEventHandler handler = (object sender, PlaylistChangedEventArgs e) => {
+						if (refreshRunning.IsComplete) {
+							if ((this._user == null) || 
+								(refreshRunning.User.Playlists.Count > 10 &&
+								 (!this.HasPlaylists ||
+								  refreshRunning.User.Playlists.Count > (this.User.Playlists.Count-5))))
+							{
+								this.User = refreshRunning.User;
+								this.LastUpdate = DateTime.UtcNow;
+								this.StoreCurrent ();
+								refreshRunning._changed = null;
+								refreshRunning = null;
+								this.OnChanged(this,new PlaylistChangedEventArgs(""));
 							}
-						};
-						refreshRunning.Changed += handler;
-						// trigger reload here.
-						var dummy = refreshRunning.User.Playlists;
-					}
+							else {
+								refreshRunning._changed = null;
+								refreshRunning = null;
+							}
+						}
+					};
+					refreshRunning.Changed += handler;
+					// trigger reload here.
+					var dummy = refreshRunning.User.Playlists;
 				}
-				if (needToLoadAgain)
-					TriggerRefresh ();
 			}
 		}
 		public bool IsComplete {

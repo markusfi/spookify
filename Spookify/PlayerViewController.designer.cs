@@ -40,9 +40,6 @@ namespace Spookify
 		UIKit.UIButton CloseButton { get; set; }
 
 		[Outlet]
-		UIKit.UIButton KapitelButton { get; set; }
-
-		[Outlet]
 		UIKit.UILabel kapitelLabel { get; set; }
 
 		[Outlet]
@@ -95,9 +92,6 @@ namespace Spookify
 
 		[Action ("OnForwardTime:")]
 		partial void OnForwardTime (UIKit.UIButton sender);
-
-		[Action ("OnKapitelButtonClicked:")]
-		partial void OnKapitelButtonClicked (UIKit.UIButton sender);
 
 		[Action ("OnMoreButtonClicked:")]
 		partial void OnMoreButtonClicked (UIKit.UIButton sender);
@@ -162,11 +156,6 @@ namespace Spookify
 			if (CloseButton != null) {
 				CloseButton.Dispose ();
 				CloseButton = null;
-			}
-
-			if (KapitelButton != null) {
-				KapitelButton.Dispose ();
-				KapitelButton = null;
 			}
 
 			if (kapitelLabel != null) {

@@ -130,6 +130,10 @@ namespace Spookify
 		{
 			return UIImage.FromBundle (player != null && player.IsPlaying ? "Pause" : "Play").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 		}
+		public static UIEdgeInsets CurrentPlayButtonInset(this SPTAudioStreamingController player)
+		{
+			return player != null && player.IsPlaying ? new UIEdgeInsets(0,1,0,0) : new UIEdgeInsets(0,4,0,0);
+		}
 
 		public static DateTime NSDateToDateTime(this Foundation.NSDate date)
 		{

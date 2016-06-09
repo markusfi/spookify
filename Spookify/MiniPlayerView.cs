@@ -261,8 +261,9 @@ namespace Spookify
 				} else {
 					ShowSelectAudiobook();
 				}
+				storeIntervalCounter = 0;
 			} else {
-				SavePosition ();
+				SavePosition (storeIntervalCounter++ % 10 == 0);
 				centerLabel.Hidden = true;
 				centerLabel.Text = "";
 				activityIndicatorView.StopAnimating ();
@@ -287,6 +288,7 @@ namespace Spookify
 				BigPlayer?.DisplayAlbum ();
 			}
 		}
+		int storeIntervalCounter = 0;
 
 		void SetupNowPlaying()
 		{

@@ -6,6 +6,8 @@ using Foundation;
 using UIKit;
 using SpotifySDK;
 using System.IO;
+using CoreAnimation;
+using CoreGraphics;
 
 namespace Spookify
 {
@@ -14,6 +16,8 @@ namespace Spookify
 		public ConfigViewController (IntPtr handle) : base (handle)
 		{
 		}
+		CAGradientLayer _bottomGradientLayer;
+		CAGradientLayer _topGradientLayer;
 
 		public override void ViewDidLoad ()
 		{
@@ -22,8 +26,29 @@ namespace Spookify
 			this.LogoutButton.Layer.BorderColor = UIColor.LightGray.CGColor;
 			this.LogoutButton.Layer.BorderWidth = 0.5f;
 			this.LogoutButton.Layer.CornerRadius = 5;
-		}
 
+			_bottomGradientLayer = new CAGradientLayer () {
+				Frame = this.InfoTextBottomTransaprentView.Bounds,
+				Colors = new [] { UIColor.Clear.CGColor, ConfigSpookify.BackgroundColor.CGColor },
+				StartPoint = new CGPoint (0.0f, 0.0f),
+				EndPoint = new CGPoint (0.0f, 1.0f)
+			};
+			this.InfoTextBottomTransaprentView.Layer.Mask = _bottomGradientLayer;
+			_topGradientLayer = new CAGradientLayer () {
+				Frame = this.InfoTextTopTransaprentView.Bounds,
+				Colors = new [] { UIColor.Clear.CGColor, ConfigSpookify.BackgroundColor.CGColor },
+				StartPoint = new CGPoint (0.0f, 1.0f),
+				EndPoint = new CGPoint (0.0f, 0.0f)
+			};
+			this.InfoTextTopTransaprentView.Layer.Mask = _topGradientLayer;
+			TextLabel.Text = Info;
+		}
+		public override void ViewDidLayoutSubviews ()
+		{
+			base.ViewDidLayoutSubviews ();
+			_bottomGradientLayer.Frame = this.InfoTextBottomTransaprentView.Bounds;
+			_topGradientLayer.Frame = this.InfoTextTopTransaprentView.Bounds;
+		}
 		partial void LogoutClicked (UIKit.UIButton sender)
 		{
 			var p = CurrentPlayer.Current;
@@ -115,9 +140,10 @@ namespace Spookify
 			}
 		}
 
-		public string Info = @"Hörbücher bei Spotify finden und anhören. 
+		public string Info = @"
+Hörbücher bei Spotify finden und anhören. 
 
-Die Idee zu dieser App kam mir, als ich versuchte ein Hörbuch bei Spotify bei einer Schitour anzuhören - die Spotify iOS App hat die Kapitel geshuffelt und ich war oben völlig verwirrt. So konnte es nicht weiter gehen, eine Lösung musste her...hier ist sie...leider ohne offline Funktionaltität, denn dies bietet die API von Spotify nicht an.
+Die Idee zu Bookify kam mir, als ich versuchte ein Hörbuch bei Spotify bei einer Schitour anzuhören - die Spotify iOS App hat die Kapitel geshuffelt und ich war oben völlig verwirrt. So konnte es nicht weiter gehen, eine Lösung musste her...hier ist sie...leider ohne offline Funktionaltität, denn dies bietet die API von Spotify nicht an.
 
 Impressum:
 Fischer & Schaefers GbR
@@ -136,15 +162,17 @@ Haftungsbeschränkung:
 
 Die Inhalte der App wurden mit größtmöglicher Sorgfalt und nach bestem Gewissen erstellt. Dennoch übernimmt der Anbieter der App keine Gewähr für die Aktualität, Vollständigkeit und Richtigkeit der bereitgestellten Inhalte.
 
-Die meisten Inhalte dieser App, insbesondere Texte, Bilder und Audioinhalte, stammen von Spotify, Inhaltsangaben der Bücher stammen von google.  Für die Inhalte und Richtigkeit der bereitgestellten Informationen ist der jeweilige Anbieter der Daten verantwortlich.
+Die meisten Inhalte dieser App, insbesondere Texte, Bilder und Audioinhalte, stammen von Spotify, Inhaltsangaben der Bücher stammen von google (Google Books API). Für die Inhalte und Richtigkeit der bereitgestellten Informationen ist der jeweilige Anbieter der Daten verantwortlich.
 
 Externe Links:
 
-Die App enthält sog. „externe Links“ (Verlinkungen) zu anderen Webseiten, auf deren Inhalt der Anbieter der Webseite keinen Einfluss hat. Aus diesem Grund kann der Anbieter für diese Inhalte auch keine Gewähr übernehmen.
+Die App enthält sog. „externe Links“ (Verlinkungen) zu anderen Webseiten, auf deren Inhalt der Anbieter der App - also ich - keinen Einfluss hat. Aus diesem Grund kann der Anbieter für diese Inhalte auch keine Gewähr übernehmen.
 Für die Inhalte und Richtigkeit der bereitgestellten Informationen ist der jeweilige Anbieter der verlinkten Webseite verantwortlich. Zum Zeitpunkt der Verlinkung waren keine Rechtsverstöße erkennbar. Bei Bekanntwerden einer solchen Rechtsverletzung wird der Link umgehend entfernen.
 
 Urheberrecht/Leistungsschutzrecht:
 
-Die auf dieser Webseite veröffentlichten Inhalte, Werke und bereitgestellten Informationen unterliegen dem deutschen Urheberrecht und Leistungsschutzrecht. Jede Art der Vervielfältigung, Bearbeitung, Verbreitung, Einspeicherung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen schriftlichen Zustimmung des jeweiligen Rechteinhabers. ";
+Die in diese App veröffentlichten Inhalte, Werke und bereitgestellten Informationen unterliegen dem deutschen Urheberrecht und Leistungsschutzrecht. Jede Art der Vervielfältigung, Bearbeitung, Verbreitung, Einspeicherung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen schriftlichen Zustimmung des jeweiligen Rechteinhabers.
+
+";
 	}
 }

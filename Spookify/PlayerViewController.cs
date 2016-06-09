@@ -33,7 +33,7 @@ namespace Spookify
 		void ConfigureViews(UIView view, int level)
 		{
 			foreach (var wnd in view.Subviews) {
-				// Console.WriteLine ("UIView("+level+"): " + wnd.GetType().Name + " " + ((wnd is UIButton) ? wnd.Tag.ToString() : ((wnd is UILabel) ? (wnd as UILabel).Text : "" )));
+				Console.WriteLine ("UIView("+level+"): " + wnd.GetType().Name + " " + ((wnd is UIButton) ? wnd.Tag.ToString() : ((wnd is UILabel) ? (wnd as UILabel).Text : "" )));
 				if (wnd is UIButton) {
 					var img = (wnd as UIButton).CurrentImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
 					wnd.TintColor = UIColor.White;
@@ -89,6 +89,10 @@ namespace Spookify
 				}
 			}
 
+			this.PlayButton.Layer.BorderColor = UIColor.White.CGColor;
+			this.PlayButton.Layer.BorderWidth = 1f;
+			this.PlayButton.Layer.CornerRadius = this.PlayButton.Frame.Width / 2.0f;
+
 			CurrentPlayer.Current.CreateSPTAudioStreamingDelegate (this);
 
 			UITapGestureRecognizer tapRecognizer = new UITapGestureRecognizer (HandleTouchInImage);
@@ -96,10 +100,19 @@ namespace Spookify
 			this.AlbumImage.UserInteractionEnabled = true;
 			this.AlbumImage.AddGestureRecognizer (tapRecognizer);
 
-			// call this FIRST here, so the View is already ready for display without any updates...
-			ConfigureViews (this.View, 1);
+			this.SleepTimerLabel.UserInteractionEnabled = true;
+			this.SleepTimerLabel.AddGestureRecognizer (new UITapGestureRecognizer (() => OnSleeptimer(null)));
 		}
-
+		bool subViewsConfigured = false;
+		public override void ViewDidLayoutSubviews ()
+		{
+			base.ViewDidLayoutSubviews ();
+			// call this FIRST here, so the View is already ready for display without any updates...
+			if (!subViewsConfigured) {
+				subViewsConfigured = true;
+				ConfigureViews (this.View, 1);
+			}
+		}
 		partial void OnCloseButtonClicked (UIKit.UIButton sender) {
 			this.DismissViewController (true, null);
 		}
@@ -108,19 +121,29 @@ namespace Spookify
 			this.DismissViewController (true, null);
 		}
 	
-		void HandleTouchInImage()
+		void HandleTouchInImage(UITapGestureRecognizer tapRecognizer)
 		{
+			CGPoint touchPoint = tapRecognizer.LocationInView (this.View);
+			if (touchPoint.Y < this.View.Frame.Height / 3) {
+				if (touchPoint.X < this.View.Frame.Width / 3) {
+					this.DismissViewController (true, null);
+					return;
+				}
+				if (touchPoint.X > this.View.Frame.Width * 2 / 3) {
+					return;
+				}
+			}			
 			UIView.BeginAnimations (null);
 			UIView.SetAnimationRepeatCount (1);
 		
 			UIView.SetAnimationDuration (0.5);
-			this.AlbumImage.Layer.Transform = CATransform3D.MakeRotation(3.141f, 1.0f, 0.0f,0.0f);
+			this.AlbumImage.Layer.Transform = CATransform3D.MakeRotation (3.141f, 1.0f, 0.0f, 0.0f);
 			UIView.SetAnimationDuration (0.5);
-			this.AlbumImage.Layer.Transform = CATransform3D.MakeRotation(0f, 0f, 0.0f,0.0f);
+			this.AlbumImage.Layer.Transform = CATransform3D.MakeRotation (0f, 0f, 0.0f, 0.0f);
 
 			UIView.CommitAnimations ();
 
-			this.OnPlay(null);
+			this.OnPlay (null);
 		}
 
 		public override void ViewDidUnload ()
@@ -179,7 +202,6 @@ namespace Spookify
 			base.Dispose (disposing);
 			CurrentPlayer.Current.RemoveSPTAudioStreamingDelegate ();
 		}
-		AudioBook displayedAudioBook = null; 
 
 		void ShowNoConnection() {
 			this.AlbumLabel.Text = "Keine Internetverbindung\nStreaming nicht möglich";
@@ -254,7 +276,6 @@ namespace Spookify
 		}
 		void ShowOptionButtons(bool show)
 		{
-			this.KapitelButton.Hidden =
 			this.SendenButton.Hidden = 
 			this.MoreButton.Hidden =
 			this.SleepButton.Hidden = !show;
@@ -264,6 +285,7 @@ namespace Spookify
 			this.ActivityIndicatorBackgroundView.Hidden = true;
 			this.ActivityIndicatorView.StopAnimating ();
 			this.PlayButton.SetImage (this.Player.CurrentPlayButtonImage(), UIControlState.Normal);
+			this.PlayButton.ImageEdgeInsets = this.Player.CurrentPlayButtonInset ();
 			this.PlayButton.Hidden = false;
 
 			if (this.MiniPlayer != null && this.MiniPlayer.SleepTimerOpion != 0) {
@@ -289,7 +311,6 @@ namespace Spookify
 					this.ProgressBar.Progress = (float)(ab.CurrentPosition.PlaybackPosition / track.Duration);
 
 				var tsBisEnde = TimeSpan.FromSeconds (ab.GesamtBisEnde - ab.GesamtSeitAnfang);
-				var tsSeitAnfang = TimeSpan.FromSeconds (ab.GesamtSeitAnfang);
 				this.bisEndeBuchLabel.Text = tsBisEnde.ToLongTimeText () + " verbleiben";
 				this.kapitelLabel.Text = string.Format ("Kapitel {0} von {1}", ab.CurrentPosition.TrackIndex+1, ab.Tracks.Count);
 				var ts = TimeSpan.FromSeconds (ab.CurrentPosition.PlaybackPosition);
@@ -310,7 +331,20 @@ namespace Spookify
 				ab.SetLargeImage (this.AlbumImage);
 				displayedAudioBook = ab;
 			} 
+			if (displayImage != this.AlbumImage.Image && this.AlbumImage.Image != null) {
+				displayImage = this.AlbumImage.Image;
+				var l = this.AlbumImage.Image.GetTile(this.CloseButton.Frame).Luminance ();
+				if (l > 0.4) {
+					this.CloseButton.Layer.CornerRadius = this.CloseButton.Frame.Width / 2.0f;
+					this.CloseButton.BackgroundColor = ConfigSpookify.BackgroundColor;
+				} else {
+					this.CloseButton.BackgroundColor = UIColor.Clear;
+				}
+			}
 		}
+		AudioBook displayedAudioBook = null; 
+		UIImage displayImage = null;
+
 		public void DisplayAlbum()
 		{
 			if (!this.IsViewLoaded || this.View == null)
@@ -488,7 +522,7 @@ namespace Spookify
 			// Sende URL zum Installieren & Direkten aufruf des Hörbuchs
 			var ab = CurrentState.Current.CurrentAudioBook;
 			if (ab != null) {
-				string txt = string.Format("Ein Audiobook für Spookify:\n{2}\nvon {3}\n{4}\n{0}://{1}",
+				string txt = string.Format("Ein Audiobook für Spookify:\n\n{0}://{1}\n\n{2}\nvon {3}\n{4}",
 					ConfigSpookify.UriPlayBook,
 					ab.Uri,
 					ab.Album.Name,

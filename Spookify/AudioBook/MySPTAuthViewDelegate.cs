@@ -40,10 +40,10 @@ namespace Spookify
 					playerViewController.CompleteAuthentication ();
 
 				} else {
-					new UIAlertView("Spookify","Login erfolgreich",null,"OK").Show();
+					new UIAlertView("Anmeldung","Login erfolgreich",null,"OK").Show();
 				}
 			}
-		}
+		}		 
 	}
 }
 

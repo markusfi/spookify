@@ -112,7 +112,6 @@
     <ImageAsset Include="Resources\Images.xcassets\Suche.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Suche.imageset\search.png" />
     <ImageAsset Include="Resources\Images.xcassets\Play.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Play.imageset\Play.png" />
     <ImageAsset Include="Resources\Images.xcassets\Next.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Prev.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Prev.imageset\skip_to_start.png" />
@@ -160,7 +159,6 @@
     <ImageAsset Include="ConfigSpookify.xcassets\AppIcons.appiconset\Contents.json" />
     <ImageAsset Include="ConfigSpookify.xcassets\LaunchImages.launchimage\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Spookify.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Spookify.imageset\Spookify.png" />
     <ImageAsset Include="Resources\Images.xcassets\moon.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\moon.imageset\bright_moon-25.png" />
     <ImageAsset Include="Resources\Images.xcassets\moon.imageset\bright_moon-50.png" />
@@ -184,6 +182,11 @@
     <ImageAsset Include="Resources\Images.xcassets\down.imageset\down-75.png" />
     <ImageAsset Include="Resources\Images.xcassets\down.imageset\down-50.png" />
     <ImageAsset Include="Resources\Images.xcassets\down.imageset\down-25.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Play.imageset\Play-25.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Play.imageset\play-50.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Play.imageset\play-75.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Spookify.imageset\Bookify-438x242.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Spookify.imageset\Bookify-274x121.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />

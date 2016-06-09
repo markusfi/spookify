@@ -19,6 +19,15 @@ namespace Spookify
 		UIKit.UILabel _StatusSwapLabel { get; set; }
 
 		[Outlet]
+		UIKit.UIView InfoTextBottomTransaprentView { get; set; }
+
+		[Outlet]
+		UIKit.UIScrollView InfoTextScrollView { get; set; }
+
+		[Outlet]
+		UIKit.UIView InfoTextTopTransaprentView { get; set; }
+
+		[Outlet]
 		UIKit.UIButton LoginButton { get; set; }
 
 		[Outlet]
@@ -38,6 +47,9 @@ namespace Spookify
 
 		[Outlet]
 		UIKit.UISwitch SwapURLSwitch { get; set; }
+
+		[Outlet]
+		UIKit.UILabel TextLabel { get; set; }
 
 		[Outlet]
 		UIKit.UILabel VersionLabel { get; set; }
@@ -64,6 +76,21 @@ namespace Spookify
 			if (_StatusSwapLabel != null) {
 				_StatusSwapLabel.Dispose ();
 				_StatusSwapLabel = null;
+			}
+
+			if (InfoTextScrollView != null) {
+				InfoTextScrollView.Dispose ();
+				InfoTextScrollView = null;
+			}
+
+			if (InfoTextTopTransaprentView != null) {
+				InfoTextTopTransaprentView.Dispose ();
+				InfoTextTopTransaprentView = null;
+			}
+
+			if (InfoTextBottomTransaprentView != null) {
+				InfoTextBottomTransaprentView.Dispose ();
+				InfoTextBottomTransaprentView = null;
 			}
 
 			if (LoginButton != null) {
@@ -104,6 +131,11 @@ namespace Spookify
 			if (VersionLabel != null) {
 				VersionLabel.Dispose ();
 				VersionLabel = null;
+			}
+
+			if (TextLabel != null) {
+				TextLabel.Dispose ();
+				TextLabel = null;
 			}
 		}
 	}

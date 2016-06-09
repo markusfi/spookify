@@ -27,6 +27,8 @@ namespace Spookify
 			UINavigationBar.Appearance.ShadowImage = new UIImage();
 			UINavigationBar.Appearance.SetBackgroundImage (new UIImage (), UIBarMetrics.Default);
 
+			UIApplication.SharedApplication.SetStatusBarHidden (false, UIStatusBarAnimation.Fade);
+			UIApplication.SharedApplication.SetStatusBarStyle (UIStatusBarStyle.LightContent, true);
 			ApplicationHelper.AsyncLoadWhenSession ();
 			return true;
 		}
