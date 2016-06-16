@@ -15,7 +15,7 @@ namespace Spookify
 	partial class GenreViewController
 	{
 		[Outlet]
-		UIKit.UITableView HoerbuchTableView { get; set; }
+		public UIKit.UITableView HoerbuchTableView { get; set; }
 
 		void ReleaseDesignerOutlets ()
 		{

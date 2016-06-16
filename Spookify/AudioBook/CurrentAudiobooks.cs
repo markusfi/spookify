@@ -138,7 +138,7 @@ namespace Spookify
 		}
 		public bool HasPlaylists {
 			get {
-				return this._user != null && this._user.PlaylistsInitialized && User.Playlists.Any () && this._user.Playlists.Any (p => p.Books != null && p.Books.Any ());
+				return this._user != null && this._user.PlaylistsInitialized && User.Playlists.Any () && this._user.Playlists.Any (p => p.Books != null && p.Books.Any (b => b != null && b.Uri != null));
 			}
 		}
 		public DateTime LastUpdate { get; set; }
@@ -192,28 +192,36 @@ namespace Spookify
 				return _playlists;
 			}
 		}
-		void AddPlaylists(UserPlaylist newUserPlaylist, bool isComplete)
+		bool AddPlaylists(UserPlaylist newUserPlaylist, bool isComplete)
 		{
-			if (newUserPlaylist != null) {
-				lock(_playlists) {
-					var p = _playlists.FirstOrDefault(p1 => p1.Name == newUserPlaylist.Name);
-					if (p != null) {
-						// p.Books.AddRange(newUserPlaylist.Books);
-						AddWithoutDups(_playlists, p, newUserPlaylist);
-						if (isComplete && p.Books!= null) 
-							p.TrackCount = (uint)p.Books.Count;
-						p.IsComplete = isComplete;
+			if (newUserPlaylist == null)
+				return false;
+						
+			lock(_playlists) {
+				var p = _playlists.FirstOrDefault(p1 => p1.Name == newUserPlaylist.Name);
+				if (p != null) {
+					bool FirstBooksAdded = p.Books == null || p.Books.Count == 0;
+					// p.Books.AddRange(newUserPlaylist.Books);
+					AddWithoutDups(_playlists, p, newUserPlaylist);
+					if (isComplete && p.Books!= null) 
+						p.TrackCount = (uint)p.Books.Count;
+					p.IsComplete = isComplete;
+					#if DEBUG
 						Console.WriteLine("Playlist "+newUserPlaylist.Name + "  TrackCount: "+p.TrackCount+ "  Books.Count: "+p.Books.Count());
-					} else {
-						p = new UserPlaylist() { Books = new List<PlaylistBook>(), Name = newUserPlaylist.Name };
-						AddWithoutDups(_playlists, p, newUserPlaylist);
-						newUserPlaylist.Books = p.Books;
-						_playlists.Add(newUserPlaylist);
-						if (isComplete && newUserPlaylist.Books != null)
-							newUserPlaylist.TrackCount = (uint)newUserPlaylist.Books.Count;
-						newUserPlaylist.IsComplete = isComplete;
-						Console.WriteLine("Playlist "+newUserPlaylist.Name + "  TrackCount: "+newUserPlaylist.TrackCount+ "  Books.Count: "+newUserPlaylist.Books.Count());
-					}
+					#endif
+					return true; //FirstBooksAdded && newUserPlaylist.Books != null && newUserPlaylist.Books.Count > 0;
+				} else {
+					p = new UserPlaylist() { Books = new List<PlaylistBook>(), Name = newUserPlaylist.Name };
+					AddWithoutDups(_playlists, p, newUserPlaylist);
+					newUserPlaylist.Books = p.Books;
+					_playlists.Add(newUserPlaylist);
+					if (isComplete && newUserPlaylist.Books != null)
+						newUserPlaylist.TrackCount = (uint)newUserPlaylist.Books.Count;
+					newUserPlaylist.IsComplete = isComplete;
+					#if DEBUG
+					Console.WriteLine("Playlist "+newUserPlaylist.Name + "  TrackCount: "+newUserPlaylist.TrackCount+ "  Books.Count: "+newUserPlaylist.Books.Count());
+					#endif
+					return newUserPlaylist.Books != null && newUserPlaylist.Books.Count > 0;
 				}
 			}
 		}
@@ -223,16 +231,21 @@ namespace Spookify
 			if (newUserPlaylists != null) {
 				foreach (var newUserPlaylist in newUserPlaylists)
 					AddPlaylists (newUserPlaylist, false);
+				ordered = false;
+				OnChanged (this, new PlaylistChangedEventArgs (""));
 			}
 			if (playlistManager.HasEnqueuedUser) {
 				playlistManager.GetUserPlaylistsAsync (completionHandler: GetPlaylistCompletionhandler);
+				ordered = false;
+				OnChanged (this, new PlaylistChangedEventArgs (""));
 			} else {
 				playlistManager.GetPlaylistTracks (_playlists, completionHandler: (userPlaylist, isBookReadComplete) => {
-					AddPlaylists (userPlaylist, isBookReadComplete);
-					if (_playlists.All (p => p.IsComplete)) {
+					bool firstBooksAdded = AddPlaylists (userPlaylist, isBookReadComplete);
+					if (firstBooksAdded ||_playlists.All (p => p.IsComplete)) {
 						ordered = false;
-						OnChanged (this, new PlaylistChangedEventArgs (""));
-					}
+						OnChanged (this, new PlaylistChangedEventArgs (userPlaylist?.Name));
+					}  
+						
 				});
 			}
 		}
@@ -281,7 +294,7 @@ namespace Spookify
 		public string SmallImageUrl { get; set; }
 		public string MeidumImageUrl { 
 			get { 
-				var medium = ImageUrls.FirstOrDefault (i => i != LargeImageUrl && i != SmallImageUrl);
+				var medium = ImageUrls?.FirstOrDefault (i => i != LargeImageUrl && i != SmallImageUrl);
 				if (medium == null)
 					medium = SmallImageUrl;
 				return medium;

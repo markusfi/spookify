@@ -19,14 +19,15 @@ namespace Spookify
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-			this.MyWebView.Hidden = true;
-			this.MyWebView.Alpha = 0.01f;
-			this.NothingFoundLabel.Hidden = false;
-			this.NothingFoundLabel.Text = "ich google..."; 
-			this.Spinner.Hidden = false;
-			this.Spinner.StartAnimating ();
-			this.View.BackgroundColor = ConfigSpookify.BackgroundColor;
-
+			UIView.AnimateAsync (0.5, () => {
+				this.MyWebView.Hidden = true;
+				this.MyWebView.Alpha = 0.01f;
+				this.NothingFoundLabel.Hidden = false;
+				this.NothingFoundLabel.Text = "ich google..."; 
+				this.Spinner.Hidden = false;
+				this.Spinner.StartAnimating ();
+				this.View.BackgroundColor = ConfigSpookify.BackgroundColor;
+			});
 			try {
 				var url = new NSUrl(Url);
 				this.MyWebView.LoadRequest(new NSUrlRequest(url));
@@ -38,10 +39,12 @@ namespace Spookify
 		void MyWebView_LoadFinished1 (object sender, EventArgs e)
 		{
 			this.MyWebView.LoadFinished -= MyWebView_LoadFinished1;
-			this.MyWebView.Hidden = false;
-			this.MyWebView.Alpha = 1;
+			UIView.AnimateAsync (0.5, () => {
+				this.MyWebView.Hidden = false;
+				this.MyWebView.Alpha = 1;
 
-			this.NothingFoundLabel.Hidden = true;
+				this.NothingFoundLabel.Hidden = true;
+			});
 			this.Spinner.Hidden = true;
 			this.Spinner.StopAnimating ();
 		}
@@ -56,11 +59,15 @@ namespace Spookify
 					a.StartsWith ("http://www.amazon.de") ||
 					a.StartsWith ("http://www.buechertreff.de") ||
 					a.StartsWith ("http://www.buechertreff.de")) {
+					#if DEBUG
 					Console.WriteLine (a);
+					#endif
 					var url = new NSUrl (a);
 					this.MyWebView.LoadRequest (new NSUrlRequest (url));
 					this.MyWebView.LoadFinished += MyWebView_LoadFinished1;
-					this.NothingFoundLabel.Text = "ich lade...";
+					UIView.AnimateAsync (0.5, () => {
+						this.NothingFoundLabel.Text = "ich lade...";
+					});
 					return;
 				}
 			}

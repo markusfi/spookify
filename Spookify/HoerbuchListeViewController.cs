@@ -74,9 +74,10 @@ namespace Spookify
 			HoerbuchListeTableView.TableHeaderView = searchController.SearchBar;
 
 			var tag = this.NavigationController.TabBarItem.Tag;
-			if (tag != 3) 
-				HoerbuchListeTableView.ScrollToRow(NSIndexPath.FromRowSection(0,0), UITableViewScrollPosition.Top, false);
-
+			if (tag != 3) {
+				if (HoerbuchListeTableView.NumberOfRowsInSection(0) > 0)
+					HoerbuchListeTableView.ScrollToRow (NSIndexPath.FromRowSection (0, 0), UITableViewScrollPosition.Top, false);
+			}
 			searchController.ObscuresBackgroundDuringPresentation = true;
 			searchController.SearchBar.BackgroundColor = ConfigSpookify.BackgroundColor;
 			searchController.SearchBar.BarTintColor = ConfigSpookify.BackgroundColor;
@@ -245,6 +246,7 @@ namespace Spookify
 					cell.AlbumLabel.Text = "";
 					cell.AuthorLabel.Text = "";
 					cell.AlbumImage.Image = null;
+					cell.AlbumImage.Hidden = true;
 				} else {
 					var currentBook = audiobooks.Books [indexPath.Row];
 					ConfigureCell (cell, currentBook);
@@ -257,6 +259,7 @@ namespace Spookify
 			cell.CurrentPlaylistBook = currentBook;
 			cell.AlbumLabel.Text = currentBook.Album.Name;
 			cell.AuthorLabel.Text = currentBook.Artists.FirstOrDefault ();
+			cell.AlbumImage.Hidden = true;
 			cell.AlbumImage.LoadImage (currentBook.MediumCoverUrl);
 		}
 		public override nint NumberOfSections (UITableView tableView)

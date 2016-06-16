@@ -182,7 +182,7 @@ namespace Spookify
 		public string LargestCoverURL { get; set; }
 		public string MediumCoverUrl { 
 			get { 
-				var medium = ImageUrls.FirstOrDefault (i => i != LargestCoverURL && i != SmallestCoverURL);
+				var medium = ImageUrls?.FirstOrDefault (i => i != LargestCoverURL && i != SmallestCoverURL);
 				if (medium == null)
 					medium = SmallestCoverURL;
 				return medium;

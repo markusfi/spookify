@@ -4,6 +4,7 @@ using Foundation;
 using System.Linq;
 using CoreFoundation;
 using CoreGraphics;
+using System.Collections.Generic;
 
 namespace Spookify
 {
@@ -78,46 +79,107 @@ namespace Spookify
 		{
 			LoadImage(imageView, new NSUrl (imageURL), dataSetter, useLRUCache);
 		}
+
+		static Dictionary<UIImageView,string> imageViewList = new Dictionary<UIImageView,string> (); 
 		public static void LoadImage(this UIImageView imageView, NSUrl imageURL, Action<NSData> dataSetter = null, bool useLRUCache = true)
 		{
-			if (imageView == null)
-				return;			
-			var nd = useLRUCache ? CurrentLRUCache.Current.CoverCache.GetItem(imageURL.AbsoluteString) : null;
-			if (nd != null) {
-				imageView.Image = nd.Data.ToImage();
-				if (imageView.Image != null)
-					imageView.Hidden = false;
-			}
-			else {
-				imageView.Image = null;
-				imageView.BackgroundColor = UIColor.FromRGBA (100, 143, 0, 30);
-				var gloalQueue = DispatchQueue.GetGlobalQueue(DispatchQueuePriority.Default);
-				gloalQueue.DispatchAsync(() => 
-					{
-						NSError err = null;
-						UIImage image = null;
-						NSData imageData = NSData.FromUrl(imageURL, 0, out err);
-						if (imageData != null) {
+			try {
+				if (imageView == null)
+					return;			
+				var nd = useLRUCache ? CurrentLRUCache.Current.CoverCache.GetItem (imageURL.AbsoluteString) : null;
+				if (nd != null) {
+					string absoluteUrl;
+					lock (imageViewList) {
+						#if DEBUG
+						Console.WriteLine ("ImageViewList Length:" + imageViewList.Count);
+						#endif
+						if (imageViewList.TryGetValue (imageView, out absoluteUrl)) {
+							#if DEBUG
+							Console.WriteLine ("Cache HIT + Update Dictionary because Request for this ImageView is running +++++++++++ +++++++++++++++++++++++++ +++++++++++++++++ +++++++++++");
+							#endif
+							imageViewList.Remove(imageView);
+						}
+					}
+					imageView.Image = nd.Data.ToImage ();
+					if (imageView.Image != null)
+						imageView.Hidden = false;
+				} else {
+					lock (imageViewList) {
+						#if DEBUG
+						Console.WriteLine ("ImageViewList Length:" + imageViewList.Count);
+						#endif
+						string absoluteUrl;
+						if (!imageViewList.TryGetValue (imageView, out absoluteUrl)) {
+							imageViewList.Add (imageView, imageURL.AbsoluteString);
+						} else {
+							#if DEBUG
+							Console.WriteLine ("Update Dictionary because Request for this ImageView is running +++++++++++ +++++++++++++++++++++++++ +++++++++++++++++ +++++++++++");
+							#endif
+							imageViewList [imageView] = imageURL.AbsoluteString;
+						}
+					}
+					imageView.Image = null;
+					imageView.BackgroundColor = UIColor.FromRGBA (100, 143, 0, 30);
+					var gloalQueue = DispatchQueue.GetGlobalQueue (DispatchQueuePriority.Default);
+					gloalQueue.DispatchAsync (() => {
+						try {
+							NSError err = null;
+							UIImage image = null;
+							NSData imageData = NSData.FromUrl (imageURL, 0, out err);
+							if (imageData == null) {
+								string absoluteUrl;
+								lock (imageViewList) {
+									if (imageViewList.TryGetValue (imageView, out absoluteUrl)) {
+										if (absoluteUrl == imageURL.AbsoluteString)
+											imageViewList.Remove (imageView);
+									}
+								}
+								return;
+							}
 							if (dataSetter != null)
-								dataSetter(imageData);
+								dataSetter (imageData);
 
 							if (useLRUCache)
-								CurrentLRUCache.Current.CoverCache.Insert(imageURL.AbsoluteString, imageData.ToByteArray());
-							image = UIImage.LoadFromData(imageData);
+								CurrentLRUCache.Current.CoverCache.Insert (imageURL.AbsoluteString, imageData.ToByteArray ());
+							image = UIImage.LoadFromData (imageData);
 
-							DispatchQueue.MainQueue.DispatchAsync(() => 
-								{
+							DispatchQueue.MainQueue.DispatchAsync (() => {
+								try {
+									lock (imageViewList) {
+										string absoluteUrl;
+										if (imageViewList.TryGetValue (imageView, out absoluteUrl)) {
+											if (absoluteUrl != imageURL.AbsoluteString) {
+												#if DEBUG
+												Console.WriteLine ("Droped loaded Image because race codition occured ################## ################## ################## ##################");
+												#endif
+												return;
+											} else {
+												imageViewList.Remove (imageView);
+												#if DEBUG
+												Console.WriteLine ("Remove ImageView, length:" + imageViewList.Count);
+												#endif
+											}
+										}
+									}
 									imageView.BackgroundColor = UIColor.Clear;
 									imageView.Image = image;
 									if (imageView.Image != null)
 										imageView.Hidden = false;
 									else {
-										System.Diagnostics.Debug.WriteLine("Could not load image with error: {0}",err);
+										System.Diagnostics.Debug.WriteLine ("Could not load image with error: {0}", err);
 										return;
 									}
-								});
+								} catch (Exception ex) {
+									System.Diagnostics.Debug.WriteLine ("Got Exception in LoadImage (inner): "+ex.ToString());
+								}
+							});
+						} catch (Exception ex) {
+							System.Diagnostics.Debug.WriteLine ("Got Exception in LoadImage (middle): "+ex.ToString());
 						}
 					});
+				}
+			} catch (Exception ex) {
+				System.Diagnostics.Debug.WriteLine ("Got Exception in LoadImage (outer): "+ex.ToString());
 			}
 		}
 

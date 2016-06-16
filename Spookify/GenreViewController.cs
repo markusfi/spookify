@@ -88,8 +88,12 @@ namespace Spookify
 
 				HoerbuchTableView.TableHeaderView = searchController.SearchBar;
 				if (CurrentAudiobooks.Current.HasPlaylists) {
-					if (tag < 3)
-						HoerbuchTableView.ScrollToRow (NSIndexPath.FromRowSection (0, 0), UITableViewScrollPosition.Top, false);
+					if (tag < 3) {
+						if (HoerbuchTableView.NumberOfRowsInSection (0) > 0)
+							HoerbuchTableView.ScrollToRow (NSIndexPath.FromRowSection (0, 0), UITableViewScrollPosition.Top, false);
+						else
+							Console.WriteLine ("Problem");
+					}
 				}
 				searchController.ObscuresBackgroundDuringPresentation = true;
 				searchController.SearchBar.BackgroundColor = ConfigSpookify.BackgroundColor;
@@ -154,17 +158,17 @@ namespace Spookify
 			var filteredBooks = new List<PlaylistBook> ();
 
 			IEnumerable<PlaylistBook> query =
-				CurrentAudiobooks.Current.User.Playlists.SelectMany(pl => pl.Books).Where (p => 
-					searchItems.All(item =>
-						p.Album.Name.IndexOf (item, StringComparison.OrdinalIgnoreCase) >= 0 || 
-						p.Artists.Any(a => a.IndexOf (item, StringComparison.OrdinalIgnoreCase) >= 0)
-					))
-					.GroupBy(p => p.Uri)
-					.Select(g => g.First())
-					.OrderBy (p => p.Album.Name);
+				CurrentAudiobooks.Current.User.Playlists.SelectMany (pl => pl.Books).Where (p => 
+					searchItems.All (item =>
+						p.Album.Name.IndexOf (item, StringComparison.OrdinalIgnoreCase) >= 0 ||
+				p.Artists.Any (a => a.IndexOf (item, StringComparison.OrdinalIgnoreCase) >= 0)
+				))
+					.GroupBy (p => p.Uri)
+					.Select (g => g.First ());
 
 			filteredBooks.AddRange (query);
 			var list = filteredBooks.Distinct ().ToList ();
+			list.Sort (PlaylistBook.CompareName);
 			return list;
 		}
 
@@ -256,7 +260,20 @@ namespace Spookify
 		{
 			this.genreViewController = genreViewController; 
 			CurrentAudiobooks.Current.Changed += (object sender, PlaylistChangedEventArgs e) => {
-				OnChanged();
+				var visibleRows = this.genreViewController.HoerbuchTableView.IndexPathsForVisibleRows;
+				var visibleSections = visibleRows.Select(v => v.Section).Distinct();
+				var sections = this.genreViewController.HoerbuchTableView.NumberOfSections();
+
+				for (nint i=0;i<sections;i++) {
+					if (this.genreViewController.HoerbuchTableView.NumberOfRowsInSection(i) != 
+						this.RowsInSection(this.genreViewController.HoerbuchTableView, i) 
+						|| string.IsNullOrEmpty(e.Name)
+						|| e.Name.Contains("Geheimtipps")
+					) {
+						OnChanged();
+
+					}
+				}
 			};
 		}
 			
@@ -328,7 +345,7 @@ namespace Spookify
 			else if (tag == 2)
 				return GetSublist  (section < 3 ? section : -1);
 			else if (tag == 3)
-				return this.GetSublist(4);
+				return GetSublist(4);
 			else 
 				return GetSublist (-1);
 		}
@@ -346,6 +363,10 @@ namespace Spookify
 		}
 
 		public IEnumerable<UserPlaylist>GetSublist(nint section)
+		{
+			return GetSublistInternal (section).Where (b => b.Books != null && b.Books.Any ());
+		}
+		public IEnumerable<UserPlaylist>GetSublistInternal(nint section)
 		{
 			if (this.genreViewController.doNotDisplayList)
 				return new UserPlaylist[0];
@@ -372,7 +393,7 @@ namespace Spookify
 		}
 		public UserPlaylist Getplaylist(Foundation.NSIndexPath indexPath) {	
 
-			if (indexPath.LongSection >= 0 && indexPath.LongSection < 4) {
+			if (indexPath.Section >= 0 && indexPath.Section < 4) {
 				var sublist = this.GetBarSublist (indexPath.LongSection);
 				if (indexPath.Row >= 0 && indexPath.Row < sublist.Count())
 					return sublist.ElementAt (indexPath.Row);
@@ -414,6 +435,8 @@ namespace Spookify
 				if (collectionViewCell != null) {
 					collectionViewCell.Book = _playlist.Books.ElementAt((int)indexPath.Item);
 					collectionViewCell.GenreViewController = _genreViewController;
+					collectionViewCell.ImageView.Hidden = true;
+					collectionViewCell.ImageView.BackgroundColor = UIColor.Red;
 					collectionViewCell.ImageView.LoadImage(_playlist.Books.ElementAt((int)indexPath.Item));
 				}
 				return collectionViewCell;
@@ -482,8 +505,11 @@ namespace Spookify
 				return 0;
 			if (section == 0) {
 				var tag = this.genreViewController.NavigationController.TabBarItem.Tag;
-				if (tag == 2)
-					return 1;
+				if (tag == 2) {
+					var p = Getplaylist(NSIndexPath.FromRowSection(0,section));
+					bool tippCell = tag == 2 && p != null && p.Name != null && p.Name.Contains(keyTippDerWoche);
+					return tippCell ? 1 : 0;
+				}
 			}
 			return this.GetBarSublist(section).Count();
 		}
