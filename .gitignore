@@ -58,5 +58,5 @@ profile
 *.moved-aside
 DerivedData
 .idea/
-Components
+Components/*
 >>>>>>> cd114b2... Spotify iOS SDK Beta 1 Release
