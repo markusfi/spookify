@@ -260,7 +260,6 @@ namespace Spookify
 			this.genreViewController = genreViewController; 
 			CurrentAudiobooks.Current.Changed += (object sender, PlaylistChangedEventArgs e) => {
 				var visibleRows = this.genreViewController.HoerbuchTableView.IndexPathsForVisibleRows;
-				var visibleSections = visibleRows.Select(v => v.Section).Distinct();
 				var sections = this.genreViewController.HoerbuchTableView.NumberOfSections();
 
 				for (nint i=0;i<sections;i++) {
@@ -321,8 +320,6 @@ namespace Spookify
 		string[] keyList = "Geheimtipps,Alle,Bestseller,Neuheiten".Split(',');
 		string keyTippDerWoche = "tipp der Woche";
 		string keyHoerbuecher = "Hörbücher";
-		string prefixHoerbuecher = "Hörbücher ";
-		string prefixHoerspiele = "Hörspiele ";
 		string[] sectionList = "Tipps der Woche,Hörbücher,Hörspiele,Genres".Split(',');
 
 		public string[] GetBarSectionList()
@@ -474,6 +471,8 @@ namespace Spookify
 			} catch (Exception ex) {
 				System.Diagnostics.Debug.WriteLine (ex.ToString ());
 			}
+			if (cell != null)
+				cell.BackgroundColor = ConfigSpookify.BackgroundColor;
 			return cell;
 		}
 		public override nfloat GetHeightForRow (UITableView tableView, NSIndexPath indexPath)

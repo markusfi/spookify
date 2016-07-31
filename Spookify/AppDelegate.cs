@@ -29,6 +29,8 @@ namespace Spookify
 
 			UIApplication.SharedApplication.SetStatusBarHidden (false, UIStatusBarAnimation.Fade);
 			UIApplication.SharedApplication.SetStatusBarStyle (UIStatusBarStyle.LightContent, true);
+			UITableViewCell.Appearance.BackgroundColor = ConfigSpookify.BackgroundColor;
+
 			ApplicationHelper.AsyncLoadWhenSession ();
 			return true;
 		}
