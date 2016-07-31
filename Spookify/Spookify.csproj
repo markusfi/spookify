@@ -104,8 +104,6 @@
     <ImageAsset Include="Resources\Images.xcassets\Books.imageset\books-180.png" />
     <ImageAsset Include="Resources\Images.xcassets\Books.imageset\books-120.png" />
     <ImageAsset Include="Resources\Images.xcassets\Books.imageset\books-114.png" />
-    <ImageAsset Include="ConfigSpookify.xcassets\AppIcons.appiconset\Contents.json" />
-    <ImageAsset Include="ConfigSpookify.xcassets\LaunchImages.launchimage\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Play.imageset\Play-25.png" />
     <ImageAsset Include="Resources\Images.xcassets\Play.imageset\play-50.png" />
     <ImageAsset Include="Resources\Images.xcassets\Play.imageset\play-75.png" />
