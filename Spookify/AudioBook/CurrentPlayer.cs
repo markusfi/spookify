@@ -193,7 +193,9 @@ namespace Spookify
 					if (_player == null) {
 						SPTAuth auth = this.AuthPlayer;
 						var ca = new SPTCoreAudioController ();
-						_player = new SPTAudioStreamingController (auth.ClientID, ca);
+						_player = SPTAudioStreamingController.SharedInstance(); // new SPTAudioStreamingController (auth.ClientID, ca);
+						NSError error;
+						_player.StartWithClientId(auth.ClientID, ca, out error);
 						_player.PlaybackDelegate = _mySPTAudioStreamingDelegate;
 						_player.Delegate = new MySPTAudioStreamingDelegate ();
 						_player.DiskCache = new SPTDiskCache(1024 * 1024 * 64);
@@ -210,7 +212,9 @@ namespace Spookify
 						else {
 							if (HasConnection) {
 								SPTAuth auth = this.AuthPlayer;
-								_player.LoginWithSession (auth.Session, error => {
+								_player.LoginWithAccessToken(auth.Session.AccessToken);
+								/*
+								_player.LoginWithSession(auth.Session, error => {
 									if (error != null) {
 										// login failed.
 										Console.WriteLine ("_player.LoginWithSession failed: " + error);
@@ -218,6 +222,7 @@ namespace Spookify
 										var dummy = this.Player;
 									}
 								});
+								*/
 								TriggerPlayerLogin = DateTime.Now;
 							}
 						}

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #Autosave files
 *~
 
@@ -38,3 +39,23 @@ Thumbs.db
 
 #dotCover
 *.dotCover
+=======
+# Xcode
+.DS_Store
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.xcworkspace
+!default.xcworkspace
+xcuserdata
+profile
+*.moved-aside
+DerivedData
+.idea/
+>>>>>>> cd114b2... Spotify iOS SDK Beta 1 Release

@@ -79,22 +79,33 @@ namespace Spookify
 								BeginInvokeOnMainThread( () => {
 									UpdateStatus();
 									if (p.RawPlayer.LoggedIn) {
-										p.RawPlayer.Logout((errorLogout) => { 
+										p.RawPlayer.Logout();
+										p.ResetPlayer();
+										p.ClearAuthPlayer();
+										BeginInvokeOnMainThread(UpdateStatus);
+										/*  p.RawPlayer.Logout((errorLogout) => { 
 											p.ResetPlayer(); 
 											p.ClearAuthPlayer();
 											BeginInvokeOnMainThread(UpdateStatus); 
 										});
+										*/
 									}
 								}); 
 							});
 						}
 						else {
 							if (p.RawPlayer.LoggedIn) {
-								p.RawPlayer.Logout((errorLogout) => { 
+								p.RawPlayer.Logout();
+								p.ResetPlayer();
+								p.ClearAuthPlayer();
+								BeginInvokeOnMainThread(UpdateStatus);
+
+								/*  p.RawPlayer.Logout((errorLogout) => { 
 									p.ResetPlayer(); 
 									p.ClearAuthPlayer();
 									BeginInvokeOnMainThread(UpdateStatus); 
 								});
+								*/
 							}
 						}
 					} 

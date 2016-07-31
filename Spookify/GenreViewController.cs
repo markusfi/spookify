@@ -155,21 +155,20 @@ namespace Spookify
 				? new string[0]
 				: searchString.Split (new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-			var filteredBooks = new List<PlaylistBook> ();
-
-			IEnumerable<PlaylistBook> query =
+			var query =
 				CurrentAudiobooks.Current.User.Playlists.SelectMany (pl => pl.Books).Where (p => 
 					searchItems.All (item =>
 						p.Album.Name.IndexOf (item, StringComparison.OrdinalIgnoreCase) >= 0 ||
 				p.Artists.Any (a => a.IndexOf (item, StringComparison.OrdinalIgnoreCase) >= 0)
 				))
-					.GroupBy (p => p.Uri)
-					.Select (g => g.First ());
+				.GroupBy (p => p.Uri)
+				.Select (g => g.First ())
+				.OrderBy(p => p.Album.Name)
+				.ToList();
 
-			filteredBooks.AddRange (query);
-			var list = filteredBooks.Distinct ().ToList ();
-			list.Sort (PlaylistBook.CompareName);
-			return list;
+			if (query.Count<100)
+				query.Sort (PlaylistBook.CompareName);
+			return query;
 		}
 
 		public void RowSelected (UITableView tableView, NSIndexPath indexPath)

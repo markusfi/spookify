@@ -64,7 +64,7 @@ namespace Spookify
 				return true;
 			}
 			// link to a book was sent...open this book.
-			if (url.AbsoluteString.StartsWith (ConfigSpookify.UriPlayBook)) {
+			if (url.AbsoluteString.StartsWith (ConfigSpookify.UriPlayBook, StringComparison.InvariantCultureIgnoreCase)) {
 
 				if (url.AbsoluteString.Length > ConfigSpookify.UriPlayBook.Length + 3) {
 					string book = url.AbsoluteString.Substring (ConfigSpookify.UriPlayBook.Length + 3);
@@ -129,7 +129,7 @@ namespace Spookify
 								.Cast<SPTPartialTrack> ()
 								.Where (pt => pt.IsPlayable)
 								.Select (pt => new AudioBookTrack () { 
-									Url = pt.GetUri ().AbsoluteString, 
+									Url = pt.Uri.AbsoluteString, 
 									Name = pt.Name, 
 									Duration = pt.Duration, 
 									Index = kapitelNummer++
@@ -167,7 +167,7 @@ namespace Spookify
 							.Cast<SPTPartialTrack> ()
 							.Where (pt => pt.IsPlayable)
 							.Select (pt => new AudioBookTrack () { 
-							Url = pt.GetUri ().AbsoluteString, 
+							Url = pt.Uri.AbsoluteString, 
 							Name = pt.Name, 
 							Duration = pt.Duration, 
 							Index = kapitelNummer++
@@ -197,8 +197,9 @@ namespace Spookify
 			CurrentPlaylistsCache.Current.StoreCurrent();
 			CurrentLRUCache.Current.StoreCurrent();
 
-			if (CurrentAudiobooks.Current.IsComplete && CurrentAudiobooks.Current.HasPlaylists && CurrentAudiobooks.Current.User.Playlists.Count > 10)
-				CurrentAudiobooks.Current.StoreCurrent ();
+			var c = CurrentAudiobooks.CurrentNoTriggerRefresh;
+			if (c.IsComplete && c.HasPlaylists && c.User.Playlists.Count > 20)
+				c.StoreCurrent ();
 		}
 
 		public override void WillEnterForeground (UIApplication application)

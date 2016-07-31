@@ -148,21 +148,19 @@ namespace Spookify
 				? new string[0]
 				: searchString.Split (new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-			var filteredBooks = new List<PlaylistBook> ();
-
-			IEnumerable<PlaylistBook> query =
+			var query =
 				ThisAudioBookPlaylist.Books.Where (p => 
 					searchItems.All(item =>
-						p.Album.Name.IndexOf (item, StringComparison.OrdinalIgnoreCase) >= 0 || 
-						p.Artists.Any(a => a.IndexOf (item, StringComparison.OrdinalIgnoreCase) >= 0)
+				        p.Album.Name.IndexOf (item, StringComparison.InvariantCultureIgnoreCase) >= 0 || 
+						p.Artists.Any(a => a.IndexOf (item, StringComparison.InvariantCultureIgnoreCase) >= 0)
 					))
 					.GroupBy(p => p.Uri)
 					.Select(g => g.First())
-					.OrderBy (p => p.Album.Name);
-
-			filteredBooks.AddRange (query);
-			var list = filteredBooks.Distinct ().ToList ();
-			return list;
+					.OrderBy (p => p.Album.Name)
+				    .ToList ();
+			if (query.Count < 100)
+				query.Sort(PlaylistBook.CompareName);
+			return query;
 		}
 		public override void DidReceiveMemoryWarning ()
 		{

@@ -7,7 +7,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.35</string>
+	<string>1.0.36</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MinimumOSVersion</key>
@@ -64,5 +64,7 @@
 	<array>
 		<string>spotify-action</string>
 	</array>
+	<key>CFBundleName</key>
+	<string>Bookify</string>
 </dict>
 </plist>

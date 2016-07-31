@@ -316,7 +316,7 @@ namespace Spookify
 						.Cast<SPTPartialTrack> ()
 						.Where (pt => pt.IsPlayable)
 						.Select (pt => new AudioBookTrack () { 
-							Url = pt.GetUri ().AbsoluteString, 
+							Url = pt.Uri.AbsoluteString, 
 							Name = pt.Name, 
 							Duration = pt.Duration, 
 							Index = kapitelNummer++
@@ -349,7 +349,7 @@ namespace Spookify
 							.Cast<SPTPartialTrack>()
 							.Where(pt => pt.IsPlayable)
 							.Select(pt => new AudioBookTrack() { 
-								Url = pt.GetUri().AbsoluteString, 
+								Url = pt.Uri.AbsoluteString, 
 								Name = pt.Name, 
 								Duration = pt.Duration, 
 								Index = kapitelNummer++  } )

@@ -35,9 +35,13 @@ namespace Spookify
 			foreach (var wnd in view.Subviews) {
 				Console.WriteLine ("UIView("+level+"): " + wnd.GetType().Name + " " + ((wnd is UIButton) ? wnd.Tag.ToString() : ((wnd is UILabel) ? (wnd as UILabel).Text : "" )));
 				if (wnd is UIButton) {
-					var img = (wnd as UIButton).CurrentImage.ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);
-					wnd.TintColor = UIColor.White;
-					(wnd as UIButton).SetImage(img, UIControlState.Normal);
+					var image = (wnd as UIButton).CurrentImage;
+					if (image != null)
+					{
+						var img = image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
+						wnd.TintColor = UIColor.White;
+						(wnd as UIButton).SetImage(img, UIControlState.Normal);
+					}
 				}
 				if (wnd is UILabel)
 					(wnd as UILabel).Text = "";
@@ -185,6 +189,10 @@ namespace Spookify
 		public override void ViewDidAppear (bool animated)
 		{
 			base.ViewDidAppear (animated);
+		}
+		public override bool PrefersStatusBarHidden()
+		{
+			return true;
 		}
 		public override void ViewWillDisappear (bool animated)
 		{
@@ -430,7 +438,7 @@ namespace Spookify
 					var alertView = new UIAlertView("Lesezeichen","Lesezeichen hinzufügen?", null, "Abbrechen", "Ok");
 					alertView.Show();
 					alertView.Clicked += (object sender1, UIButtonEventArgs e) => {
-						if (e.ButtonIndex == 1) {;	
+						if (e.ButtonIndex == 1) {
 							ab.AddBookmark(new AudioBookBookmark(ab.CurrentPosition));
 							CurrentState.Current.StoreCurrent();
 						}

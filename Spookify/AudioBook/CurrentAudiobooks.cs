@@ -26,9 +26,20 @@ namespace Spookify
 	{
 		new public static CurrentAudiobooks Current
 		{
+			get
+			{
+				var current = CurrentBase<CurrentAudiobooks>.Current;
+				current.TriggerRefresh();
+				if (!current.HasPlaylists && CurrentAudiobooks.refreshRunning != null)
+					return CurrentAudiobooks.refreshRunning;
+				else
+					return current;
+			}
+		}
+		public static CurrentAudiobooks CurrentNoTriggerRefresh
+		{
 			get {
 				var current = CurrentBase<CurrentAudiobooks>.Current;
-				current.TriggerRefresh ();
 				if (!current.HasPlaylists && CurrentAudiobooks.refreshRunning != null)
 					return CurrentAudiobooks.refreshRunning;
 				else
@@ -58,8 +69,9 @@ namespace Spookify
 		public PlaylistOwner User { 
 			get { 
 				if (_user == null) {
-					_user = new PlaylistOwner () { Name = 
-						 "argonhörbücher,hoerbuecher" 
+					_user = new PlaylistOwner () { Name =
+//						 "europa.kinderprogramm" 
+						 "argonhörbücher,hoerbuecher,europa.kinderprogramm" 
 					};
 					_user.Changed += OnChanged;
 					LastUpdate = DateTime.UtcNow;
@@ -108,9 +120,7 @@ namespace Spookify
 					PlaylistChangedEventHandler handler = (object sender, PlaylistChangedEventArgs e) => {
 						if (refreshRunning.IsComplete) {
 							if ((this._user == null) || 
-								(refreshRunning.User.Playlists.Count > 10 &&
-								 (!this.HasPlaylists ||
-								  refreshRunning.User.Playlists.Count > (this.User.Playlists.Count-5))))
+								(refreshRunning.User.Playlists.Count > 20))
 							{
 								this.User = refreshRunning.User;
 								this.LastUpdate = DateTime.UtcNow;
@@ -174,10 +184,12 @@ namespace Spookify
 					_playlists = new List<UserPlaylist> ();
 					var playlistManager = new PlaylistManager ();
 					playlistManager.EnqueueUser (this.Name.Split (new [] { "," }, StringSplitOptions.RemoveEmptyEntries));
+					/*
 					playlistManager.AddConstantUris (playlists => {
 						foreach(var playlist in playlists) 
 							AddPlaylists(playlist, false);
 					});
+					*/
 					ConfigListen.ConfigPosition (_playlists, 10000);
 					playlistManager.GetUserPlaylistsAsync (GetPlaylistCompletionhandler);
 				}

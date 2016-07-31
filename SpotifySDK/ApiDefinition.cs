@@ -509,7 +509,7 @@ namespace SpotifySDK
 		// @property (readonly, copy, nonatomic) NSArray * covers;
 		[Export ("covers", ArgumentSemantic.Copy)]
 		// [Verify (StronglyTypedNSArray)]
-		NSObject[] Covers { get; }
+		SPTImage[] Covers { get; }
 
 		// @property (readonly, nonatomic) SPTImage * smallestCover;
 		[Export ("smallestCover")]
@@ -661,7 +661,7 @@ namespace SpotifySDK
 		// @property (readonly, copy, nonatomic) NSArray * images;
 		[Export ("images", ArgumentSemantic.Copy)]
 		// [Verify (StronglyTypedNSArray)]
-		NSObject[] Images { get; }
+		SPTImage[] Images { get; }
 
 		// @property (readonly, nonatomic) SPTImage * smallestImage;
 		[Export ("smallestImage")]
@@ -837,7 +837,7 @@ namespace SpotifySDK
 		// @property (readonly, copy, nonatomic) NSArray * images;
 		[Export ("images", ArgumentSemantic.Copy)]
 		// [Verify (StronglyTypedNSArray)]
-		NSObject[] Images { get; }
+		SPTImage[] Images { get; }
 
 		// @property (readonly, nonatomic) SPTImage * smallestImage;
 		[Export ("smallestImage")]
@@ -1358,7 +1358,7 @@ namespace SpotifySDK
 		// @property (readonly, copy, nonatomic) NSArray * images;
 		[Export ("images", ArgumentSemantic.Copy)]
 		// [Verify (StronglyTypedNSArray)]
-		NSObject[] Images { get; }
+		SPTImage[] Images { get; }
 
 		// @property (readonly, nonatomic) SPTImage * smallestImage;
 		[Export ("smallestImage")]

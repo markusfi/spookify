@@ -105,16 +105,6 @@
       "idiom": "ipad"
     },
     {
-      "size": "60x60",
-      "scale": "2x",
-      "idiom": "car"
-    },
-    {
-      "size": "60x60",
-      "scale": "3x",
-      "idiom": "car"
-    },
-    {
       "role": "notificationCenter",
       "size": "24x24",
       "subtype": "38mm",

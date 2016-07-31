@@ -354,7 +354,7 @@ namespace Spookify
 						SmallestCoverURL = track.Album.SmallestCover?.ImageURL?.AbsoluteString,
 						LargestCoverURL = track.Album.LargestCover?.ImageURL?.AbsoluteString,
 						ImageUrls = track.Album.Covers?.Select(c => c.ImageURL?.AbsoluteString).ToArray(), 
-						Uri = track.Album.GetUri ().AbsoluteString
+						Uri = track.Album.Uri.AbsoluteString
 					};
 				}
 			}

@@ -45,6 +45,7 @@
                                                     <color key="color" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                 </activityIndicatorView>
                                             </subviews>
+                                            <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="trailingMargin" secondItem="6WB-ZI-avX" secondAttribute="trailing" constant="20" id="47A-bh-620"/>
                                                 <constraint firstItem="6WB-ZI-avX" firstAttribute="centerY" secondItem="M8b-QK-g9d" secondAttribute="centerY" id="aH6-Z4-BYg"/>
@@ -105,6 +106,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="trailingMargin" secondItem="22b-qR-MBX" secondAttribute="trailing" constant="5" id="1g4-rk-9tj"/>
                                                 <constraint firstItem="8MD-BN-Z5d" firstAttribute="leading" secondItem="mJB-5n-kc3" secondAttribute="trailing" constant="10" id="2vn-wg-v8K"/>
@@ -175,37 +177,37 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TippCell" rowHeight="240" id="oat-kF-zna" customClass="GenreTableViewCell">
-                                        <rect key="frame" x="0.0" y="356" width="600" height="200"/>
+                                        <rect key="frame" x="0.0" y="356" width="600" height="240"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="center" tableViewCell="oat-kF-zna" id="O5x-TB-OKN">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="199"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="239"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ySb-Q5-LQs">
+                                                <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ySb-Q5-LQs">
                                                     <rect key="frame" x="150" y="0.0" width="300" height="199"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </view>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZnB-9C-U3A" userLabel="View Right">
+                                                <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZnB-9C-U3A" userLabel="View Right">
                                                     <rect key="frame" x="450" y="0.0" width="1" height="199"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="1" id="F9O-An-1MA"/>
                                                     </constraints>
                                                 </view>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zvd-1N-Rz7" userLabel="View Left">
+                                                <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zvd-1N-Rz7" userLabel="View Left">
                                                     <rect key="frame" x="149" y="0.0" width="1" height="196"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="1" id="tDb-31-jMM"/>
                                                     </constraints>
                                                 </view>
-                                                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="INh-Va-acf">
+                                                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="INh-Va-acf">
                                                     <rect key="frame" x="356" y="5" width="189" height="189"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="INh-Va-acf" secondAttribute="height" multiplier="1:1" id="aKH-sc-sbS"/>
                                                     </constraints>
                                                 </imageView>
-                                                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZWk-ES-e2J">
+                                                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZWk-ES-e2J">
                                                     <rect key="frame" x="55" y="5" width="189" height="189"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="ZWk-ES-e2J" secondAttribute="height" multiplier="1:1" id="MNP-7w-1oe"/>
@@ -263,7 +265,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImagesCell" rowHeight="125" id="Fkg-Sx-POY" customClass="GenreImagesTableViewCell">
-                                        <rect key="frame" x="0.0" y="556" width="600" height="125"/>
+                                        <rect key="frame" x="0.0" y="596" width="600" height="125"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="center" tableViewCell="Fkg-Sx-POY" id="mlC-6n-WW1">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="124"/>
@@ -325,6 +327,7 @@
                                                     </state>
                                                 </button>
                                             </subviews>
+                                            <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstItem="8A9-wX-IWQ" firstAttribute="leading" secondItem="mlC-6n-WW1" secondAttribute="leading" id="1vP-ug-wGr"/>
                                                 <constraint firstItem="dJT-HJ-Txa" firstAttribute="top" secondItem="mlC-6n-WW1" secondAttribute="top" constant="5" id="78c-rf-p1r"/>
@@ -344,7 +347,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImagesCellTiny" rowHeight="155" id="H6F-Jg-zYB" customClass="GenreImagesTableViewCell">
-                                        <rect key="frame" x="0.0" y="681" width="600" height="155"/>
+                                        <rect key="frame" x="0.0" y="721" width="600" height="155"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="center" tableViewCell="H6F-Jg-zYB" id="lsA-cm-8Yp">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="154"/>
@@ -406,6 +409,7 @@
                                                     </state>
                                                 </button>
                                             </subviews>
+                                            <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstItem="Thz-b3-h9T" firstAttribute="top" secondItem="lsA-cm-8Yp" secondAttribute="top" constant="5" id="67w-as-eI2"/>
                                                 <constraint firstItem="2dM-L0-cEF" firstAttribute="leading" secondItem="lsA-cm-8Yp" secondAttribute="leading" constant="5" id="BJ1-sh-xAO"/>
@@ -527,9 +531,6 @@ Hörbücher bei Spotify finden und anhören....</string>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="13"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
-                                <variation key="widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="148" y="412" width="107" height="16"/>
-                                </variation>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" canCancelContentTouches="NO" bouncesZoom="NO" editable="NO" text="App Icons by https://icons8.com" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="s4T-Ne-NXu">
                                 <rect key="frame" x="150" y="513" width="300" height="26"/>
@@ -805,13 +806,13 @@ Hörbücher bei Spotify finden und anhören....</string>
                         <viewControllerLayoutGuide type="bottom" id="JIm-h3-k6J"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="OQu-zg-CZ6">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tUi-e7-cmZ">
                                 <rect key="frame" x="0.0" y="0.0" width="400" height="551"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" horizontalHuggingPriority="200" verticalHuggingPriority="200" horizontalCompressionResistancePriority="200" verticalCompressionResistancePriority="200" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hQk-s6-RVB">
+                                    <view contentMode="scaleToFill" horizontalHuggingPriority="200" verticalHuggingPriority="200" horizontalCompressionResistancePriority="200" verticalCompressionResistancePriority="200" translatesAutoresizingMaskIntoConstraints="NO" id="hQk-s6-RVB">
                                         <rect key="frame" x="0.0" y="0.0" width="400" height="551"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" misplaced="YES" text=" " textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zTj-ps-j6V">
@@ -1043,15 +1044,12 @@ Hörbücher bei Spotify finden und anhören....</string>
                         <viewControllerLayoutGuide type="bottom" id="FqX-VW-Z8r"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="GPO-x6-gHG">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lkw-Ab-sN5">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="deviceRGB"/>
-                                <variation key="widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="0.0" y="20" width="400" height="580"/>
-                                </variation>
                             </webView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="cCS-hR-7gV">
                                 <rect key="frame" x="282" y="198" width="37" height="37"/>
@@ -1198,6 +1196,7 @@ Hörbücher bei Spotify finden und anhören....</string>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
+                                                    <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstItem="YSD-ga-7nP" firstAttribute="leading" secondItem="waa-Ld-Qcl" secondAttribute="leading" id="1j1-8h-Yxv"/>
                                                         <constraint firstItem="3k9-fK-VB6" firstAttribute="centerY" secondItem="waa-Ld-Qcl" secondAttribute="centerY" priority="750" constant="28" id="3Cx-hg-NlV"/>
@@ -1305,21 +1304,21 @@ Hörbücher bei Spotify finden und anhören....</string>
                         <viewControllerLayoutGuide type="bottom" id="JLX-FG-jpZ"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="MeV-ig-DJb">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="XfV-5w-5jz">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="88" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="cbp-CJ-dh3">
-                                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="551"/>
                                         <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                         <color key="separatorColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="calibratedRGB"/>
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <color key="sectionIndexBackgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="HoerbuchCell" id="7GR-Yk-y8m" customClass="HoerbuchTableViewCell">
-                                                <rect key="frame" x="0.0" y="28" width="600" height="88"/>
+                                                <rect key="frame" x="0.0" y="92" width="600" height="88"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7GR-Yk-y8m" id="K6n-H9-vcA">
                                                     <rect key="frame" x="0.0" y="0.0" width="567" height="87"/>
@@ -1359,6 +1358,7 @@ Hörbücher bei Spotify finden und anhören....</string>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
+                                                    <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstItem="VS5-T3-7xG" firstAttribute="centerY" secondItem="RAS-bv-NsH" secondAttribute="centerY" priority="750" constant="28" id="8gF-j9-9QU"/>
                                                         <constraint firstItem="VS5-T3-7xG" firstAttribute="top" secondItem="K6n-H9-vcA" secondAttribute="top" constant="2" id="HZs-kX-vsG"/>
@@ -1392,6 +1392,7 @@ Hörbücher bei Spotify finden und anhören....</string>
                                         </prototypes>
                                     </tableView>
                                 </subviews>
+                                <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="cbp-CJ-dh3" firstAttribute="top" secondItem="XfV-5w-5jz" secondAttribute="top" id="3wg-ji-Cpi"/>
                                     <constraint firstItem="cbp-CJ-dh3" firstAttribute="leading" secondItem="XfV-5w-5jz" secondAttribute="leading" id="OVt-Rv-Sd7"/>
@@ -1424,7 +1425,7 @@ Hörbücher bei Spotify finden und anhören....</string>
         <scene sceneID="rL0-3H-dxG">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="gYz-gF-ITz" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" tag="3" title="Suchen" image="Suche" selectedImage="Suche" id="pdG-5d-GRP"/>
+                    <tabBarItem key="tabBarItem" tag="3" title="Suchen" image="Lupe" selectedImage="Suche" id="pdG-5d-GRP"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="5Ce-iG-0Dh">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -1531,13 +1532,6 @@ Titel Zeile 2</string>
                                                     <action selector="OnPrevTrack:" destination="IiA-bG-hj9" eventType="touchUpInside" id="TNA-Sk-4Mh"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" tag="3" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LKr-4i-4oK">
-                                                <rect key="frame" x="20" y="588" width="25" height="25"/>
-                                                <state key="normal" image="Backward"/>
-                                                <connections>
-                                                    <action selector="OnBackTime:" destination="IiA-bG-hj9" eventType="touchUpInside" id="v87-cC-g4t"/>
-                                                </connections>
-                                            </button>
                                             <button opaque="NO" tag="7" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LGr-Bo-bdc">
                                                 <rect key="frame" x="555" y="588" width="25" height="25"/>
                                                 <state key="normal" image="Forward"/>
@@ -1554,6 +1548,13 @@ Titel Zeile 2</string>
                                                 <state key="normal" image="Play"/>
                                                 <connections>
                                                     <action selector="OnPlay:" destination="IiA-bG-hj9" eventType="touchUpInside" id="wfC-Vd-zK1"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" tag="3" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LKr-4i-4oK">
+                                                <rect key="frame" x="20" y="588" width="25" height="25"/>
+                                                <state key="normal" image="Backward"/>
+                                                <connections>
+                                                    <action selector="OnBackTime:" destination="IiA-bG-hj9" eventType="touchUpInside" id="v87-cC-g4t"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -1652,7 +1653,7 @@ Titel Zeile 2</string>
                                                     <constraint firstAttribute="height" constant="25" id="aty-LS-U1X"/>
                                                 </constraints>
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <state key="normal" image="upload"/>
+                                                <state key="normal" image="Upload"/>
                                                 <variation key="heightClass=compact-widthClass=compact" ambiguous="YES" misplaced="YES">
                                                     <rect key="frame" x="10" y="-12" width="25" height="25"/>
                                                 </variation>
@@ -1670,7 +1671,7 @@ Titel Zeile 2</string>
                                                             <constraint firstAttribute="width" priority="999" constant="25" id="sww-H8-eAV"/>
                                                         </constraints>
                                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <state key="normal" image="moon"/>
+                                                        <state key="normal" image="Moon"/>
                                                         <connections>
                                                             <action selector="OnSleeptimer:" destination="IiA-bG-hj9" eventType="touchUpInside" id="J6D-LZ-dJ5"/>
                                                         </connections>
@@ -1695,7 +1696,7 @@ Titel Zeile 2</string>
                                                     <constraint firstAttribute="height" constant="25" id="DjN-gr-rHI"/>
                                                     <constraint firstAttribute="width" constant="25" id="Pip-Wn-uJN"/>
                                                 </constraints>
-                                                <state key="normal" image="more"/>
+                                                <state key="normal" image="More"/>
                                                 <variation key="heightClass=compact-widthClass=compact" ambiguous="YES" misplaced="YES">
                                                     <rect key="frame" x="365" y="-12" width="25" height="25"/>
                                                 </variation>
@@ -1742,7 +1743,7 @@ Titel Zeile 2</string>
                                     <constraint firstAttribute="width" constant="30" id="zsa-bg-9GQ"/>
                                 </constraints>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" image="down"/>
+                                <state key="normal" image="Down"/>
                                 <connections>
                                     <action selector="OnCloseButtonClicked:" destination="IiA-bG-hj9" eventType="touchUpInside" id="gbF-Gh-EJu"/>
                                 </connections>
@@ -1756,7 +1757,7 @@ Titel Zeile 2</string>
                             <constraint firstItem="i1H-Os-mjB" firstAttribute="top" secondItem="5bb-wL-bpX" secondAttribute="top" id="aF3-sT-GvG"/>
                             <constraint firstItem="TR0-ch-Ode" firstAttribute="leading" secondItem="5bb-wL-bpX" secondAttribute="leadingMargin" constant="-4" id="cF8-Fk-9MR"/>
                             <constraint firstItem="i1H-Os-mjB" firstAttribute="leading" secondItem="5bb-wL-bpX" secondAttribute="leading" id="iyC-V1-azy"/>
-                            <constraint firstItem="TR0-ch-Ode" firstAttribute="top" secondItem="REj-wd-SDI" secondAttribute="bottom" id="lE7-ko-mem"/>
+                            <constraint firstItem="TR0-ch-Ode" firstAttribute="top" secondItem="REj-wd-SDI" secondAttribute="bottom" constant="15" id="lE7-ko-mem"/>
                             <constraint firstItem="wdj-tX-nIa" firstAttribute="leading" secondItem="5bb-wL-bpX" secondAttribute="leading" id="lXX-tX-k8b"/>
                             <constraint firstAttribute="trailing" secondItem="i1H-Os-mjB" secondAttribute="trailing" id="ocN-EF-bu7"/>
                             <constraint firstItem="7dA-Uc-E3g" firstAttribute="centerY" secondItem="i1H-Os-mjB" secondAttribute="centerY" id="q4u-Lg-Vze"/>
@@ -1798,25 +1799,26 @@ Titel Zeile 2</string>
     </scenes>
     <resources>
         <image name="Backward" width="25" height="25"/>
-        <image name="Bookmark" width="50" height="50"/>
+        <image name="Bookmark" width="25" height="25"/>
+        <image name="Down" width="24" height="24"/>
         <image name="Forward" width="25" height="25"/>
-        <image name="Genre" width="50" height="50"/>
-        <image name="Hoerbuecher" width="50" height="50"/>
+        <image name="Genre" width="25" height="25"/>
+        <image name="Hoerbuecher" width="25" height="25"/>
+        <image name="Lupe" width="25" height="25"/>
+        <image name="Moon" width="26" height="26"/>
+        <image name="More" width="24" height="24"/>
         <image name="Next" width="25" height="25"/>
         <image name="Play" width="24" height="24"/>
         <image name="Prev" width="25" height="25"/>
-        <image name="Settings" width="50" height="50"/>
+        <image name="Settings" width="25" height="25"/>
         <image name="Spookify" width="274" height="121"/>
         <image name="Stars" width="200" height="10"/>
-        <image name="Suche" width="50" height="50"/>
-        <image name="Zuletzt" width="50" height="50"/>
-        <image name="down" width="24" height="24"/>
-        <image name="moon" width="26" height="26"/>
-        <image name="more" width="24" height="24"/>
-        <image name="upload" width="25" height="25"/>
+        <image name="Suche" width="25" height="25"/>
+        <image name="Upload" width="25" height="25"/>
+        <image name="Zuletzt" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="1Fp-sa-eDN"/>
-        <segue reference="Mpq-Dr-I1G"/>
+        <segue reference="56X-5S-id3"/>
     </inferredMetricsTieBreakers>
 </document>

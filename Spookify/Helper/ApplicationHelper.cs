@@ -126,6 +126,13 @@ namespace Spookify
 			var tsBisEnde = TimeSpan.FromSeconds (gesamtBisEnde);
 			return tsBisEnde.ToTimeText ();
 		}
+		public static string TimeGesamt(this AudioBook ab)
+		{
+			if (ab == null || ab.Tracks == null)
+				return null;			
+			var tsBisEnde = TimeSpan.FromSeconds(ab.GesamtBisEnde);
+			return tsBisEnde.ToTimeText();
+		}
 		public static UIImage CurrentPlayButtonImage(this SPTAudioStreamingController player)
 		{
 			return UIImage.FromBundle (player != null && player.IsPlaying ? "Pause" : "Play").ImageWithRenderingMode (UIImageRenderingMode.AlwaysTemplate);

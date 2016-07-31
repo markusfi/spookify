@@ -20,7 +20,6 @@ namespace Spookify
 				new UIAlertView("Anmeldung","Die Anmeldung wurde abgerochen.",null,"OK").Show();
 			});
 		}
-
 		public override void AuthenticationViewControllerFail (SPTAuthViewController authenticationViewController, NSError error)
 		{
 			BeginInvokeOnMainThread (() => {
@@ -41,7 +40,7 @@ namespace Spookify
 					new UIAlertView("Anmeldung","Login erfolgreich",null,"OK").Show();
 				}
 			}
-		}		 
+		}
 	}
 }
 
