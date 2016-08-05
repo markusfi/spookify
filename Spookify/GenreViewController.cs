@@ -317,7 +317,8 @@ namespace Spookify
 			}
 		}
 
-		string[] keyList = "Geheimtipps,Alle,Bestseller,Neuheiten".Split(',');
+		string[] keyList = "Geheimtipps,Bestseller,Neuheiten,Charts Top,All Audiobooks".Split(',');
+		string[] startList = "Alle Hörbücher,Alle Hörspiele,Mit Star bewertet".Split(',');
 		string keyTippDerWoche = "tipp der Woche";
 		string keyHoerbuecher = "Hörbücher";
 		string[] sectionList = "Tipps der Woche,Hörbücher,Hörspiele,Genres".Split(',');
@@ -370,11 +371,11 @@ namespace Spookify
 				if (section == 0) {
 					return this.PlaylistLists.Where (p => p.Name.Contains (keyTippDerWoche));
 				} else if (section == 1) {
-					return this.PlaylistLists.Where (p => p.Name.Contains (keyHoerbuecher) && keyList.Any (k => p.Name.Contains (k)));
+					return this.PlaylistLists.Where (p => p.Name.Contains (keyHoerbuecher) && (startList.Any(k => p.Name.StartsWith(k)) || keyList.Any (k => p.Name.Contains (k))));
 				} else if (section == 2) {
-					return this.PlaylistLists.Where (p => !p.Name.Contains (keyHoerbuecher) && keyList.Any (k => p.Name.Contains (k)));
+					return this.PlaylistLists.Where (p => !p.Name.Contains (keyHoerbuecher) && (startList.Any(k => p.Name.StartsWith(k)) || keyList.Any (k => p.Name.Contains (k))));
 				} else if (section == 3) {
-					return this.PlaylistLists.Where (p => !p.Name.Contains (keyTippDerWoche) && !keyList.Any (k => p.Name.Contains (k)));
+					return this.PlaylistLists.Where (p => !p.Name.Contains (keyTippDerWoche) && !(startList.Any(k => p.Name.StartsWith(k)) || keyList.Any (k => p.Name.Contains (k))));
 				} else if (section == 4) {
 					return this.PlaylistLists.Where (p => !p.Name.Contains (keyTippDerWoche));
 				}

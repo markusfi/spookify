@@ -59,7 +59,7 @@ namespace Spookify
 			ContainerView.TranslatesAutoresizingMaskIntoConstraints = false;
 			ViewDidAppearCalled = true;
 
-			this.NavigationItem.RightBarButtonItem = new UIBarButtonItem (UIImage.FromBundle ("upload"), UIBarButtonItemStyle.Plain, SendenButtonClicked);
+			this.NavigationItem.RightBarButtonItem = new UIBarButtonItem (UIImage.FromBundle ("Upload"), UIBarButtonItemStyle.Plain, SendenButtonClicked);
 		}
 		public void SendenButtonClicked(object sender, EventArgs args)
 		{

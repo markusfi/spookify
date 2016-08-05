@@ -55,6 +55,16 @@ namespace Spookify
 			return (float)luminance;
 		}
 
+		public static UIColor AverageColorDarkerAsRef(this UIImage image, UIColor refColor)
+		{
+			nfloat h, s, b, a;
+			nfloat rh, rs, rb, ra;
+			var c = image.AverageColor();
+			c.GetHSBA(out h, out s, out b, out a);
+			refColor.GetHSBA(out rh, out rs, out rb, out ra);
+			return UIColor.FromHSBA(h, s, b < rb ? b : rb, a);
+		}
+
 		public static void LoadImage(this UIImageView imageView, UserPlaylist p, bool loadBookImage)
 		{
 			if (imageView == null)

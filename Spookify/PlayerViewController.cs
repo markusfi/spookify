@@ -342,15 +342,39 @@ namespace Spookify
 			} 
 			if (displayImage != this.AlbumImage.Image && this.AlbumImage.Image != null) {
 				displayImage = this.AlbumImage.Image;
-				var l = this.AlbumImage.Image.GetTile(this.CloseButton.Frame).Luminance ();
-				if (l > 0.3) {
-					this.CloseButton.Layer.CornerRadius = this.CloseButton.Frame.Width / 2.0f;
-					this.CloseButton.BackgroundColor = ConfigSpookify.BackgroundColor;
-				} else {
-					this.CloseButton.BackgroundColor = UIColor.Clear;
-				}
+				this.CloseButton.Layer.CornerRadius = this.CloseButton.Frame.Width / 2.0f;
+				var backgroundColor = this.AlbumImage.Image.AverageColorDarkerAsRef(ConfigSpookify.BackgroundColorLight);
+				this.CloseButton.BackgroundColor = backgroundColor; // ConfigSpookify.BackgroundColor;
+
+				if (gradient != null)
+					gradient.RemoveFromSuperLayer();
+				gradient = new CAGradientLayer()
+				{
+					Frame = this.View.Frame,
+					Colors = new[] { backgroundColor.CGColor, ConfigSpookify.BackgroundColor.CGColor },
+					StartPoint = new CGPoint(0.0f, 0.0f),
+					EndPoint = new CGPoint(0.0f, 1.0f)
+				};
+				SetGradientFrame();
+				this.View.Layer.InsertSublayer(gradient, 0);
 			}
 		}
+		void SetGradientFrame()
+		{
+			if (gradient != null)
+			{
+				if (this.AlbumImage != null)
+					gradient.Frame = new CGRect(this.View.Frame.Left, this.View.Frame.Top + this.AlbumImage.Frame.Height, this.View.Frame.Width, this.View.Frame.Height - +this.AlbumImage.Frame.Height);
+				else
+					gradient.Frame = new CGRect(this.View.Frame.Left, this.View.Frame.Top + this.AlbumImage.Frame.Height, this.View.Frame.Width, this.View.Frame.Height - +this.AlbumImage.Frame.Height);
+			}
+		}
+		public override void ViewWillLayoutSubviews()
+		{
+			base.ViewWillLayoutSubviews();
+			SetGradientFrame();
+		}
+		CAGradientLayer gradient = null;
 		AudioBook displayedAudioBook = null; 
 		UIImage displayImage = null;
 

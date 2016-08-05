@@ -227,9 +227,9 @@ namespace Spookify
 			var items = playlistlists.Items as NSObject[];
 			if (items != null) {
 				if (resultPlaylists == null)
-					resultPlaylists = items.Select (a => a as SPTPartialPlaylist).Where(a => !ConfigListen.StopList.Any(s => a.Name.StartsWith(s)));
+					resultPlaylists = items.Select (a => a as SPTPartialPlaylist).Where(a => !ConfigListen.StopList.Any(s => a.Name.StartsWith(s) && a.TrackCount > 2));
 				else
-					resultPlaylists = resultPlaylists.Union (items.Select (a => a as SPTPartialPlaylist)).Where(a => !ConfigListen.StopList.Any(s => a.Name.StartsWith(s)));
+					resultPlaylists = resultPlaylists.Union (items.Select (a => a as SPTPartialPlaylist)).Where(a => !ConfigListen.StopList.Any(s => a.Name.StartsWith(s) && a.TrackCount > 2));
 			}
 			if (playlistlists.HasNextPage) {
 				// BreathFirstQueue.Enqueue (playlistlists);

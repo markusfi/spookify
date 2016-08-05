@@ -281,11 +281,25 @@ namespace Spookify
 						authorNameLabel.Text = ab?.ToAuthorName () + " - " + ab?.TimeToEnd ();
 					}
 				}
+				
+
 
 				SetupNowPlaying ();
 			}
 			if (BigPlayer != null) {
 				BigPlayer?.DisplayAlbum ();
+				// BackgroundColor = ConfigSpookify.BackgroundColorLight;
+				if (BigPlayer.AlbumImage?.Image != null)
+				{
+					BackgroundColor = BigPlayer.AlbumImage.Image.AverageColorDarkerAsRef(ConfigSpookify.BackgroundColorLight);
+					/*
+					var l = BigPlayer.AlbumImage.Image.Luminance();
+					if (l < 0.5)
+						BackgroundColor = BigPlayer.AlbumImage.Image.AverageColor();
+					else
+						BackgroundColor = ConfigSpookify.BackgroundColorLight;
+						*/
+				}
 			}
 		}
 		int storeIntervalCounter = 0;

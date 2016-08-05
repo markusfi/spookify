@@ -9,6 +9,7 @@ namespace Spookify
 			"Hörbücher Neuheiten" ,
 			"Hörbücher Bestseller & Ausgezeichnet" ,
 			"Hörbücher Geheimtipps" ,
+			"Mit Star bewertet",
 			"Alle Hörbücher" ,
 			"Hörspiele Neuheiten" ,
 			"Hörspiele Bestseller & Ausgezeichnet" ,
@@ -33,7 +34,7 @@ namespace Spookify
 			"All Audiobooks" };
 
 		public static readonly string[] StopList = {
-			"Music For Readers" 
+			"Music For Readers", "Kinderlieder","Gute Nacht Sterne","Traumstern-Orchester", 
 		};
 
 		public static void ConfigPosition(IEnumerable<UserPlaylist>playlists, int start = 1000)

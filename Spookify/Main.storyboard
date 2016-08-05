@@ -812,7 +812,7 @@ Hörbücher bei Spotify finden und anhören....</string>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tUi-e7-cmZ">
                                 <rect key="frame" x="0.0" y="0.0" width="400" height="551"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" horizontalHuggingPriority="200" verticalHuggingPriority="200" horizontalCompressionResistancePriority="200" verticalCompressionResistancePriority="200" translatesAutoresizingMaskIntoConstraints="NO" id="hQk-s6-RVB">
+                                    <view contentMode="scaleToFill" horizontalHuggingPriority="200" verticalHuggingPriority="200" horizontalCompressionResistancePriority="200" verticalCompressionResistancePriority="200" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hQk-s6-RVB">
                                         <rect key="frame" x="0.0" y="0.0" width="400" height="551"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" misplaced="YES" text=" " textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zTj-ps-j6V">

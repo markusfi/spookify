@@ -209,6 +209,8 @@
     <ImageAsset Include="Resources\Images.xcassets\Down.imageset\down-25.png" />
     <ImageAsset Include="Resources\Images.xcassets\Down.imageset\down-50.png" />
     <ImageAsset Include="Resources\Images.xcassets\Down.imageset\down-75.png" />
+    <ImageAsset Include="Resources\Images.xcassets\PlaySmall.imageset\Play-75.png" />
+    <ImageAsset Include="Resources\Images.xcassets\PlaySmall.imageset\Play-50.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
