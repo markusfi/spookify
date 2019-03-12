@@ -140,12 +140,13 @@ namespace Spookify
 		{
 			if (CurrentPlayer.Current.AuthPlayer != null &&
 			    CurrentPlayer.Current.AuthPlayer.Session != null) {
-				this._StatusRefreshLabel.Text = string.Format ("Session: {0}  Expiration: {1}",
+				this._StatusRefreshLabel.Text = string.Format ("Session: {0} {1}  Books: {2} ",
 					CurrentPlayer.Current.AuthPlayer.Session.IsValid ? "valid" : (CurrentPlayer.Current.TriggerWaitingForSessionRenew ? "renew pending" : "invalid"),
 					CurrentPlayer.Current.AuthPlayer.Session.ExpirationDate != null 
 						? CurrentPlayer.Current.AuthPlayer.Session.ExpirationDate.NSDateToDateTime ().ToString ("G")
-						: "-"
-				);
+						: "-",
+                    CurrentAudiobooks.IsRefreshRunning ? "loading..." : CurrentAudiobooks.Current.LastUpdate.ToString("g")
+                  );
 			} else
 				this._StatusRefreshLabel.Text = "no Session";
 			

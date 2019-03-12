@@ -22,7 +22,7 @@ namespace Spookify
 	public delegate void PlaylistChangedEventHandler (object sender, PlaylistChangedEventArgs e);
 
 	[Serializable]
-	public class CurrentAudiobooks: CurrentBase<CurrentAudiobooks>
+	public class CurrentAudiobooks : CurrentBase<CurrentAudiobooks>
 	{
 		new public static CurrentAudiobooks Current
 		{
@@ -38,7 +38,8 @@ namespace Spookify
 		}
 		public static CurrentAudiobooks CurrentNoTriggerRefresh
 		{
-			get {
+			get
+			{
 				var current = CurrentBase<CurrentAudiobooks>.Current;
 				if (!current.HasPlaylists && CurrentAudiobooks.refreshRunning != null)
 					return CurrentAudiobooks.refreshRunning;
@@ -51,41 +52,57 @@ namespace Spookify
 		PlaylistChangedEventHandler _changed;
 		public event PlaylistChangedEventHandler Changed
 		{
-			add {
+			add
+			{
 				_changed += value;
 			}
-			remove {
+			remove
+			{
 				_changed -= value;
 			}
 		}
 		public void OnChanged(object sender, PlaylistChangedEventArgs args)
 		{
 			if (_changed != null)
-				_changed (sender, args);
+				_changed(sender, args);
 		}
-		public override string Filename()  { return "Audiobooks"; } 
+		public override string Filename() { return "Audiobooks"; }
 
 		PlaylistOwner _user;
-		public PlaylistOwner User { 
-			get { 
-				if (_user == null) {
-					_user = new PlaylistOwner () { Name =
-//						 "europa.kinderprogramm" 
-						 "argonhörbücher,hoerbuecher,europa.kinderprogramm" 
+		public PlaylistOwner User
+		{
+			get
+			{
+				if (_user == null)
+				{
+					_user = new PlaylistOwner()
+					{
+						Name =
+						 //						 "europa.kinderprogramm" 
+						 "argonhörbücher,hoerbuecher,europa.kinderprogramm"
+						//						 "hoerbuecher" 
+						//						"argonhörbücher"
 					};
 					_user.Changed += OnChanged;
 					LastUpdate = DateTime.UtcNow;
 				}
 				return _user;
 			}
-			set {
-				if (_user != value) {
+			set
+			{
+				if (_user != value)
+				{
 					if (_user != null)
 						_user.Changed -= OnChanged;
-					_user = value; 
+					_user = value;
 					_user.Changed += OnChanged;
 				}
-			}		
+			}
+		}
+		public static bool IsRefreshRunning { 
+			get { 
+				return refreshRunning != null; 
+			} 
 		}
 		[NonSerialized]
 		static CurrentAudiobooks _refreshRunning;
@@ -189,7 +206,7 @@ namespace Spookify
 						foreach(var playlist in playlists) 
 							AddPlaylists(playlist, false);
 					});
-					*/
+*/
 					ConfigListen.ConfigPosition (_playlists, 10000);
 					playlistManager.GetUserPlaylistsAsync (GetPlaylistCompletionhandler);
 				}

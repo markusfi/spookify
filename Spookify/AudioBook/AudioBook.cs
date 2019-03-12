@@ -243,6 +243,13 @@ namespace Spookify
 			SPTAuth auth = CurrentPlayer.Current.AuthPlayer;
 			NSError errorOut;
 			NSUrlRequest playlistReq = SPTPlaylistSnapshot.CreateRequestForPlaylistWithURI (playlistUri, auth.Session.AccessToken, out errorOut);
+			if (playlistReq == null)
+			{
+				Console.WriteLine ("CreateFromFullAsync: Abbruch weil: "+errorOut.LocalizedDescription);
+				if (finished != null)
+					finished();
+				return;
+			}
 			SPTRequestHandlerProtocol_Extensions.Callback (SPTRequest.SPTRequestHandlerProtocol, playlistReq, (er, resp, dat) => {
 				if (er != null) {
 					Console.WriteLine ("CreateFromFullAsync: Abbruch weil Error: "+er.LocalizedDescription);

@@ -267,7 +267,7 @@ namespace Spookify
 					SmallImageUrl = playlist.SmallestImage?.ImageURL?.AbsoluteString,
 					ImageUrls = playlist.Images?.Select(i => i?.ImageURL?.AbsoluteString).ToArray(),
 					Books =null,
-					Uri = playlist.Uri.AbsoluteString
+					Uri = playlist.Owner.Uri.AbsoluteString + ":playlist:" + playlist.Uri.AbsoluteString.Split(':').Last()
 				}), this);
 			}
 		}
